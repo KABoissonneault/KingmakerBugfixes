@@ -1,0 +1,12 @@
+﻿{
+  "Id": "KingmakerBugfixes",
+  "DisplayName": "Kingmaker Bugfixes",
+  "Author": "Kab",
+  "Version": "1.0.0",
+  "ManagerVersion": "0.27.10",
+  "Requirements": [],
+  "AssemblyName": "KingmakerBugfixes.dll",
+  "EntryMethod": "kmbf.Main.Load",
+  "HomePage": "https://github.com/KABoissonneault/KingmakerBugfixes",
+  "Repository": "https://raw.githubusercontent.com/KABoissonneault/KingmakerBugfixes/master/Repository.json"
+}
