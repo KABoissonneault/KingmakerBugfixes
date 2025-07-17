@@ -6,14 +6,34 @@ While some of these issues might be fixed in other large scale mods, this mod ai
 
 Many of these are buffs to the player, since they make more abilities work, but a few might nerf them (ex: Bane of the Living actually working only on the living). Beware when relying on broken behavior.
 
-Fixes:
+## Fixes
+
+### Ability fix
+
 - Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
-- Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described
 - Fixed Bane of the Living being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
+
+### Event
+
+- Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
 
-Known Issues:
+### Changes
+
+Not quite "fixes", but should be a universal improvement for everyone
+
+- Darts are now Light (Thrown) weapons, like in tabletop
+
+## Known Issues
+
+These are some known issues introduced by the mod. These are generally accepted as better than what the base game had, but worth acknowledging here
+
 - Successful Datura Sleep procs (Saving Throw fail) will not show above the target, only in logs
+
+## Acknowledgement
+
+- Whiterock for bug reporting and investigation
+- silv7k for testing
