@@ -17,6 +17,8 @@ using UnityEngine;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Items.Ecnchantments;
 
 namespace kmbf;
 
@@ -151,6 +153,15 @@ public static class Main {
         }
     }
 
+    class BlueprintItemWeaponGuid : BlueprintItemGuid
+    {
+        public BlueprintItemWeaponGuid(string guid)
+            : base(guid)
+        {
+
+        }
+    }
+
     class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
     {
         public BlueprintItemEquipmentUsableGuid(string guid)
@@ -214,12 +225,15 @@ public static class Main {
     static readonly BlueprintWeaponEnchantmentGuid BaneLivingEnchantment = new BlueprintWeaponEnchantmentGuid("e1d6f5e3cd3855b43a0cb42f6c747e1c");
     static readonly BlueprintWeaponEnchantmentGuid NaturesWrathEnchantment = new BlueprintWeaponEnchantmentGuid("afa5d47f05724ac43a4dc19e5ecbd150");
 
+    // Item Equipment Weapon
+    static readonly BlueprintItemWeaponGuid SoporiferousSecondItem = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
+
     // Item Equipment Usable
     static readonly BlueprintItemEquipmentUsableGuid ScrollSummonNaturesAllyVSingle = new BlueprintItemEquipmentUsableGuid("4e9e261a93c7aa144a7b29c9fcfb4986");
 
     // Check
     static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
-    static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
+    static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
 
     static bool GetBlueprint(BlueprintObjectGuid objectId, out BlueprintScriptableObject bp)
     {
@@ -304,6 +318,31 @@ public static class Main {
 
         return true;
     }
+
+    static bool GetBlueprint(BlueprintItemWeaponGuid weaponId, out BlueprintItemWeapon weapon)
+    {
+        weapon = ResourcesLibrary.TryGetBlueprint<BlueprintItemWeapon>(weaponId.guid);
+        if (weapon == null)
+        {
+            Log.Error($"Could not find Item Weapon blueprint with GUID '{weaponId.guid}'");
+            return false;
+        }
+
+        return true;
+    }
+
+    static bool GetBlueprint(BlueprintWeaponEnchantmentGuid weaponEnchantmentId, out BlueprintWeaponEnchantment weaponEnchantment)
+    {
+        weaponEnchantment = ResourcesLibrary.TryGetBlueprint<BlueprintWeaponEnchantment>(weaponEnchantmentId.guid);
+        if (weaponEnchantment == null)
+        {
+            Log.Error($"Could not find Weapon Enchantment blueprint with GUID '{weaponEnchantmentId.guid}'");
+            return false;
+        }
+
+        return true;
+    }
+
 
     static bool GetBlueprint(BlueprintItemEquipmentUsableGuid itemEquipmentUsableGuid, out BlueprintItemEquipmentUsable usable)
     {
@@ -434,6 +473,7 @@ public static class Main {
                 var attackRollTrigger = component as AddInitiatorAttackRollTrigger;
 
                 var weaponTrigger = ScriptableObject.CreateInstance<AddInitiatorAttackWithWeaponTrigger>();
+                weaponTrigger.name = attackRollTrigger.name;
                 weaponTrigger.OnlyHit = attackRollTrigger.OnlyHit;
                 weaponTrigger.CriticalHit = attackRollTrigger.CriticalHit;
                 weaponTrigger.OnlySneakAttack = attackRollTrigger.SneakAttack;
@@ -572,6 +612,14 @@ public static class Main {
             }
         }
 
+        static void AddWeaponEnchantment(BlueprintItemWeaponGuid weaponId, BlueprintWeaponEnchantmentGuid weaponEnchantmentId)
+        {
+            if(!GetBlueprint(weaponId, out BlueprintItemWeapon weapon)) return;
+            if (!GetBlueprint(weaponEnchantmentId, out BlueprintWeaponEnchantment enchantment)) return;
+
+            weapon.Enchantments.Add(enchantment);
+        }
+
         static void Postfix()
         {
             if (loaded) return;
@@ -586,6 +634,7 @@ public static class Main {
             // 'Datura' weapon attack buff
             ReplaceAttackRollTriggerToWeaponTrigger(SoporiferousEnchantment, WaitForAttackResolve: true); // The weapon attack automatically removes the sleep
             SetContextSetAbilityParamsDC(SoporiferousEnchantment, 16); // DC is 11 by default, raise it to 16 like in the description
+            AddWeaponEnchantment(SoporiferousSecondItem, SoporiferousEnchantment);
 
             // Bane of the Living "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
             FlipWeaponConditionAndOr(BaneLivingEnchantment);
