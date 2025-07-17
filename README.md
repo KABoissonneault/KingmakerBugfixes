@@ -9,8 +9,11 @@ Many of these are buffs to the player, since they make more abilities work, but 
 Fixes:
 - Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
 - Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
-- Fixed issue where Datura would wake up targets immediately after sleeping them. Also increased DC to 16, as described
+- Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described
 - Fixed Bane of the Living being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
+
+Known Issues:
+- Successful Datura Sleep procs (Saving Throw fail) will not show above the target, only in logs
