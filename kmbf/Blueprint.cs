@@ -1,0 +1,421 @@
+﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Blueprints.Items.Equipment;
+using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.DialogSystem.Blueprints;
+using Kingmaker.Kingdom.Artisans;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
+
+namespace kmbf;
+
+class BlueprintObjectGuid
+{
+    public string guid;
+
+    protected BlueprintScriptableObject cachedObject;
+    protected bool cached = false;
+
+    public BlueprintObjectGuid(string guid)
+    {
+        this.guid = guid;
+    }
+
+    public bool GetBlueprint(out BlueprintScriptableObject bp)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        bp = cachedObject;
+        return bp != null;
+    }
+}
+
+class BlueprintFactGuid : BlueprintObjectGuid
+{
+    public BlueprintFactGuid(string guid)
+        : base(guid)
+    {
+
+    }
+}
+
+class BlueprintUnitFactGuid : BlueprintFactGuid
+{
+    public BlueprintUnitFactGuid(string guid)
+        : base(guid)
+    {
+
+    }
+}
+
+class BlueprintAbilityGuid : BlueprintUnitFactGuid
+{
+    public BlueprintAbilityGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintAbility ability)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintAbility>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Ability blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        ability = cachedObject as BlueprintAbility;
+
+        return ability != null;
+    }
+
+    public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
+    public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new BlueprintAbilityGuid("0964bf88b582bed41b74e79596c4f6d9");
+    public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new BlueprintAbilityGuid("28ea1b2e0c4a9094da208b4c186f5e4f");
+}
+
+class BlueprintCharacterClassGuid : BlueprintObjectGuid
+{
+    public BlueprintCharacterClassGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintCharacterClass characterClass)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintCharacterClass>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Character Class blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        characterClass = cachedObject as BlueprintCharacterClass;
+
+        return characterClass != null;
+    }
+
+    public static readonly BlueprintCharacterClassGuid Druid = new BlueprintCharacterClassGuid("610d836f3a3a9ed42a4349b62f002e96");
+}
+
+class BlueprintCueGuid : BlueprintObjectGuid
+{
+    public BlueprintCueGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintCue cue)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintCue>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Cue blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        cue = cachedObject as BlueprintCue;
+
+        return cue != null;
+    }
+
+    public static readonly BlueprintCueGuid IrleneGiftCue3 = new BlueprintCueGuid("03807d3897f73e44b84b476ae63a62f1");
+}
+
+class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
+{
+    public BlueprintKingdomArtisanGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintKingdomArtisan artisan)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintKingdomArtisan>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Artisan blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        artisan = cachedObject as BlueprintKingdomArtisan;
+
+        return artisan != null;
+    }
+
+    public static readonly BlueprintKingdomArtisanGuid Woodmaster = new BlueprintKingdomArtisanGuid("670c334ec3ecd1640b70024ea93d9229");
+    public static readonly BlueprintKingdomArtisanGuid ShadyTrader = new BlueprintKingdomArtisanGuid("42efca2aecce9ff43ad3ed2d4d516124");
+}
+
+class BlueprintItemEnchantmentGuid : BlueprintFactGuid
+{
+    public BlueprintItemEnchantmentGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintItemEnchantment itemEnchantment)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintItemEnchantment>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Item Enchantment blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        itemEnchantment = cachedObject as BlueprintItemEnchantment;
+
+        return itemEnchantment != null;
+    }
+}
+
+class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
+{
+    public BlueprintWeaponEnchantmentGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintWeaponEnchantment weaponEnchantment)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintWeaponEnchantment>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Weapon Enchantment blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        weaponEnchantment = cachedObject as BlueprintWeaponEnchantment;
+
+        return weaponEnchantment != null;
+    }
+
+    public static readonly BlueprintWeaponEnchantmentGuid Soporiferous = new BlueprintWeaponEnchantmentGuid("da0a0c76266c96b45aacc34dc6635b28");
+    public static readonly BlueprintWeaponEnchantmentGuid BaneLiving = new BlueprintWeaponEnchantmentGuid("e1d6f5e3cd3855b43a0cb42f6c747e1c");
+    public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new BlueprintWeaponEnchantmentGuid("afa5d47f05724ac43a4dc19e5ecbd150");
+}
+
+class BlueprintBuffGuid : BlueprintFactGuid
+{
+    public BlueprintBuffGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintBuff buff)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintBuff>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Buff blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        buff = cachedObject as BlueprintBuff;
+
+        return buff != null;
+    }
+}
+
+class BlueprintItemGuid : BlueprintObjectGuid
+{
+    public BlueprintItemGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintItem item)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintItem>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Item blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        item = cachedObject as BlueprintItem;
+
+        return item != null;
+    }
+}
+
+class BlueprintItemEquipmentGuid : BlueprintItemGuid
+{
+    public BlueprintItemEquipmentGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintItemEquipment itemEquipment)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipment>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Item Equipment blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        itemEquipment = cachedObject as BlueprintItemEquipment;
+
+        return itemEquipment != null;
+    }
+}
+
+class BlueprintItemWeaponGuid : BlueprintItemGuid
+{
+    public BlueprintItemWeaponGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintItemWeapon itemWeapon)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintItemWeapon>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Item Weapon blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        itemWeapon = cachedObject as BlueprintItemWeapon;
+
+        return itemWeapon != null;
+    }
+
+    public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
+}
+
+class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
+{
+    public BlueprintItemEquipmentUsableGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintItemEquipmentUsable itemUsable)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Item Equipment Usable blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        itemUsable = cachedObject as BlueprintItemEquipmentUsable;
+
+        return itemUsable != null;
+    }
+
+    public static readonly BlueprintItemEquipmentUsableGuid ScrollSummonNaturesAllyVSingle = new BlueprintItemEquipmentUsableGuid("4e9e261a93c7aa144a7b29c9fcfb4986");
+}
+
+class BlueprintCheckGuid : BlueprintObjectGuid
+{
+    public BlueprintCheckGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintCheck check)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintCheck>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Check blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        check = cachedObject as BlueprintCheck;
+
+        return check != null;
+    }
+
+    public static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
+    public static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
+}
+
+class BlueprintWeaponTypeGuid : BlueprintObjectGuid
+{
+    public BlueprintWeaponTypeGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintCheck check)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintCheck>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Check blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        check = cachedObject as BlueprintCheck;
+
+        return check != null;
+    }
+
+    public static readonly BlueprintWeaponTypeGuid Dart = new BlueprintWeaponTypeGuid("f415ae950523a7843a74d7780dd551af");
+}

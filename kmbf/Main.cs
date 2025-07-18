@@ -19,6 +19,7 @@ using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.RuleSystem.Rules;
 
 namespace kmbf;
 
@@ -29,7 +30,6 @@ public static class Main {
     public static bool Load(UnityModManager.ModEntry modEntry) {
         Log = modEntry.Logger;
 
-        modEntry.OnGUI = OnGUI;
         try {
             HarmonyInstance = new Harmony(modEntry.Info.Id);
         } catch {
@@ -38,146 +38,6 @@ public static class Main {
         }
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
         return true;
-    }
-
-    public static void OnGUI(UnityModManager.ModEntry modEntry) {
-
-    }
-
-    class BlueprintObjectGuid
-    {
-        public string guid;
-
-        public BlueprintObjectGuid(string guid)
-        {
-            this.guid = guid;
-        }
-    }
-
-    class BlueprintFactGuid : BlueprintObjectGuid
-    {
-        public BlueprintFactGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-    
-    class BlueprintUnitFactGuid : BlueprintFactGuid
-    {
-        public BlueprintUnitFactGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintAbilityGuid : BlueprintUnitFactGuid
-    {
-        public BlueprintAbilityGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintCharacterClassGuid : BlueprintObjectGuid
-    {
-        public BlueprintCharacterClassGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintCueGuid : BlueprintObjectGuid
-    {
-        public BlueprintCueGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
-    {
-        public BlueprintKingdomArtisanGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-    
-    class BlueprintItemEnchantmentGuid : BlueprintFactGuid
-    {
-        public BlueprintItemEnchantmentGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
-    {
-        public BlueprintWeaponEnchantmentGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintBuffGuid : BlueprintFactGuid
-    {
-        public BlueprintBuffGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintItemGuid : BlueprintObjectGuid
-    {
-        public BlueprintItemGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintItemEquipmentGuid : BlueprintItemGuid
-    {
-        public BlueprintItemEquipmentGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintItemWeaponGuid : BlueprintItemGuid
-    {
-        public BlueprintItemWeaponGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
-    {
-        public BlueprintItemEquipmentUsableGuid(string guid)
-            : base(guid)
-        {
-
-        }
-    }
-
-    class BlueprintCheckGuid : BlueprintObjectGuid
-    {
-        public BlueprintCheckGuid(string guid)
-            : base(guid)
-        {
-
-        }
     }
 
     static string GetDebugName(BlueprintScriptableObject bp)
@@ -190,172 +50,6 @@ public static class Main {
         return $"BlueprintAbility:{ability.AssetGuid}:{ability.name}";
     }
 
-    static string GetDebugName(BlueprintCharacterClass characterClass)
-    {
-        return $"BlueprintCharacterClass:{characterClass.AssetGuid}:{characterClass.name}";
-    }
-
-    static string GetDebugName(BlueprintCue cue)
-    {
-        return $"BlueprintCue:{cue.AssetGuid}:{cue.name}";
-    }
-
-    static string GetDebugName(BlueprintKingdomArtisan artisan)
-    {
-        return $"BlueprintKingdomArtisan:{artisan.AssetGuid}:{artisan.name}";
-    }
-
-    // Abilities
-    static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
-    static readonly BlueprintAbilityGuid SummonMonsterVSingle = new BlueprintAbilityGuid("0964bf88b582bed41b74e79596c4f6d9");
-    static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new BlueprintAbilityGuid("28ea1b2e0c4a9094da208b4c186f5e4f");
-
-    // Character classes
-    static readonly BlueprintCharacterClassGuid DruidClass = new BlueprintCharacterClassGuid("610d836f3a3a9ed42a4349b62f002e96");
-
-    // Cue
-    static readonly BlueprintCueGuid IrleneGiftCue3 = new BlueprintCueGuid("03807d3897f73e44b84b476ae63a62f1");
-
-    // Artisans
-    static readonly BlueprintKingdomArtisanGuid Woodmaster = new BlueprintKingdomArtisanGuid("670c334ec3ecd1640b70024ea93d9229");
-    static readonly BlueprintKingdomArtisanGuid ShadyTrader = new BlueprintKingdomArtisanGuid("42efca2aecce9ff43ad3ed2d4d516124");
-
-    // Weapon Enchantment
-    static readonly BlueprintWeaponEnchantmentGuid SoporiferousEnchantment = new BlueprintWeaponEnchantmentGuid("da0a0c76266c96b45aacc34dc6635b28");
-    static readonly BlueprintWeaponEnchantmentGuid BaneLivingEnchantment = new BlueprintWeaponEnchantmentGuid("e1d6f5e3cd3855b43a0cb42f6c747e1c");
-    static readonly BlueprintWeaponEnchantmentGuid NaturesWrathEnchantment = new BlueprintWeaponEnchantmentGuid("afa5d47f05724ac43a4dc19e5ecbd150");
-
-    // Item Equipment Weapon
-    static readonly BlueprintItemWeaponGuid SoporiferousSecondItem = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
-
-    // Item Equipment Usable
-    static readonly BlueprintItemEquipmentUsableGuid ScrollSummonNaturesAllyVSingle = new BlueprintItemEquipmentUsableGuid("4e9e261a93c7aa144a7b29c9fcfb4986");
-
-    // Check
-    static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
-    static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
-
-    static bool GetBlueprint(BlueprintObjectGuid objectId, out BlueprintScriptableObject bp)
-    {
-        bp = ResourcesLibrary.TryGetBlueprint<BlueprintScriptableObject>(objectId.guid);
-        if (bp == null)
-        {
-            Log.Error($"Could not find blueprint with GUID '{objectId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintAbilityGuid abilityId, out BlueprintAbility ability)
-    {
-        ability = ResourcesLibrary.TryGetBlueprint<BlueprintAbility>(abilityId.guid);
-        if(ability == null)
-        {
-            Log.Error($"Could not find ability blueprint with GUID '{abilityId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintCharacterClassGuid characterClassId, out BlueprintCharacterClass characterClass)
-    {
-        characterClass = ResourcesLibrary.TryGetBlueprint<BlueprintCharacterClass>(characterClassId.guid);
-        if(characterClass == null)
-        {
-            Log.Error($"Could not find character class blueprint with GUID '{characterClassId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintCueGuid cueId, out BlueprintCue cue)
-    {
-        cue = ResourcesLibrary.TryGetBlueprint<BlueprintCue>(cueId.guid);
-        if(cue == null)
-        {
-            Log.Error($"Could not find cue blueprint with GUID '{cueId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintKingdomArtisanGuid artisanId, out BlueprintKingdomArtisan artisan)
-    {
-        artisan = ResourcesLibrary.TryGetBlueprint<BlueprintKingdomArtisan>(artisanId.guid);
-        if (artisan == null)
-        {
-            Log.Error($"Could not find Kingdom Artisan blueprint with GUID '{artisanId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintBuffGuid buffId, out BlueprintBuff buff)
-    {
-        buff = ResourcesLibrary.TryGetBlueprint<BlueprintBuff>(buffId.guid);
-        if (buff == null)
-        {
-            Log.Error($"Could not find Buff blueprint with GUID '{buffId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintCheckGuid checkId, out BlueprintCheck check)
-    {
-        check = ResourcesLibrary.TryGetBlueprint<BlueprintCheck>(checkId.guid);
-        if (check == null)
-        {
-            Log.Error($"Could not find Check blueprint with GUID '{checkId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintItemWeaponGuid weaponId, out BlueprintItemWeapon weapon)
-    {
-        weapon = ResourcesLibrary.TryGetBlueprint<BlueprintItemWeapon>(weaponId.guid);
-        if (weapon == null)
-        {
-            Log.Error($"Could not find Item Weapon blueprint with GUID '{weaponId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    static bool GetBlueprint(BlueprintWeaponEnchantmentGuid weaponEnchantmentId, out BlueprintWeaponEnchantment weaponEnchantment)
-    {
-        weaponEnchantment = ResourcesLibrary.TryGetBlueprint<BlueprintWeaponEnchantment>(weaponEnchantmentId.guid);
-        if (weaponEnchantment == null)
-        {
-            Log.Error($"Could not find Weapon Enchantment blueprint with GUID '{weaponEnchantmentId.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
-
-    static bool GetBlueprint(BlueprintItemEquipmentUsableGuid itemEquipmentUsableGuid, out BlueprintItemEquipmentUsable usable)
-    {
-        usable = ResourcesLibrary.TryGetBlueprint<BlueprintItemEquipmentUsable>(itemEquipmentUsableGuid.guid);
-        if (usable == null)
-        {
-            Log.Error($"Could not find Item Equipment Usable blueprint with GUID '{itemEquipmentUsableGuid.guid}'");
-            return false;
-        }
-
-        return true;
-    }
-
     static bool GetDamageRankConfig(BlueprintAbility ability, out ContextRankConfig damageRankConfig)
     {
         damageRankConfig = ability.ComponentsArray
@@ -366,6 +60,18 @@ public static class Main {
         if (damageRankConfig == null)
         {
             Log.Error($"Could not find damage dice rank config in ability blueprint '{GetDebugName(ability)}'");
+            return false;
+        }
+
+        return true;
+    }
+
+    static bool GetBlueprint(BlueprintObjectGuid weaponTypeId, out BlueprintWeaponType weaponType)
+    {
+        weaponType = ResourcesLibrary.TryGetBlueprint<BlueprintWeaponType>(weaponTypeId.guid);
+        if (weaponType == null)
+        {
+            Log.Error($"Could not find Weapon Type blueprint with GUID '{weaponTypeId.guid}'");
             return false;
         }
 
@@ -422,9 +128,9 @@ public static class Main {
 
         static void AddAbilityDamageDiceRankClass(BlueprintAbilityGuid abilityId, BlueprintCharacterClassGuid characterClassId)
         {
-            if(!GetBlueprint(abilityId, out BlueprintAbility ability)) return;           
+            if(!abilityId.GetBlueprint(out BlueprintAbility ability)) return;           
             if(!GetDamageRankConfig(ability, out ContextRankConfig damageRankConfig)) return;
-            if(!GetBlueprint(characterClassId, out BlueprintCharacterClass characterClass)) return;
+            if(!characterClassId.GetBlueprint(out BlueprintCharacterClass characterClass)) return;
 
             if (!damageRankConfig.m_Class.Any(c => c.AssetGuid == characterClass.AssetGuid))
             {
@@ -434,7 +140,7 @@ public static class Main {
 
         static void ReplaceArtisan(BlueprintCueGuid cueId, BlueprintKingdomArtisanGuid currentArtisan, BlueprintKingdomArtisanGuid newArtisan)
         {
-            if (!GetBlueprint(cueId, out BlueprintCue cue)) return;
+            if (!cueId.GetBlueprint(out BlueprintCue cue)) return;
 
             foreach(GameAction action in GetGameActionsRecursive(cue.OnShow)
                 .Concat(GetGameActionsRecursive(cue.OnStop)))
@@ -444,7 +150,7 @@ public static class Main {
                 {
                     if(artisanGift.Artisan != null && artisanGift.Artisan.AssetGuid == currentArtisan.guid)
                     {
-                        GetBlueprint(newArtisan, out artisanGift.Artisan);
+                        newArtisan.GetBlueprint(out artisanGift.Artisan);
                     }
                     continue;
                 }
@@ -454,7 +160,7 @@ public static class Main {
                 {
                     if (artisanGiftWithTier.Artisan != null && artisanGiftWithTier.Artisan.AssetGuid == currentArtisan.guid)
                     {
-                        GetBlueprint(newArtisan, out artisanGiftWithTier.Artisan);
+                        newArtisan.GetBlueprint(out artisanGiftWithTier.Artisan);
                     }
                     continue;
                 }
@@ -463,7 +169,7 @@ public static class Main {
 
         static void ReplaceAttackRollTriggerToWeaponTrigger(BlueprintObjectGuid bpId, bool WaitForAttackResolve)
         {
-            if (!GetBlueprint(bpId, out BlueprintScriptableObject bp)) return;
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
 
             for(int i = 0; i < bp.Components.Length; ++i)
             {
@@ -490,7 +196,7 @@ public static class Main {
         // "Buff on Attack" applies to instigator, "Weapon Trigger" applies to target
         static void ReplaceWeaponBuffOnAttackToWeaponTrigger(BlueprintObjectGuid bpId)
         {
-            if (!GetBlueprint(bpId, out BlueprintScriptableObject bp)) return;
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
 
             for (int i = 0; i < bp.Components.Length; ++i)
             {
@@ -516,7 +222,7 @@ public static class Main {
         // Replaces the "Apply Buff" action in the "Add Initiator Attack Role Trigger" component
         static void ReplaceAttackBuff(BlueprintObjectGuid bpId, BlueprintBuffGuid currentBuffId, BlueprintBuffGuid newBuffId)
         {
-            if (!GetBlueprint(bpId, out BlueprintScriptableObject bp)) return;
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
 
             ActionList attackActions = null;
 
@@ -536,7 +242,7 @@ public static class Main {
                 attackActions = ((AddInitiatorAttackWithWeaponTrigger)attackTrigger).Action;
             }
 
-            if (!GetBlueprint(newBuffId, out BlueprintBuff newBuff)) return;
+            if (!newBuffId.GetBlueprint(out BlueprintBuff newBuff)) return;
             
 
             GetGameActionsRecursive(attackActions)
@@ -548,7 +254,7 @@ public static class Main {
 
         static void SetContextSetAbilityParamsDC(BlueprintObjectGuid bpId, int DC)
         {
-            if (!GetBlueprint(bpId, out BlueprintScriptableObject bp)) return;
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
 
             var abilityParams = (ContextSetAbilityParams)bp.Components.FirstOrDefault(c => c is ContextSetAbilityParams);
             if (abilityParams == null)
@@ -564,7 +270,7 @@ public static class Main {
         // Easy to get them mixed up for negative checks (Not Undead or Not Construct)
         static void FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid weaponEnchantmentId)
         {
-            if (!GetBlueprint(weaponEnchantmentId, out BlueprintScriptableObject bp)) return;
+            if (!weaponEnchantmentId.GetBlueprint(out BlueprintScriptableObject bp)) return;
 
             foreach(var comp in bp.Components)
             {
@@ -593,8 +299,8 @@ public static class Main {
 
         static void ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid itemEquipmentUsableId, BlueprintAbilityGuid currentAbilityId, BlueprintAbilityGuid newAbilityId)
         {
-            if (!GetBlueprint(itemEquipmentUsableId, out BlueprintItemEquipmentUsable itemEquipmentUsable)) return;
-            if (!GetBlueprint(newAbilityId, out BlueprintAbility newAbility)) return;
+            if (!itemEquipmentUsableId.GetBlueprint(out BlueprintItemEquipmentUsable itemEquipmentUsable)) return;
+            if (!newAbilityId.GetBlueprint(out BlueprintAbility newAbility)) return;
 
             if(itemEquipmentUsable.Ability != null && itemEquipmentUsable.Ability.AssetGuid == currentAbilityId.guid)
             {
@@ -604,7 +310,7 @@ public static class Main {
 
         static void ReplaceCheckSkillType(BlueprintCheckGuid checkId, StatType currentStat, StatType newStat)
         {
-            if (!GetBlueprint(checkId, out BlueprintCheck check)) return;
+            if (!checkId.GetBlueprint(out BlueprintCheck check)) return;
 
             if(check.Type == currentStat)
             {
@@ -614,42 +320,53 @@ public static class Main {
 
         static void AddWeaponEnchantment(BlueprintItemWeaponGuid weaponId, BlueprintWeaponEnchantmentGuid weaponEnchantmentId)
         {
-            if(!GetBlueprint(weaponId, out BlueprintItemWeapon weapon)) return;
-            if (!GetBlueprint(weaponEnchantmentId, out BlueprintWeaponEnchantment enchantment)) return;
+            if(!weaponId.GetBlueprint(out BlueprintItemWeapon weapon)) return;
+            if(!weaponEnchantmentId.GetBlueprint(out BlueprintWeaponEnchantment enchantment)) return;
 
             weapon.Enchantments.Add(enchantment);
         }
 
-        static void Postfix()
+        static void SetWeaponTypeLight(BlueprintWeaponTypeGuid weaponTypeId, bool light)
+        {
+            if (!GetBlueprint(weaponTypeId, out BlueprintWeaponType weaponType)) return;
+
+            weaponType.m_IsLight = light;
+        }
+
+        [HarmonyPostfix]
+        public static void BlueprintPatch()
         {
             if (loaded) return;
             loaded = true;
 
             // Blight Druid Darkness Domain's Moonfire damage scaling
-            AddAbilityDamageDiceRankClass(DarknessDomainGreaterAbility, DruidClass);
+            AddAbilityDamageDiceRankClass(BlueprintAbilityGuid.DarknessDomainGreaterAbility, BlueprintCharacterClassGuid.Druid);
 
             // Irlene "Relations rank 3" tier 3 gift
-            ReplaceArtisan(IrleneGiftCue3, Woodmaster, ShadyTrader);
+            ReplaceArtisan(BlueprintCueGuid.IrleneGiftCue3, BlueprintKingdomArtisanGuid.Woodmaster, BlueprintKingdomArtisanGuid.ShadyTrader);
 
             // 'Datura' weapon attack buff
-            ReplaceAttackRollTriggerToWeaponTrigger(SoporiferousEnchantment, WaitForAttackResolve: true); // The weapon attack automatically removes the sleep
-            SetContextSetAbilityParamsDC(SoporiferousEnchantment, 16); // DC is 11 by default, raise it to 16 like in the description
-            AddWeaponEnchantment(SoporiferousSecondItem, SoporiferousEnchantment);
+            ReplaceAttackRollTriggerToWeaponTrigger(BlueprintWeaponEnchantmentGuid.Soporiferous, WaitForAttackResolve: true); // The weapon attack automatically removes the sleep
+            SetContextSetAbilityParamsDC(BlueprintWeaponEnchantmentGuid.Soporiferous, 16); // DC is 11 by default, raise it to 16 like in the description
+            AddWeaponEnchantment(BlueprintItemWeaponGuid.SoporiferousSecond, BlueprintWeaponEnchantmentGuid.Soporiferous);
 
             // Bane of the Living "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
-            FlipWeaponConditionAndOr(BaneLivingEnchantment);
+            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
 
             // Nature's Wrath trident "Outsider AND Aberration ..." instead of OR
             // Fix "Electricity Vulnerability" debuff to apply to target instead of initiator
-            FlipWeaponConditionAndOr(NaturesWrathEnchantment);
-            ReplaceWeaponBuffOnAttackToWeaponTrigger(NaturesWrathEnchantment);
+            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.NaturesWrath);
+            ReplaceWeaponBuffOnAttackToWeaponTrigger(BlueprintWeaponEnchantmentGuid.NaturesWrath);
 
             // Scroll of Summon Nature's Ally V (Single) would Summon Monster V (Single) instead
-            ReplaceUsableAbility(ScrollSummonNaturesAllyVSingle, SummonMonsterVSingle, SummonNaturesAllyVSingle);
+            ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle, BlueprintAbilityGuid.SummonMonsterVSingle, BlueprintAbilityGuid.SummonNaturesAllyVSingle);
 
             // Shrewish Gulch Last Stage "Two Actions" and "Three Actions" checks
-            ReplaceCheckSkillType(ShrewishGulchLastStageTwoActions, StatType.SkillLoreNature, StatType.SkillAthletics);
-            ReplaceCheckSkillType(ShrewishGulchLastStageThreeActions, StatType.SkillLoreNature, StatType.SkillAthletics);
+            ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageTwoActions, StatType.SkillLoreNature, StatType.SkillAthletics);
+            ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageThreeActions, StatType.SkillLoreNature, StatType.SkillAthletics);
+
+            // Make Darts light weapons (like in tabletop)
+            SetWeaponTypeLight(BlueprintWeaponTypeGuid.Dart, light: true);
         }
     }
 }
