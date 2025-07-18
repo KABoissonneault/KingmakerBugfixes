@@ -253,6 +253,9 @@ class BlueprintBuffGuid : BlueprintFactGuid
 
         return buff != null;
     }
+
+    public static readonly BlueprintBuffGuid MagicalVestmentArmor = new BlueprintBuffGuid("9e265139cf6c07c4fb8298cb8b646de9");
+    public static readonly BlueprintBuffGuid MagicalVestmentShield = new BlueprintBuffGuid("2e8446f820936a44f951b50d70a82b16");
 }
 
 class BlueprintItemGuid : BlueprintObjectGuid

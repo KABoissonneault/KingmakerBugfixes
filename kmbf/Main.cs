@@ -10,7 +10,6 @@ using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Actions;
-using Kingmaker.Kingdom.Artisans;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using UnityEngine;
@@ -20,6 +19,8 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Enums;
 
 namespace kmbf;
 
@@ -333,6 +334,17 @@ public static class Main {
             weaponType.m_IsLight = light;
         }
 
+        static void ChangeAddStatBonusScaledDescriptor(BlueprintObjectGuid bpId, ModifierDescriptor expectedDescriptor, ModifierDescriptor newDescriptor)
+        {
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
+
+            var statBonusComponent = bp.Components.FirstOrDefault(c => c is AddStatBonusScaled) as AddStatBonusScaled;
+            if(statBonusComponent.Descriptor == expectedDescriptor)
+            {
+                statBonusComponent.Descriptor = newDescriptor;
+            }
+        }
+
         [HarmonyPostfix]
         public static void BlueprintPatch()
         {
@@ -367,6 +379,9 @@ public static class Main {
 
             // Make Darts light weapons (like in tabletop)
             SetWeaponTypeLight(BlueprintWeaponTypeGuid.Dart, light: true);
+
+            // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
+            ChangeAddStatBonusScaledDescriptor(BlueprintBuffGuid.MagicalVestmentShield, ModifierDescriptor.Shield, ModifierDescriptor.ShieldEnhancement);
         }
     }
 
