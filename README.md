@@ -15,6 +15,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Bane of the Living being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
+- Fixed Freedom of Movement's Immunity to Grapple
 
 ### Event
 
@@ -37,3 +38,4 @@ These are some known issues introduced by the mod. These are generally accepted 
 
 - Whiterock for bug reporting and investigation
 - silv7k for testing
+- hambeard and Micro for support
