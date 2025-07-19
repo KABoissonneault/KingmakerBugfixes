@@ -5,12 +5,12 @@
 namespace kmbf
 {
     [DrawFields(DrawFieldMask.Public)]
-    class BalanceSettings
+    public class BalanceSettings
     {
         public bool FixAreaOfEffectDoubleTrigger = true;
     }
 
-    internal class UMMSettings : UnityModManager.ModSettings, IDrawable
+    public class UMMSettings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Balance")] public BalanceSettings BalanceSettings = new BalanceSettings();
 
