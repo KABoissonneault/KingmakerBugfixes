@@ -4,10 +4,15 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.DialogSystem.Blueprints;
+using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Artisans;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Mechanics.Actions;
+using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.Utility;
 
 namespace kmbf;
 
@@ -403,22 +408,99 @@ class BlueprintWeaponTypeGuid : BlueprintObjectGuid
 
     }
 
-    public bool GetBlueprint(out BlueprintCheck check)
+    public bool GetBlueprint(out BlueprintWeaponType weaponType)
     {
         if (!cached)
         {
-            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintCheck>(guid);
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintWeaponType>(guid);
             if (cachedObject == null)
             {
-                Main.Log.Error($"Could not find Check blueprint with GUID '{guid}'");
+                Main.Log.Error($"Could not find Weapon Type blueprint with GUID '{guid}'");
             }
             cached = true;
         }
 
-        check = cachedObject as BlueprintCheck;
+        weaponType = cachedObject as BlueprintWeaponType;
 
-        return check != null;
+        return weaponType != null;
     }
 
     public static readonly BlueprintWeaponTypeGuid Dart = new BlueprintWeaponTypeGuid("f415ae950523a7843a74d7780dd551af");
+}
+
+static class BlueprintExtensions
+{
+    public static string GetDebugName(this BlueprintScriptableObject bp)
+    {
+        return $"Blueprint:{bp.AssetGuid}:{bp.name}";
+    }
+
+    public static string GetDebugName(this BlueprintAbility ability)
+    {
+        return $"BlueprintAbility:{ability.AssetGuid}:{ability.name}";
+    }
+
+    public static bool GetDamageRankConfig(this BlueprintAbility ability, out ContextRankConfig damageRankConfig)
+    {
+        damageRankConfig = ability.ComponentsArray
+            .Select(c => c as ContextRankConfig)
+            .Where(c => c != null && c.Type == Kingmaker.Enums.AbilityRankType.DamageDice)
+            .First();
+
+        if (damageRankConfig == null)
+        {
+            Main.Log.Error($"Could not find damage dice rank config in ability blueprint '{GetDebugName(ability)}'");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static T GetComponent<T>(this BlueprintScriptableObject bp) where T : BlueprintComponent
+    {
+        return (T)bp.Components.FirstOrDefault(c => c is T);
+    }
+
+    public static IEnumerable<GameAction> GetGameActionsRecursive(this ActionList actionList)
+    {
+        foreach (GameAction gameAction in actionList.Actions.EmptyIfNull())
+        {
+            yield return gameAction;
+
+            if (gameAction is Conditional)
+            {
+                var conditionalAction = (Conditional)gameAction;
+                foreach (GameAction trueAction in GetGameActionsRecursive(conditionalAction.IfTrue))
+                {
+                    yield return trueAction;
+                }
+
+                foreach (GameAction falseAction in GetGameActionsRecursive(conditionalAction.IfFalse))
+                {
+                    yield return falseAction;
+                }
+            }
+            else if (gameAction is ContextActionSavingThrow)
+            {
+                var savingThrowAction = (ContextActionSavingThrow)gameAction;
+                foreach (GameAction action in GetGameActionsRecursive(savingThrowAction.Actions))
+                {
+                    yield return action;
+                }
+            }
+            else if (gameAction is ContextActionConditionalSaved)
+            {
+                var conditionalAction = (ContextActionConditionalSaved)gameAction;
+                foreach (GameAction trueAction in GetGameActionsRecursive(conditionalAction.Succeed))
+                {
+                    yield return trueAction;
+                }
+
+                foreach (GameAction falseAction in GetGameActionsRecursive(conditionalAction.Failed))
+                {
+                    yield return falseAction;
+                }
+            }
+        }
+    }
 }
