@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Items;
 using Kingmaker.Items.Slots;
 using Kingmaker.UnitLogic;
@@ -177,6 +178,38 @@ namespace kmbf.Patch
             // Not sufficient for now, so not enabling it
             //foreach (var emptyHand in __instance.Body.AllEmptyHands)
             //    emptyHand?.TurnOff(force);
+        }
+    }
+
+    [HarmonyPatch(typeof(EmptyHandWeaponOverride), "OnTurnOn")]
+    static class EmptyHandWeaponOverride_TurnOn_Patch
+    {
+        static void SetBodyEmptyHandWeapon(UnitBody body, ItemEntityWeapon weapon)
+        {
+            if (!body.HandsAreEnabled)
+            {
+                Main.Log.Error("Hands are not enabled, can't set empty hand weapon");
+                return;
+            }
+
+            body.m_EmptyHandWeaponsStack = body.m_EmptyHandWeaponsStack ?? new List<ItemEntityWeapon>();
+            body.m_EmptyHandWeaponsStack.Add(body.m_EmptyHandWeapon);
+            body.m_EmptyHandWeapon = weapon;
+            body.m_EmptyHandWeapon.OnDidEquipped(body.Owner);
+        }
+
+        [HarmonyPrefix]
+        public static bool TurnOn(EmptyHandWeaponOverride __instance)
+        {
+            if (__instance.m_Weapon != null)
+            {
+                SetBodyEmptyHandWeapon(__instance.Owner.Body, __instance.m_Weapon);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
