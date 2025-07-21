@@ -34,8 +34,13 @@ These are some known issues introduced by the mod. These are generally accepted 
 
 - Successful Datura Sleep procs (Saving Throw fail) will not show above the target, only in logs
 
+## Contributors
+
+Contributions are welcome! Consider taking a look at the [wiki page for issues](github.com/KABoissonneault/KingmakerBugfixes/wiki/Issues-to-fix) and sending a pull request.
+
 ## Acknowledgement
 
 - Whiterock for bug reporting and investigation
 - silv7k for testing
 - hambeard and Micro for support
+- Vek17 for letting me port Wrath of the Righteous "Tabletop Tweaks" fixes back to Kingmaker
