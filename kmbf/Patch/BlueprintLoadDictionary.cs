@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -245,6 +246,20 @@ namespace kmbf.Patch
             }
         }
 
+        static void RemoveSpellDescriptor(BlueprintObjectGuid bpId, SpellDescriptor descriptor)
+        {
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
+
+            var spellDescriptorComponent = bp.GetComponent<SpellDescriptorComponent>();
+            if(spellDescriptorComponent == null)
+            {
+                Main.Log.Error($"Could not find Spell Descriptor Component on Blueprint {bp.GetDebugName()}'");
+                return;
+            }
+
+            spellDescriptorComponent.Descriptor &= ~descriptor;
+        }
+
         [HarmonyPostfix]
         public static void BlueprintPatch()
         {
@@ -282,6 +297,12 @@ namespace kmbf.Patch
 
             // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
             ChangeAddStatBonusScaledDescriptor(BlueprintBuffGuid.MagicalVestmentShield, ModifierDescriptor.Shield, ModifierDescriptor.ShieldEnhancement);
+
+            // Nauseated buff: remove Poison descriptor
+            if(Main.UMMSettings.BalanceSettings.FixNauseatedPoisonDescriptor)
+            {
+                RemoveSpellDescriptor(BlueprintBuffGuid.Nauseated, SpellDescriptor.Poison);
+            }
         }
     }
 }
