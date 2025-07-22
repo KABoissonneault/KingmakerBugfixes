@@ -2,6 +2,7 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -12,6 +13,8 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Kingdom.Actions;
+using Kingmaker.Kingdom.Blueprints;
+using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -260,6 +263,32 @@ namespace kmbf.Patch
             spellDescriptorComponent.Descriptor &= ~descriptor;
         }
 
+        static void AddEventResultBuff(BlueprintObjectGuid bpId, BlueprintBuffGuid buffId)
+        {
+            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
+
+            var finalResults = bp.GetComponent<EventFinalResults>();
+            if (finalResults == null)
+            {
+                Main.Log.Error($"Could not find Event Final Results Component on Blueprint {bp.GetDebugName()}'");
+                return;
+            }
+        }
+
+        static void SetDisplayName(BlueprintUnitFactGuid factId, LocalizedString displayName)
+        {
+            if (!factId.GetBlueprint(out BlueprintUnitFact fact)) return;
+
+            fact.m_DisplayName = displayName;
+        }
+
+        static void SetDescription(BlueprintUnitFactGuid factId, LocalizedString description)
+        {
+            if (!factId.GetBlueprint(out BlueprintUnitFact fact)) return;
+
+            fact.m_Description = description;
+        }
+
         [HarmonyPostfix]
         public static void BlueprintPatch()
         {
@@ -303,6 +332,10 @@ namespace kmbf.Patch
             {
                 RemoveSpellDescriptor(BlueprintBuffGuid.Nauseated, SpellDescriptor.Poison);
             }
+
+            // Ooze Spit info
+            SetDisplayName(BlueprintAbilityGuid.MimicOozeSpit, KMLocalizedStrings.Spit);
+            SetDescription(BlueprintAbilityGuid.MimicOozeSpit, KMBFLocalizedStrings.OozeSpitDescription);
         }
     }
 }
