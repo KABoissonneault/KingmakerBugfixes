@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
@@ -8,6 +9,7 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Artisans;
+using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -60,6 +62,23 @@ class BlueprintUnitFactGuid : BlueprintFactGuid
         : base(guid)
     {
 
+    }
+
+    public bool GetBlueprint(out BlueprintUnitFact fact)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintUnitFact>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Unit Fact blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        fact = cachedObject as BlueprintUnitFact;
+
+        return fact != null;
     }
 }
 
@@ -263,7 +282,15 @@ class BlueprintBuffGuid : BlueprintFactGuid
 
     public static readonly BlueprintBuffGuid MagicalVestmentArmor = new BlueprintBuffGuid("9e265139cf6c07c4fb8298cb8b646de9");
     public static readonly BlueprintBuffGuid MagicalVestmentShield = new BlueprintBuffGuid("2e8446f820936a44f951b50d70a82b16");
+
     public static readonly BlueprintBuffGuid Nauseated = new BlueprintBuffGuid("956331dba5125ef48afe41875a00ca0e");
+
+    public static readonly BlueprintBuffGuid DebilitatingInjuryBewilderedActive = new BlueprintBuffGuid("116ee72b2149f4d44a330296a7e42d13");
+    public static readonly BlueprintBuffGuid DebilitatingInjuryBewilderedEffect = new BlueprintBuffGuid("22b1d98502050cb4cbdb3679ac53115e");
+    public static readonly BlueprintBuffGuid DebilitatingInjuryDisorientedActive = new BlueprintBuffGuid("6339eac5bdcef1747ac46885d2cf4e25");
+    public static readonly BlueprintBuffGuid DebilitatingInjuryDisorientedEffect = new BlueprintBuffGuid("1f1e42f8c06d7dc4bb70cc12c73dfb38");
+    public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedActive = new BlueprintBuffGuid("cc9a43f5157309646b23a0a690fee84b");
+    public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedEffect = new BlueprintBuffGuid("5bfefc22a68e736488b0c309d9c1c1d4");
 }
 
 class BlueprintItemGuid : BlueprintObjectGuid
@@ -429,6 +456,62 @@ class BlueprintWeaponTypeGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintWeaponTypeGuid Dart = new BlueprintWeaponTypeGuid("f415ae950523a7843a74d7780dd551af");
+}
+
+class BlueprintFeatureGuid : BlueprintUnitFactGuid
+{
+    public BlueprintFeatureGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintFeature feature)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintFeature>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Feature blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        feature = cachedObject as BlueprintFeature;
+
+        return feature != null;
+    }
+
+    public static readonly BlueprintFeatureGuid DoubleDebilitation = new BlueprintFeatureGuid("dd699394df0ef8847abba26038333f02");
+}
+
+class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
+{
+    public BlueprintKingdomUpgradeGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintKingdomUpgrade kingdomUpgrade)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintKingdomUpgrade>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Upgrade blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        kingdomUpgrade = cachedObject as BlueprintKingdomUpgrade;
+
+        return kingdomUpgrade != null;
+    }
+
+    public static readonly BlueprintKingdomUpgradeGuid ItsAMagicalPlace = new BlueprintKingdomUpgradeGuid("f9e28dd6f77a0b5468b2325b91c4195c");
 }
 
 static class BlueprintExtensions
