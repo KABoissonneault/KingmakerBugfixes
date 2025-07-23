@@ -91,6 +91,8 @@ class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
     public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new BlueprintAbilityGuid("0964bf88b582bed41b74e79596c4f6d9");
     public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new BlueprintAbilityGuid("28ea1b2e0c4a9094da208b4c186f5e4f");
+
+    public static readonly BlueprintAbilityGuid MimicOozeSpit = new BlueprintAbilityGuid("3ea0add618aab444bb5a4e2701a3ee4b");
 }
 
 class BlueprintCharacterClassGuid : BlueprintObjectGuid

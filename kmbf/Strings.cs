@@ -26,6 +26,6 @@ namespace kmbf
             return result;
         }
 
-        public static LocalizedString OozeSpitDescription = CreateString(CreateKey("ooze-spit-description"), "Ranged touch attack which deals Acid damage and may cause Nauseated");
+        public static LocalizedString OozeSpitDescription = CreateString(CreateKey("ooze-spit-description"), "Ranged touch attack which deals Acid damage and may cause Nauseated.");
     }
 }
