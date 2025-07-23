@@ -49,7 +49,7 @@ These are some known issues introduced by the mod. These are generally accepted 
 
 ## Contributors
 
-Contributions are welcome! Consider taking a look at the [wiki page for issues](github.com/KABoissonneault/KingmakerBugfixes/wiki/Issues-to-fix) and sending a pull request.
+Contributions are welcome! Consider taking a look at the [wiki page for issues](https://www.github.com/KABoissonneault/KingmakerBugfixes/wiki/Issues-to-fix) and sending a pull request.
 
 ## Acknowledgement
 
