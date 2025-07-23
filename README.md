@@ -8,6 +8,11 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 ## Fixes
 
+### Core
+- [Opt-out setting] "Area of Effect" with UnitEnter and Round events (ex: Stinking Cloud) do not double trigger on cast
+- Polymorphed characters now preserve their natural weapon enchantments (ex: Magic Fang) through save and load
+- Feral Mutagen characters now preserve their natural weapon enchantments (ex: Magic Fang) through save. Unfortunately, they still lose it on load
+
 ### Ability fix
 
 - Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
@@ -16,11 +21,18 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 - Fixed Freedom of Movement's Immunity to Grapple
+- "Magic Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
+- [Opt-out setting] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
 
 ### Event
 
 - Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
+
+### Text and UI
+
+- Saving Throw "overtips" show "Roll vs Needed Roll" instead of "Roll vs DC" in Turn-Based mode, like attack rolls
+- Added missing Name and Description for Mimic Ooze "Spit" ability
 
 ### Changes
 
@@ -33,6 +45,7 @@ Not quite "fixes", but should be a universal improvement for everyone
 These are some known issues introduced by the mod. These are generally accepted as better than what the base game had, but worth acknowledging here
 
 - Successful Datura Sleep procs (Saving Throw fail) will not show above the target, only in logs
+- Feral Mutagen will lose weapon enchantments (ex: Magic Fang) when reloading a save that previously had such enchantments
 
 ## Contributors
 
