@@ -486,6 +486,11 @@ class BlueprintFeatureGuid : BlueprintUnitFactGuid
     }
 
     public static readonly BlueprintFeatureGuid DoubleDebilitation = new BlueprintFeatureGuid("dd699394df0ef8847abba26038333f02");
+
+    public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new BlueprintFeatureGuid("64f74b75ed0d1f8478de5245cf061bcc");
+    public static readonly BlueprintFeatureGuid EkunWolfDefensiveMaster = new BlueprintFeatureGuid("915616ab61446694dbd73c7d269ea184");
+    public static readonly BlueprintFeatureGuid EkunWolfOffensiveBuff = new BlueprintFeatureGuid("29b33987fae4f81448410007f8f9b902");
+    public static readonly BlueprintFeatureGuid EkunWolfDefensiveBuff = new BlueprintFeatureGuid("b6cb208baaff10542a8230f1b9f6b26d");
 }
 
 class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid

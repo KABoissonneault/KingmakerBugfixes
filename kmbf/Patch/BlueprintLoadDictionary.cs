@@ -306,6 +306,14 @@ namespace kmbf.Patch
             weaponType.m_DefaultNameText = defaultName;
         }
 
+        static void CopyComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId)
+        {
+            if (!sourceId.GetBlueprint(out BlueprintScriptableObject source)) return;
+            if (!destinationId.GetBlueprint(out BlueprintScriptableObject destination)) return;
+
+            destination.Components = source.Components;
+        }
+
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
         // This fix adds a Condition on the Double Debilitation feature, which if true, will check whether the target has *two* existing buffs
         // before removing them
@@ -388,6 +396,11 @@ namespace kmbf.Patch
             #endregion
 
             #region Buff
+
+            // The "Master" features are accidentally added to Dog by the dialogue. Might as well put the stat bonuses directly on it
+            // Plus the Offensive Master feature was accidentally giving the Defensive buff
+            CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfOffensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfOffensiveMaster);
+            CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfDefensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfDefensiveMaster);
 
             // Nauseated buff: remove Poison descriptor
             if (Main.UMMSettings.BalanceSettings.FixNauseatedPoisonDescriptor)
