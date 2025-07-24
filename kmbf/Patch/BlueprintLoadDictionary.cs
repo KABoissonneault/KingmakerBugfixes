@@ -314,6 +314,15 @@ namespace kmbf.Patch
             destination.Components = source.Components;
         }
 
+        static void CopySomeComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId, Predicate<BlueprintComponent> predicate)
+        {
+            if (!sourceId.GetBlueprint(out BlueprintScriptableObject source)) return;
+            if (!destinationId.GetBlueprint(out BlueprintScriptableObject destination)) return;
+
+            destination.Components = destination.Components.Where(c => !predicate(c))
+                .Concat(source.Components.Where(c => predicate(c))).ToArray();
+        }
+
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
         // This fix adds a Condition on the Double Debilitation feature, which if true, will check whether the target has *two* existing buffs
         // before removing them
@@ -385,6 +394,17 @@ namespace kmbf.Patch
 
             /// Rogue
             FixDoubleDebilitatingInjury();
+
+            /// Kineticist
+           
+            // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
+            // Copy the ContextRankConfigs from the Mud version
+            CopySomeComponents(sourceId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast
+                , destinationId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMetalBlast
+                , c => c is ContextRankConfig);
+            CopySomeComponents(sourceId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast
+                , destinationId: BlueprintAbilityAreaEffectGuid.DeadlyEarthRareMetalBlast
+                , c => c is ContextRankConfig);
 
             #endregion
 

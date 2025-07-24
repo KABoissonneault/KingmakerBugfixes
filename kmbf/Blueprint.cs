@@ -114,6 +114,36 @@ class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public static readonly BlueprintAbilityGuid MimicOozeSpit = new BlueprintAbilityGuid("3ea0add618aab444bb5a4e2701a3ee4b");
 }
 
+class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
+{
+    BlueprintAbilityAreaEffectGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintAbilityAreaEffect abilityArea)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintAbilityAreaEffect>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Ability Area Effect blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        abilityArea = cachedObject as BlueprintAbilityAreaEffect;
+
+        return abilityArea != null;
+    }
+
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMetalBlast = new BlueprintAbilityAreaEffectGuid("38a2979db34ad0f45a449e5eb174729f");
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthRareMetalBlast = new BlueprintAbilityAreaEffectGuid("267f19ba174b21e4d9baf30afd589068");
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMudBlast = new BlueprintAbilityAreaEffectGuid("0af604484b5fcbb41b328750797e3948");
+}
+
 class BlueprintCharacterClassGuid : BlueprintObjectGuid
 {
     public BlueprintCharacterClassGuid(string guid)
