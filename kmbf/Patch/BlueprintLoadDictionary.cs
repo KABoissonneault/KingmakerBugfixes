@@ -292,6 +292,20 @@ namespace kmbf.Patch
             fact.m_Description = description;
         }
 
+        static void SetTypeName(BlueprintWeaponTypeGuid weaponTypeId, LocalizedString typeName)
+        {
+            if (!weaponTypeId.GetBlueprint(out BlueprintWeaponType weaponType)) return;
+
+            weaponType.m_TypeNameText = typeName;
+        }
+
+        static void SetDefaultName(BlueprintWeaponTypeGuid weaponTypeId, LocalizedString defaultName)
+        {
+            if (!weaponTypeId.GetBlueprint(out BlueprintWeaponType weaponType)) return;
+
+            weaponType.m_DefaultNameText = defaultName;
+        }
+
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
         // This fix adds a Condition on the Double Debilitation feature, which if true, will check whether the target has *two* existing buffs
         // before removing them
@@ -429,18 +443,10 @@ namespace kmbf.Patch
             SetDisplayName(BlueprintAbilityGuid.MimicOozeSpit, KMLocalizedStrings.Spit);
             SetDescription(BlueprintAbilityGuid.MimicOozeSpit, KMBFLocalizedStrings.OozeSpitDescription);
 
-            #endregion
+            SetTypeName(BlueprintWeaponTypeGuid.GiantSlugTongue, KMBFLocalizedStrings.Tongue);
+            SetDefaultName(BlueprintWeaponTypeGuid.GiantSlugTongue, KMBFLocalizedStrings.Tongue);
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+            #endregion
         }
     }
 }

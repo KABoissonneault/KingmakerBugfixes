@@ -38,6 +38,11 @@
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" IncludeAssets="build; contentfiles" Version="0.4.2" PrivateAssets="all" />
 		<PackageReference Include="MicroUtils.HarmonyAnalyzers" IncludeAssets="runtime; build; native; contentfiles; analyzers" Version="*-*" PrivateAssets="all" />
 	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Localization\Strings_enGB.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 	<Target Name="GenerateCustomPropsFile" Condition="$(KingmakerInstallDir) == ''">
 		<Exec Command="findstr /C:&quot;[Manager] Mods path: &quot; &quot;$(KingmakerData)\output_log.txt&quot;" IgnoreExitCode="true" ConsoleToMSBuild="true">
 			<Output TaskParameter="ExitCode" PropertyName="ExitCode" />

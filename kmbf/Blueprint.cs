@@ -456,6 +456,8 @@ class BlueprintWeaponTypeGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintWeaponTypeGuid Dart = new BlueprintWeaponTypeGuid("f415ae950523a7843a74d7780dd551af");
+
+    public static readonly BlueprintWeaponTypeGuid GiantSlugTongue = new BlueprintWeaponTypeGuid("4957290cee0b59542808c65c77bfbee3");
 }
 
 class BlueprintFeatureGuid : BlueprintUnitFactGuid
