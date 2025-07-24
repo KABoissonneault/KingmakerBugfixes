@@ -45,11 +45,29 @@ Not quite "fixes", but should be a universal improvement for everyone
 These are some known issues introduced by the mod. These are generally accepted as better than what the base game had, but worth acknowledging here
 
 - Successful Datura Sleep procs (Saving Throw fail) will not show above the target, only in logs
+
+## Will Not Fix
+
+These are issues that have been investigated and have been determined to be too large to fix through Harmony patching. People are free to investigate alternative solutions, but otherwise, there's no use in requesting for these issues to be fixed.
+
 - Feral Mutagen will lose weapon enchantments (ex: Magic Fang) when reloading a save that previously had such enchantments
+- All items with "conditional" buffs to stats (ex: Bracers of Archery buffing attack and damage if you're using a bow) do not track "descriptors" like "Competence bonus"
 
 ## Contributors
 
-Contributions are welcome! Consider taking a look at the [wiki page for issues](https://www.github.com/KABoissonneault/KingmakerBugfixes/wiki/Issues-to-fix) and sending a pull request.
+Contributions are welcome! 
+
+Programmers: consider taking a look at the [Github wiki page for issues](https://www.github.com/KABoissonneault/KingmakerBugfixes/wiki/Issues-to-fix) and sending a pull request.
+
+For others, you can help by documenting issues on the [Pathfinder: Kingmaker Fandom wiki](https://pathfinderkingmaker.fandom.com/). The site has a bug documentation macro that looks like this:
+
+```
+{{bug||Relations 3, tier 3 reward is given from [[Kimo Tavon]] item list.|ver=2.1.7b|g=km|modfix=kmbf}}
+```
+
+`g=km` refers to a Kingmaker issue, and `modfix=kmbf` means this mod has fixed the issue. 
+
+Feel free to add all the issues you find on this page over there, or add the `modfix=kmbf` if already documented.
 
 ## Acknowledgement
 
