@@ -5,18 +5,12 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
-using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.DialogSystem.Blueprints;
-using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Artisans;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.UnitLogic.Mechanics.Actions;
-using Kingmaker.UnitLogic.Mechanics.Components;
-using Kingmaker.Utility;
-
-namespace kmbf;
+namespace kmbf.Blueprint;
 
 class BlueprintObjectGuid
 {
@@ -107,7 +101,10 @@ class BlueprintAbilityGuid : BlueprintUnitFactGuid
         return ability != null;
     }
 
+    public static readonly BlueprintAbilityGuid RaiseDead = new BlueprintAbilityGuid("a0fc99f0933d01643b2b8fe570caa4c5");
+
     public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
+
     public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new BlueprintAbilityGuid("0964bf88b582bed41b74e79596c4f6d9");
     public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new BlueprintAbilityGuid("28ea1b2e0c4a9094da208b4c186f5e4f");
 
@@ -549,81 +546,4 @@ class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintKingdomUpgradeGuid ItsAMagicalPlace = new BlueprintKingdomUpgradeGuid("f9e28dd6f77a0b5468b2325b91c4195c");
-}
-
-static class BlueprintExtensions
-{
-    public static string GetDebugName(this BlueprintScriptableObject bp)
-    {
-        return $"Blueprint:{bp.AssetGuid}:{bp.name}";
-    }
-
-    public static string GetDebugName(this BlueprintAbility ability)
-    {
-        return $"BlueprintAbility:{ability.AssetGuid}:{ability.name}";
-    }
-
-    public static bool GetDamageRankConfig(this BlueprintAbility ability, out ContextRankConfig damageRankConfig)
-    {
-        damageRankConfig = ability.ComponentsArray
-            .Select(c => c as ContextRankConfig)
-            .Where(c => c != null && c.Type == Kingmaker.Enums.AbilityRankType.DamageDice)
-            .First();
-
-        if (damageRankConfig == null)
-        {
-            Main.Log.Error($"Could not find damage dice rank config in ability blueprint '{GetDebugName(ability)}'");
-            return false;
-        }
-
-        return true;
-    }
-
-    public static T GetComponent<T>(this BlueprintScriptableObject bp) where T : BlueprintComponent
-    {
-        return (T)bp.Components.FirstOrDefault(c => c is T);
-    }
-
-    public static IEnumerable<GameAction> GetGameActionsRecursive(this ActionList actionList)
-    {
-        foreach (GameAction gameAction in actionList.Actions.EmptyIfNull())
-        {
-            yield return gameAction;
-
-            if (gameAction is Conditional)
-            {
-                var conditionalAction = (Conditional)gameAction;
-                foreach (GameAction trueAction in GetGameActionsRecursive(conditionalAction.IfTrue))
-                {
-                    yield return trueAction;
-                }
-
-                foreach (GameAction falseAction in GetGameActionsRecursive(conditionalAction.IfFalse))
-                {
-                    yield return falseAction;
-                }
-            }
-            else if (gameAction is ContextActionSavingThrow)
-            {
-                var savingThrowAction = (ContextActionSavingThrow)gameAction;
-                foreach (GameAction action in GetGameActionsRecursive(savingThrowAction.Actions))
-                {
-                    yield return action;
-                }
-            }
-            else if (gameAction is ContextActionConditionalSaved)
-            {
-                var conditionalAction = (ContextActionConditionalSaved)gameAction;
-                foreach (GameAction trueAction in GetGameActionsRecursive(conditionalAction.Succeed))
-                {
-                    yield return trueAction;
-                }
-
-                foreach (GameAction falseAction in GetGameActionsRecursive(conditionalAction.Failed))
-                {
-                    yield return falseAction;
-                }
-            }
-        }
-    }
 }

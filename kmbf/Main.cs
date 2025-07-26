@@ -4,7 +4,8 @@ using UnityModManagerNet;
 
 namespace kmbf;
 
-public static class Main {
+public static class Main 
+{
     internal static Harmony HarmonyInstance;
     internal static UnityModManager.ModEntry.ModLogger Log;
     internal static UMMSettings UMMSettings;
