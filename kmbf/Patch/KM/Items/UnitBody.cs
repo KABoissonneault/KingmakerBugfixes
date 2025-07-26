@@ -6,7 +6,7 @@ using Kingmaker.UnitLogic;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.Items
 {
     [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter)]
     static class UnitBody_CurrentHandsEquipmentSet_Patch

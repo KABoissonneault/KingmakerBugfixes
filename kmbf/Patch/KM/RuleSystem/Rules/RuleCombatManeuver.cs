@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.RuleSystem.Rules;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.RuleSystem.Rules
 {
     [HarmonyPatch(typeof(RuleCombatManeuver), nameof(RuleCombatManeuver.IsSuccessRoll))]
     static class RuleCombatManeuver_IsSuccessRoll_Patch

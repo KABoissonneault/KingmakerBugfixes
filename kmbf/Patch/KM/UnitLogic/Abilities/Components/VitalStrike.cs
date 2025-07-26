@@ -3,11 +3,10 @@ using Kingmaker.Controllers.Combat;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Items.Slots;
 using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.Utility;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.UnitLogic.Abilities.Components
 {
     // UnitEngagementExtension.GetThreatHand does not work with Ranged weapon, and therefore fails to resolve AbilityCustomMeleeAttack.Deliver for Vital Strike,
     // which should work on ranged weapons

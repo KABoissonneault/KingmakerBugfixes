@@ -3,7 +3,7 @@ using Kingmaker.UI;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.UI
 {
     [HarmonyPatch(typeof(BugReportCanvas), nameof(BugReportCanvas.OnEnable))]
     static class BugReportCanvas_OnEnable_Transpiler

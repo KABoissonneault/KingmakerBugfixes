@@ -5,7 +5,7 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace kmbf.Patch.Fact
+namespace kmbf.Patch.KM.Designers.Mechanics.Facts
 {
     // Add null check in WeaponParametersDamageBonus.OnEventAboutToTrigger(RuleCalculateDamage) on the access to component.Weapon
     // This would trigger on ranged spells with an AbilityDeliverProjectile component  (ex: DragonsBreathSilver)

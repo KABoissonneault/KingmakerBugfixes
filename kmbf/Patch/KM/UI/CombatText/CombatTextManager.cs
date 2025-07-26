@@ -1,13 +1,10 @@
 ﻿using HarmonyLib;
-using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
-using Kingmaker.RuleSystem.Rules.Damage;
-using Kingmaker.UI._ConsoleUI.Overtips;
 using Kingmaker.UI.CombatText;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.UI.CombatText
 {
     [HarmonyPatch(typeof(CombatTextManager), "OnEventDidTrigger", new[] { typeof(RuleSavingThrow) })]
     static class DisplayFix_CombatTextManager_SavingThrow_Patch

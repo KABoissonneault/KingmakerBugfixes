@@ -7,7 +7,7 @@ using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.Utility;
 using Kingmaker.View.MapObjects;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.EntitySystem.Entities
 {
     [HarmonyPatch(typeof(AreaEffectEntityData), MethodType.Constructor, new Type[]{
             typeof(AreaEffectView),
