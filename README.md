@@ -90,6 +90,10 @@ For others, you can help by documenting issues on the [Pathfinder: Kingmaker Fan
 
 Feel free to add all the issues you find on this page over there, or add the `modfix=kmbf` if already documented.
 
+### Localization
+
+The mod supports localization, usings a `String_<locale>.json` file under the Localization folder. If you can make one for a locale other than enGB, feel free to send it here (through Pull Request or other means).
+
 ## Acknowledgement
 
 - Whiterock for bug reporting and investigation
