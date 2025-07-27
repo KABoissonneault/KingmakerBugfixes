@@ -146,45 +146,49 @@ namespace kmbf.Patch
             if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect.GetBlueprint(out BlueprintBuff DisorientedEffect)) return;
             if (!BlueprintBuffGuid.DebilitatingInjuryHamperedEffect.GetBlueprint(out BlueprintBuff HamperedEffect)) return;
 
-            Conditional MakeConditional(BlueprintBuff[] otherBuffs, Conditional[] normalConditionals)
+            Conditional MakeConditional(BlueprintBuff[] otherActives, BlueprintBuff[] otherBuffs, Conditional[] normalConditionals)
             {
                 var featureCondition = ScriptableObject.CreateInstance<ContextConditionCasterHasFact>();
                 featureCondition.Fact = DoubleDebilitation;
 
                 // If the target has at least two of the "other injuries" from the caster, remove all the existing ones
-                var doubleDebilitationBuffsCondition = ScriptableObject.CreateInstance<ContextConditionHasBuffsFromCaster>();
-                doubleDebilitationBuffsCondition.Buffs = otherBuffs;
-                doubleDebilitationBuffsCondition.Count = 2;
-                doubleDebilitationBuffsCondition.CaptionName = "Debilitating Injury";
-
-                var doubleDebilitationAction = ScriptableObject.CreateInstance<Conditional>();
-                doubleDebilitationAction.ConditionsChecker = new ConditionsChecker() { Conditions = [doubleDebilitationBuffsCondition] };
-                // Take the ContextActionRemoveBuff actions from the normal conditionals (removes the other buffs)
-                doubleDebilitationAction.IfTrue = new ActionList() { Actions = [.. normalConditionals.Select(c => c.IfTrue.Actions.First(a => a is ContextActionRemoveBuff))] };
+                var doubleDebilitationAction = ConditionalConfigurator.New(
+                    ConditionsCheckerFactory.Single(
+                        ContextConditionHasBuffsFromCasterConfigurator.New("Debilitating Injury", otherBuffs, 2).Configure()
+                    ),
+                    ifTrue: ActionListFactory.From(
+                        ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator.New(buff: otherBuffs[0], active: otherActives[0]).Configure()
+                        , ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator.New(buff: otherBuffs[1], active: otherActives[1]).Configure()
+                    )
+                ).Configure();
 
                 // If user has Double Debilitation, use the new "Remove if two buffs". Else, use the current "Remove if any buff"
-                var featureConditional = ScriptableObject.CreateInstance<Conditional>();
-                featureConditional.ConditionsChecker = new ConditionsChecker() { Conditions = [featureCondition] };
-                featureConditional.IfTrue = new ActionList() { Actions = [doubleDebilitationAction] };
-                featureConditional.IfFalse = new ActionList() { Actions = normalConditionals };
 
-                return featureConditional;
+                return ConditionalConfigurator.New(
+                    ConditionsCheckerFactory.Single(featureCondition)
+                    , ifTrue: ActionListFactory.From(doubleDebilitationAction)
+                    , ifFalse: ActionListFactory.From(normalConditionals)
+                    ).Configure();
             }
 
-            void Fixup(BlueprintBuff active, BlueprintBuff[] otherBuffs)
+            void Fixup(BlueprintBuff active, BlueprintBuff[] otherActives, BlueprintBuff[] otherBuffs)
             {
                 var triggerComponent = active.GetComponent<AddInitiatorAttackRollTrigger>();
                 ActionList triggerActions = triggerComponent.Action;
                 Conditional[] conditionals = triggerActions.Actions.OfType<Conditional>().ToArray();
 
                 triggerActions.Actions = triggerActions.Actions.Where(a => !(a is Conditional))
-                    .AddItem(MakeConditional(otherBuffs, conditionals))
+                    .AddItem(MakeConditional(otherActives, otherBuffs, conditionals))
                     .ToArray();
             }
 
-            Fixup(BewilderedActive, [DisorientedEffect, HamperedEffect]);
-            Fixup(DisorientedActive, [HamperedEffect, BewilderedEffect]);
-            Fixup(HamperedActive, [DisorientedEffect, BewilderedEffect]);
+            Fixup(BewilderedActive, [DisorientedActive, HamperedActive], [DisorientedEffect, HamperedEffect]);
+            Fixup(DisorientedActive, [HamperedActive, BewilderedActive], [HamperedEffect, BewilderedEffect]);
+            Fixup(HamperedActive, [DisorientedActive, BewilderedActive], [DisorientedEffect, BewilderedEffect]);
+
+            BlueprintBuffConfigurator.From(HamperedEffect)
+                .SetIcon(HamperedActive.Icon)
+                .Configure();
         }
         
         // Raise Dead does not actually give two negative levels

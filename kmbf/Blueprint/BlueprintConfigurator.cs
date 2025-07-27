@@ -1,7 +1,10 @@
-﻿using Kingmaker.Blueprints.GameDifficulties;
+﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
@@ -9,7 +12,7 @@ using UnityEngine;
 
 namespace kmbf.Blueprint
 {
-    abstract class ObjectConfigurator<T, TBuilder> 
+    public abstract class ObjectConfigurator<T, TBuilder> 
         where T : ScriptableObject 
         where TBuilder : ObjectConfigurator<T, TBuilder>
     {
@@ -34,7 +37,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    abstract class ElementConfigurator<T, TBuilder> : ObjectConfigurator<T, ElementConfigurator<T, TBuilder>> 
+    public abstract class ElementConfigurator<T, TBuilder> : ObjectConfigurator<T, ElementConfigurator<T, TBuilder>> 
         where T : Element
         where TBuilder : ElementConfigurator<T, TBuilder>
     {
@@ -45,7 +48,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    abstract class ConditionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
+    public abstract class ConditionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
         where T : Condition
         where TBuilder : ConditionConfigurator<T, TBuilder>
     {
@@ -62,7 +65,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    abstract class ContextConditionConfigurator<T, TBuilder> : ConditionConfigurator<T, TBuilder>
+    public abstract class ContextConditionConfigurator<T, TBuilder> : ConditionConfigurator<T, TBuilder>
         where T : ContextCondition
         where TBuilder : ContextConditionConfigurator<T, TBuilder>
     {
@@ -73,7 +76,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    abstract class GameActionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
+    public abstract class GameActionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
         where T : GameAction
         where TBuilder : GameActionConfigurator<T, TBuilder>
     {
@@ -84,7 +87,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    abstract class ContextActionConfigurator<T, TBuilder> : GameActionConfigurator<T, TBuilder>
+    public abstract class ContextActionConfigurator<T, TBuilder> : GameActionConfigurator<T, TBuilder>
         where T : ContextAction
         where TBuilder : ContextActionConfigurator<T, TBuilder>
     {
@@ -95,7 +98,60 @@ namespace kmbf.Blueprint
         }
     }
 
-    class ContextConditionDifficultyHigherThanConfigurator : ContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
+    public abstract class BlueprintObjectConfigurator<T, TBuilder> : ObjectConfigurator<T, TBuilder>
+        where T : BlueprintScriptableObject
+        where TBuilder : BlueprintObjectConfigurator<T, TBuilder>
+    {
+        public BlueprintObjectConfigurator(T instance)
+            : base(instance)
+        {
+
+        }
+    }
+
+    public abstract class BlueprintFactConfigurator<T, TBuilder> : BlueprintObjectConfigurator<T, TBuilder>
+        where T : BlueprintFact
+        where TBuilder : BlueprintFactConfigurator<T, TBuilder>
+    {
+        public BlueprintFactConfigurator(T instance)
+            : base(instance)
+        {
+
+        }
+    }
+
+    public class BlueprintUnitFactConfigurator<T, TBuilder> : BlueprintFactConfigurator<T, TBuilder>
+        where T : BlueprintUnitFact
+        where TBuilder : BlueprintFactConfigurator<T, TBuilder>
+    {
+        public BlueprintUnitFactConfigurator(T instance)
+            : base(instance)
+        {
+
+        }
+
+        public TBuilder SetIcon(Sprite icon)
+        {
+            instance.m_Icon = icon;
+            return Self;
+        }
+    }
+
+    public class BlueprintBuffConfigurator : BlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffConfigurator>
+    {
+        public BlueprintBuffConfigurator(BlueprintBuff instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintBuffConfigurator From(BlueprintBuff instance)
+        {
+            return new(instance);
+        }
+    }
+
+    public class ContextConditionDifficultyHigherThanConfigurator : ContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
     {
         public ContextConditionDifficultyHigherThanConfigurator(ContextConditionDifficultyHigherThan instance)
             : base(instance)
@@ -123,7 +179,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    class ConditionalConfigurator : GameActionConfigurator<Conditional, ConditionalConfigurator>
+    public class ConditionalConfigurator : GameActionConfigurator<Conditional, ConditionalConfigurator>
     {
         public ConditionalConfigurator(Conditional instance)
             : base(instance)
@@ -159,7 +215,7 @@ namespace kmbf.Blueprint
         }
     }
 
-    class ContextActionDealDamageConfigurator : ContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
+    public class ContextActionDealDamageConfigurator : ContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
     {
         public ContextActionDealDamageConfigurator(ContextActionDealDamage instance)
             : base(instance)

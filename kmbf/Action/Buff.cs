@@ -5,6 +5,7 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
+using kmbf.Blueprint;
 
 namespace kmbf.Action
 {
@@ -35,6 +36,95 @@ namespace kmbf.Action
                 }
             }
             return false;
+        }
+    }
+
+    public class ContextConditionHasBuffsFromCasterConfigurator : ContextConditionConfigurator<ContextConditionHasBuffsFromCaster, ContextConditionHasBuffsFromCasterConfigurator>
+    {
+        public ContextConditionHasBuffsFromCasterConfigurator(ContextConditionHasBuffsFromCaster instance)
+            : base(instance)
+        {
+
+        }
+
+        public static ContextConditionHasBuffsFromCasterConfigurator New(string captionName, BlueprintBuff[] buffs, int count)
+        {
+            ContextConditionHasBuffsFromCaster instance = CreateInstance();
+            instance.CaptionName = captionName;
+            instance.Buffs = buffs;
+            instance.Count = count;
+            return new ContextConditionHasBuffsFromCasterConfigurator(instance);
+        }
+        
+        public ContextConditionHasBuffsFromCasterConfigurator SetCaptionName(string captionName)
+        {
+            instance.CaptionName = captionName;
+            return this;
+        }
+
+        public ContextConditionHasBuffsFromCasterConfigurator SetBuffs(BlueprintBuff[] buffs)
+        {
+            instance.Buffs = buffs;
+            return this;
+        }
+
+        public ContextConditionHasBuffsFromCasterConfigurator SetCount(int count)
+        {
+            instance.Count = count;
+            return this;
+        }
+    }
+
+    public class ContextActionRemoveTargetBuffIfInitiatorNotActive : ContextAction
+    {
+        public BlueprintBuff Buff;
+        public BlueprintBuff Active;
+
+        public override string GetCaption()
+        {
+            return $"Remove Target Buff \"{Buff.Name}\" If Not Caster Active \"{Active.Name}\"";
+        }
+
+        public override void RunAction()
+        {
+            MechanicsContext mechanicsContext = ElementsContext.GetData<MechanicsContext.Data>()?.Context;
+            if (mechanicsContext == null)
+            {
+                Main.Log.Error("Unable to remove buff: no context found");
+            }
+            else if (!mechanicsContext.MaybeCaster.Buffs.HasFact(Active))
+            {                
+                Target.Unit.Buffs.RemoveFact(Buff);
+            }
+        }
+    }
+
+    public class ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator : ContextActionConfigurator<ContextActionRemoveTargetBuffIfInitiatorNotActive, ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator>
+    {
+        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator(ContextActionRemoveTargetBuffIfInitiatorNotActive instance)
+            : base(instance)
+        {
+
+        }
+
+        public static ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator New(BlueprintBuff buff, BlueprintBuff active)
+        {
+            ContextActionRemoveTargetBuffIfInitiatorNotActive instance = CreateInstance();
+            instance.Buff = buff;
+            instance.Active = active;
+            return new ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator(instance);
+        }
+
+        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator SetBuff(BlueprintBuff buff)
+        {
+            instance.Buff = buff;
+            return this;
+        }
+
+        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator SetActive(BlueprintBuff active)
+        {
+            instance.Active = active;
+            return this;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using Kingmaker.RuleSystem;
+﻿using Kingmaker.ElementsSystem;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Mechanics;
+using Kingmaker.UnitLogic.Mechanics.Conditions;
 
 namespace kmbf.Blueprint
 {
@@ -23,6 +25,27 @@ namespace kmbf.Blueprint
         public static ContextValue Constant(int value)
         {
             return new() { ValueType = ContextValueType.Simple, Value = value };
+        }
+    }
+
+    public static class ConditionsCheckerFactory
+    {
+        public static ConditionsChecker Single(Condition condition)
+        {
+            return new() { Conditions = [condition] };
+        }
+    }
+
+    public static class ActionListFactory
+    {
+        public static ActionList Enumerable(IEnumerable<GameAction> actions)
+        {
+            return new() { Actions = actions.ToArray() };
+        }
+
+        public static ActionList From(params GameAction[] actions)
+        {
+            return new() { Actions = actions };
         }
     }
 }
