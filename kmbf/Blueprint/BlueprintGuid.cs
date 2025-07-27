@@ -12,7 +12,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 namespace kmbf.Blueprint;
 
-class BlueprintObjectGuid
+public class BlueprintObjectGuid
 {
     public string guid;
 
@@ -41,7 +41,7 @@ class BlueprintObjectGuid
     }
 }
 
-class BlueprintFactGuid : BlueprintObjectGuid
+public class BlueprintFactGuid : BlueprintObjectGuid
 {
     public BlueprintFactGuid(string guid)
         : base(guid)
@@ -50,7 +50,7 @@ class BlueprintFactGuid : BlueprintObjectGuid
     }
 }
 
-class BlueprintUnitFactGuid : BlueprintFactGuid
+public class BlueprintUnitFactGuid : BlueprintFactGuid
 {
     public BlueprintUnitFactGuid(string guid)
         : base(guid)
@@ -76,7 +76,7 @@ class BlueprintUnitFactGuid : BlueprintFactGuid
     }
 }
 
-class BlueprintAbilityGuid : BlueprintUnitFactGuid
+public class BlueprintAbilityGuid : BlueprintUnitFactGuid
 {
     public BlueprintAbilityGuid(string guid)
         : base(guid)
@@ -102,6 +102,7 @@ class BlueprintAbilityGuid : BlueprintUnitFactGuid
     }
 
     public static readonly BlueprintAbilityGuid RaiseDead = new BlueprintAbilityGuid("a0fc99f0933d01643b2b8fe570caa4c5");
+    public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new BlueprintAbilityGuid("cbd03c874e39e6c4795fe0093544f2a2");
 
     public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
 
@@ -111,7 +112,7 @@ class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public static readonly BlueprintAbilityGuid MimicOozeSpit = new BlueprintAbilityGuid("3ea0add618aab444bb5a4e2701a3ee4b");
 }
 
-class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
+public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
 {
     BlueprintAbilityAreaEffectGuid(string guid)
         : base(guid)

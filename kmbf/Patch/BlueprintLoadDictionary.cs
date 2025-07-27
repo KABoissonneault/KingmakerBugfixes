@@ -8,6 +8,7 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -15,6 +16,7 @@ using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
 using kmbf.Blueprint;
+using kmbf.Blueprint.Configurator;
 using UnityEngine;
 
 namespace kmbf.Patch
@@ -63,6 +65,7 @@ namespace kmbf.Patch
             ChangeAddStatBonusScaledDescriptor(BlueprintBuffGuid.MagicalVestmentShield, ModifierDescriptor.Shield, ModifierDescriptor.ShieldEnhancement);
 
             FixRaiseDead();
+            FixBreathOfLife();
 
             #endregion
 
@@ -213,7 +216,7 @@ namespace kmbf.Patch
                 .Configure();
 
             var dealDamageAction = ContextActionDealDamageConfigurator
-                .NewEnergyDrain(EnergyDrainType.Permanent, ContextDiceFactory.BonusConstant(2))
+                .NewPermanentEnergyDrain(ContextDiceFactory.BonusConstant(2))
                 .Configure();
 
             Conditional difficultyConditional = ConditionalConfigurator.New(
@@ -223,6 +226,38 @@ namespace kmbf.Patch
 
             // Put the drain first, resurrection makes the unit untargetable
             runAction.Actions.Actions = [difficultyConditional, .. runAction.Actions.Actions];
+        }
+
+        static void FixBreathOfLife()
+        {
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreathOfLifeTouch)
+                .SetFullRoundAction(false)
+                .EditComponent<AbilityEffectRunAction>(c =>
+                {
+                    var aliveConditional = c.Actions.GetGameAction<Conditional>();
+                    if(aliveConditional != null)
+                    {
+                        var isPartyMemberConditional = aliveConditional.IfFalse.GetGameAction<Conditional>();
+                        if(isPartyMemberConditional != null)
+                        {
+
+                            var difficultyConditional = ConditionalConfigurator.New(
+                                ConditionsCheckerFactory.Single(
+                                    ContextConditionDifficultyHigherThanConfigurator.New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
+                                        .SetCheckOnlyForMonsterCaster(false)
+                                        .Configure()
+                                ),
+                                ifTrue: ActionListFactory.From(ContextActionDealDamageConfigurator
+                                    .NewTemporaryEnergyDrain(ContextDiceFactory.BonusConstant(1), ContextDurationFactory.ConstantDays(1))
+                                    .Configure()))
+                                .Configure();
+
+                            isPartyMemberConditional.IfTrue.Actions = [difficultyConditional, .. isPartyMemberConditional.IfTrue.Actions];
+                        }
+                    }
+                })
+                .Configure();
+
         }
     }
 }

@@ -4,13 +4,14 @@ using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using UnityEngine;
 
-namespace kmbf.Blueprint
+namespace kmbf.Blueprint.Configurator
 {
     public abstract class ObjectConfigurator<T, TBuilder> 
         where T : ScriptableObject 
@@ -37,67 +38,6 @@ namespace kmbf.Blueprint
         }
     }
 
-    public abstract class ElementConfigurator<T, TBuilder> : ObjectConfigurator<T, ElementConfigurator<T, TBuilder>> 
-        where T : Element
-        where TBuilder : ElementConfigurator<T, TBuilder>
-    {
-        public ElementConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-    }
-
-    public abstract class ConditionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
-        where T : Condition
-        where TBuilder : ConditionConfigurator<T, TBuilder>
-    {
-        public ConditionConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-
-        public ConditionConfigurator<T, TBuilder> SetNot(bool Not)
-        {
-            instance.Not = Not;
-            return this;
-        }
-    }
-
-    public abstract class ContextConditionConfigurator<T, TBuilder> : ConditionConfigurator<T, TBuilder>
-        where T : ContextCondition
-        where TBuilder : ContextConditionConfigurator<T, TBuilder>
-    {
-        public ContextConditionConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-    }
-
-    public abstract class GameActionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
-        where T : GameAction
-        where TBuilder : GameActionConfigurator<T, TBuilder>
-    {
-        public GameActionConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-    }
-
-    public abstract class ContextActionConfigurator<T, TBuilder> : GameActionConfigurator<T, TBuilder>
-        where T : ContextAction
-        where TBuilder : ContextActionConfigurator<T, TBuilder>
-    {
-        public ContextActionConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-    }
-
     public abstract class BlueprintObjectConfigurator<T, TBuilder> : ObjectConfigurator<T, TBuilder>
         where T : BlueprintScriptableObject
         where TBuilder : BlueprintObjectConfigurator<T, TBuilder>
@@ -106,6 +46,18 @@ namespace kmbf.Blueprint
             : base(instance)
         {
 
+        }
+
+        public TBuilder EditComponent<C>(Action<C> action) where C : BlueprintComponent
+        {
+            if(instance != null)
+            {
+                C c = instance.GetComponent<C>();
+                if (c != null)
+                    action(c);
+            }
+
+            return Self;
         }
     }
 
@@ -120,6 +72,8 @@ namespace kmbf.Blueprint
         }
     }
 
+
+
     public class BlueprintUnitFactConfigurator<T, TBuilder> : BlueprintFactConfigurator<T, TBuilder>
         where T : BlueprintUnitFact
         where TBuilder : BlueprintFactConfigurator<T, TBuilder>
@@ -132,7 +86,8 @@ namespace kmbf.Blueprint
 
         public TBuilder SetIcon(Sprite icon)
         {
-            instance.m_Icon = icon;
+            if(instance != null)
+                instance.m_Icon = icon;
             return Self;
         }
     }
@@ -148,6 +103,30 @@ namespace kmbf.Blueprint
         public static BlueprintBuffConfigurator From(BlueprintBuff instance)
         {
             return new(instance);
+        }
+    }
+
+    public class BlueprintAbilityConfigurator : BlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityConfigurator>
+    {
+        public BlueprintAbilityConfigurator(BlueprintAbility instance)
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintAbilityConfigurator From(BlueprintAbilityGuid instanceId)
+        {
+            if (instanceId.GetBlueprint(out BlueprintAbility instance))
+                return new(instance);
+            else
+                return new(null);
+        }
+
+        public BlueprintAbilityConfigurator SetFullRoundAction(bool fullRoundAction)
+        {
+            if(instance)
+                instance.m_IsFullRoundAction = fullRoundAction;
+            return this;
         }
     }
 
@@ -231,12 +210,22 @@ namespace kmbf.Blueprint
             return new ContextActionDealDamageConfigurator(instance);
         }
 
-        public static ContextActionDealDamageConfigurator NewEnergyDrain(EnergyDrainType drainType, ContextDiceValue Value)
+        public static ContextActionDealDamageConfigurator NewPermanentEnergyDrain(ContextDiceValue Value)
         {
             ContextActionDealDamage instance = CreateInstance();
             instance.m_Type = ContextActionDealDamage­.Type.EnergyDrain;
-            instance.EnergyDrainType = drainType;
+            instance.EnergyDrainType = EnergyDrainType.Permanent;
             instance.Value = Value;
+            return new ContextActionDealDamageConfigurator(instance);
+        }
+
+        public static ContextActionDealDamageConfigurator NewTemporaryEnergyDrain(ContextDiceValue value, ContextDurationValue duration)
+        {
+            ContextActionDealDamage instance = CreateInstance();
+            instance.m_Type = ContextActionDealDamage­.Type.EnergyDrain;
+            instance.EnergyDrainType = EnergyDrainType.Temporary;
+            instance.Value = value;
+            instance.Duration = duration;
             return new ContextActionDealDamageConfigurator(instance);
         }
 

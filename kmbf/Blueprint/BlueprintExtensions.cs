@@ -36,6 +36,11 @@ namespace kmbf.Blueprint
             return true;
         }
 
+        public static T GetGameAction<T>(this ActionList actionList) where T : GameAction
+        {
+            return actionList.Actions.OfType<T>().FirstOrDefault();
+        }
+
         public static IEnumerable<GameAction> GetGameActionsRecursive(this ActionList actionList)
         {
             foreach (GameAction gameAction in actionList.Actions.EmptyIfNull())

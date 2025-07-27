@@ -5,7 +5,7 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
-using kmbf.Blueprint;
+using kmbf.Blueprint.Configurator;
 
 namespace kmbf.Action
 {

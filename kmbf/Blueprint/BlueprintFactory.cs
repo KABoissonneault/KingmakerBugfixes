@@ -16,15 +16,15 @@ namespace kmbf.Blueprint
         // 0d + value
         public static ContextDiceValue BonusConstant(int value)
         {
-            return Value(DiceType.Zero, diceCount: null, bonus: ContextValueFactory.Constant(value));
+            return Value(DiceType.Zero, diceCount: null, bonus: value);
         }
     }
 
-    public static class ContextValueFactory
+    public static class ContextDurationFactory
     {
-        public static ContextValue Constant(int value)
+        public static ContextDurationValue ConstantDays(int value)
         {
-            return new() { ValueType = ContextValueType.Simple, Value = value };
+            return new() { Rate = DurationRate.Days, DiceCountValue = 0, BonusValue = value };
         }
     }
 
