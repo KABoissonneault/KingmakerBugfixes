@@ -21,8 +21,10 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - "Magic Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
 - Fixed Freedom of Movement's Immunity to Grapple
 - Fixed Rogue "Double Debilitation" not applying two Debilitating Injuries
+- Fixed Hampering Injury debuff icon to match the active
 - Fixed Kineticist "Deadly Earth: Metal" (and Rare Metal) having half the damage scaling it should have
-- Fixed Raise Dead not draining 2 levels on difficulty Core and above (turn Enemy Stats Adjustment down to disable, like in Wrath)
+- Fixed Raise Dead not draining 2 levels on difficulty Core and above (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
+- Fixed Breath of Life not giving 1 temporary negative level when resurrected (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
 
 #### Feat & Traits
 
@@ -31,7 +33,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Item
 - Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described
-- Fixed Bane of the Living being a bane of all creatures (properly excludes Undead and Constructs)
+- [Opt-out setting] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 
