@@ -18,23 +18,31 @@ namespace kmbf.Patch.KM.UnitLogic.Abilities.Components
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Deliver_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            if(Main.RunsCallOfTheWild)
+            {
+                return instructions;
+            }
+
             MethodInfo UnitEngagementExtension_GetThreatHand = AccessTools.Method(typeof(UnitEngagementExtension), nameof(UnitEngagementExtension.GetThreatHand));
             MethodInfo Patch_GetWeaponSlot = AccessTools.Method(typeof(AbilityCustomMeleeAttack_Deliver_Patch), nameof(GetWeaponSlot));
+
+            List<CodeInstruction> newInstructions = new List<CodeInstruction>();
 
             foreach(CodeInstruction instruction in instructions)
             {
                 if (!instruction.Calls(UnitEngagementExtension_GetThreatHand))
                 {
-                    yield return instruction;
-                    continue;
+                    newInstructions.Add(instruction);
                 }
                 else
                 {
                     // Load the AbilityCustomMeleeAttack, then call GetWeaponSlot
-                    yield return new CodeInstruction(OpCodes.Ldloc_1, null);
-                    yield return new CodeInstruction(OpCodes.Call, Patch_GetWeaponSlot);
+                    newInstructions.Add(new CodeInstruction(OpCodes.Ldloc_1, null));
+                    newInstructions.Add(new CodeInstruction(OpCodes.Call, Patch_GetWeaponSlot));
                 }
             }
+
+            return newInstructions;
         }
 
         static WeaponSlot GetWeaponSlot(UnitEntityData attacker, AbilityCustomMeleeAttack customAbility)
