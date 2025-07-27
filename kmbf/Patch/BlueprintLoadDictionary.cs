@@ -93,8 +93,11 @@ namespace kmbf.Patch
             SetContextSetAbilityParamsDC(BlueprintWeaponEnchantmentGuid.Soporiferous, 16); // DC is 11 by default, raise it to 16 like in the description
             AddWeaponEnchantment(BlueprintItemWeaponGuid.SoporiferousSecond, BlueprintWeaponEnchantmentGuid.Soporiferous);
 
-            // Bane of the Living "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
-            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
+            // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
+            if (Main.UMMSettings.BalanceSettings.FixBaneLiving)
+            {
+                FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
+            }
 
             // Nature's Wrath trident "Outsider AND Aberration ..." instead of OR
             // Fix "Electricity Vulnerability" debuff to apply to target instead of initiator

@@ -9,6 +9,7 @@ namespace kmbf
     {
         public bool FixAreaOfEffectDoubleTrigger = true;
         public bool FixNauseatedPoisonDescriptor = true;
+        public bool FixBaneLiving = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable
