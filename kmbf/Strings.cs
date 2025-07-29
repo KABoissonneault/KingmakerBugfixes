@@ -73,7 +73,7 @@ namespace kmbf
 
     static class KMBFLocalizedStrings
     {        
-        private static LocalizedString CreateString(string key)
+        public static LocalizedString CreateString(string key)
         {
             return new LocalizedString() 
             {
@@ -83,6 +83,5 @@ namespace kmbf
 
         public static LocalizedString OozeSpitDescription = CreateString("ooze-spit-description");
         public static LocalizedString Tongue = CreateString("tongue");
-        public static LocalizedString GiantslugTongueDescription = CreateString("giant-slug-tongue-description");
     }
 }

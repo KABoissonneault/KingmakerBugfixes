@@ -1,5 +1,13 @@
 ﻿[
   {
+    "Key": "saves-fixes",
+    "Value": "Some fixes need to modify your current save to work. Use this button to apply them. Cannot be reverted - keep backups, load to an earlier save"
+  },
+  {
+    "Key": "apply-fixes",
+    "Value": "Apply fixes"
+  },
+  {
     "Key": "ooze-spit-description",
     "Value": "Ranged touch attack which deals Acid damage and may cause Nauseated."
   },

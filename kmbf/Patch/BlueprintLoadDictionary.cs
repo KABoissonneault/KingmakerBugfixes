@@ -7,7 +7,10 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.Kingdom;
+using Kingmaker.Kingdom.Actions;
 using Kingmaker.Kingdom.Blueprints;
+using Kingmaker.Kingdom.Buffs;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
@@ -135,6 +138,29 @@ namespace kmbf.Patch
                         kingdomRoot.Buildings = [.. kingdomRoot.Buildings, templeOfAbadar];
                     }
                 }
+            }
+
+            // Research of Candlemere gives a global buff to all adjacent regions, rather than give a single buff that applies to adjacent regions
+            if (Main.UMMSettings.BalanceSettings.FixCandlemereTowerResearch)
+            {
+                BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ResearchOftheCandlemere)
+                    .EditFirstResult(r =>
+                    {
+                        var addBuffAction = r.Actions.GetGameAction<KingdomActionAddBuff>();
+                        if (addBuffAction != null)
+                        {
+                            addBuffAction.CopyToAdjacentRegions = false;
+                        }
+                    })
+                    .Configure();
+
+                BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CandlemereTowerResearch)
+                    .EditComponent<KingdomEventModifier>(c =>
+                    {
+                        c.OnlyInRegion = true;
+                        c.IncludeAdjacent = true;
+                    })
+                    .Configure();
             }
 
             #endregion

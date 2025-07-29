@@ -1,6 +1,7 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using UnityEngine;
@@ -162,6 +163,68 @@ namespace kmbf.Blueprint.Configurator
         public static BlueprintFeatureConfigurator From(BlueprintFeatureGuid featureId)
         {
             if (featureId.GetBlueprint(out BlueprintFeature instance))
+                return new(instance);
+            else
+                return new(null);
+        }
+    }
+
+    public abstract class BaseBlueprintKingdomProjectConfigurator<T, TBuilder> : BaseBlueprintObjectConfigurator<T, TBuilder>
+        where T : BlueprintKingdomProject
+        where TBuilder : BaseBlueprintKingdomProjectConfigurator<T, TBuilder>
+    {
+        public BaseBlueprintKingdomProjectConfigurator(T instance)
+            : base(instance)
+        {
+
+        }
+
+        public TBuilder EditEventFinalResults(Action<EventFinalResults> action) => EditComponent(action);
+    }
+
+    public class BlueprintKingdomUpgradeConfigurator : BaseBlueprintKingdomProjectConfigurator<BlueprintKingdomUpgrade, BlueprintKingdomUpgradeConfigurator>
+    {
+        public BlueprintKingdomUpgradeConfigurator(BlueprintKingdomUpgrade instance)
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintKingdomUpgradeConfigurator From(BlueprintKingdomUpgradeGuid upgradeId)
+        {
+            if (upgradeId.GetBlueprint(out BlueprintKingdomUpgrade instance))
+                return new(instance);
+            else
+                return new(null);
+        }
+
+        public BlueprintKingdomUpgradeConfigurator EditFirstResult(Action<EventResult> action)
+        {
+            return EditEventFinalResults(c =>
+            {
+                if(c.Results.Length > 0)
+                {
+                    action(c.Results[0]);
+                }
+                else
+                {
+                    Main.Log.Error($"Missing result in EventFinalResults component for Blueprint {instance.GetDebugName()}");
+                }
+            });
+        }
+    }
+
+    public class BlueprintKingdomBuffConfigurator : BaseBlueprintFactConfigurator<BlueprintKingdomBuff, BlueprintKingdomBuffConfigurator>
+    {
+        public BlueprintKingdomBuffConfigurator(BlueprintKingdomBuff instance)
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintKingdomBuffConfigurator From(BlueprintKingdomBuffGuid buffId)
+        {
+            if (buffId.GetBlueprint(out BlueprintKingdomBuff instance))
                 return new(instance);
             else
                 return new(null);

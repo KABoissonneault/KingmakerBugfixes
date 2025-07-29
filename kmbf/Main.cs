@@ -1,5 +1,8 @@
 ﻿using HarmonyLib;
+using Kingmaker;
+using kmbf.Patch;
 using System.Reflection;
+using UnityEngine;
 using UnityModManagerNet;
 
 namespace kmbf;
@@ -35,6 +38,20 @@ public static class Main
     static void OnGUI(UnityModManager.ModEntry modEntry)
     {
         UMMSettings.Draw(modEntry);
+
+        if (Game.Instance.Player.ControllableCharacters.Any())
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(KMBFLocalizedStrings.CreateString("saves-fixes"));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(KMBFLocalizedStrings.CreateString("apply-fixes"), GUILayout.ExpandWidth(false), GUILayout.MinHeight(20.0f)))
+            {
+                SaveFixes.Apply();
+            }
+            GUILayout.EndHorizontal();
+        }
     }
 
     static void OnSaveGUI(UnityModManager.ModEntry modEntry)

@@ -550,6 +550,7 @@ public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintKingdomUpgradeGuid ItsAMagicalPlace = new BlueprintKingdomUpgradeGuid("f9e28dd6f77a0b5468b2325b91c4195c");
+    public static readonly BlueprintKingdomUpgradeGuid ResearchOftheCandlemere = new BlueprintKingdomUpgradeGuid("767fc35b0d514cd45a5aaf2ea8681cbb");
 }
 
 public class BlueprintKingdomRootGuid : BlueprintObjectGuid
@@ -606,4 +607,60 @@ public class BlueprintSettlementBuildingGuid : BlueprintFactGuid
     }
 
     public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
+}
+
+public class BlueprintKingdomBuffGuid : BlueprintFactGuid
+{
+    public BlueprintKingdomBuffGuid(string guid) 
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintKingdomBuff buff)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintKingdomBuff>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Buff blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        buff = cachedObject as BlueprintKingdomBuff;
+
+        return buff != null;
+    }
+
+    public static readonly BlueprintKingdomBuffGuid CandlemereTowerResearch = new("b92f2b91fe37f4f4e8000842069cf4a3");
+}
+
+public class BlueprintKingdomRegionGuid : BlueprintObjectGuid
+{
+    public BlueprintKingdomRegionGuid(string guid) 
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintRegion region)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintRegion>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Region blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        region = cachedObject as BlueprintRegion;
+
+        return region != null;
+    }
+
+    public static readonly BlueprintKingdomRegionGuid SouthNarlmarches = new("cd92c3a23b092584a95eb39f64225923");
 }
