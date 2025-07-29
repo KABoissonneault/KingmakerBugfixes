@@ -39,7 +39,7 @@ namespace kmbf.Action
         }
     }
 
-    public class ContextConditionHasBuffsFromCasterConfigurator : ContextConditionConfigurator<ContextConditionHasBuffsFromCaster, ContextConditionHasBuffsFromCasterConfigurator>
+    public class ContextConditionHasBuffsFromCasterConfigurator : BaseContextConditionConfigurator<ContextConditionHasBuffsFromCaster, ContextConditionHasBuffsFromCasterConfigurator>
     {
         public ContextConditionHasBuffsFromCasterConfigurator(ContextConditionHasBuffsFromCaster instance)
             : base(instance)
@@ -99,7 +99,7 @@ namespace kmbf.Action
         }
     }
 
-    public class ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator : ContextActionConfigurator<ContextActionRemoveTargetBuffIfInitiatorNotActive, ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator>
+    public class ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator : BaseContextActionConfigurator<ContextActionRemoveTargetBuffIfInitiatorNotActive, ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator>
     {
         public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator(ContextActionRemoveTargetBuffIfInitiatorNotActive instance)
             : base(instance)

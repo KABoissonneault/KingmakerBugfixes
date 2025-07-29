@@ -8,28 +8,28 @@ using Kingmaker.UnitLogic.Mechanics.Conditions;
 
 namespace kmbf.Blueprint.Configurator
 {
-    public abstract class ElementConfigurator<T, TBuilder> : ObjectConfigurator<T, ElementConfigurator<T, TBuilder>>
+    public abstract class BaseElementConfigurator<T, TBuilder> : BaseObjectConfigurator<T, TBuilder>
         where T : Element
-        where TBuilder : ElementConfigurator<T, TBuilder>
+        where TBuilder : BaseElementConfigurator<T, TBuilder>
     {
-        public ElementConfigurator(T instance)
+        public BaseElementConfigurator(T instance)
             : base(instance)
         {
 
         }
     }
 
-    public abstract class ConditionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
+    public abstract class BaseConditionConfigurator<T, TBuilder> : BaseElementConfigurator<T, TBuilder>
         where T : Condition
-        where TBuilder : ConditionConfigurator<T, TBuilder>
+        where TBuilder : BaseConditionConfigurator<T, TBuilder>
     {
-        public ConditionConfigurator(T instance)
+        public BaseConditionConfigurator(T instance)
             : base(instance)
         {
 
         }
 
-        public ConditionConfigurator<T, TBuilder> SetNot(bool Not)
+        public BaseConditionConfigurator<T, TBuilder> SetNot(bool Not)
         {
             if (instance != null)
                 instance.Not = Not;
@@ -37,39 +37,39 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public abstract class ContextConditionConfigurator<T, TBuilder> : ConditionConfigurator<T, TBuilder>
+    public abstract class BaseContextConditionConfigurator<T, TBuilder> : BaseConditionConfigurator<T, TBuilder>
         where T : ContextCondition
-        where TBuilder : ContextConditionConfigurator<T, TBuilder>
+        where TBuilder : BaseContextConditionConfigurator<T, TBuilder>
     {
-        public ContextConditionConfigurator(T instance)
+        public BaseContextConditionConfigurator(T instance)
             : base(instance)
         {
 
         }
     }
 
-    public abstract class GameActionConfigurator<T, TBuilder> : ElementConfigurator<T, TBuilder>
+    public abstract class BaseGameActionConfigurator<T, TBuilder> : BaseElementConfigurator<T, TBuilder>
         where T : GameAction
-        where TBuilder : GameActionConfigurator<T, TBuilder>
+        where TBuilder : BaseGameActionConfigurator<T, TBuilder>
     {
-        public GameActionConfigurator(T instance)
+        public BaseGameActionConfigurator(T instance)
             : base(instance)
         {
 
         }
     }
 
-    public abstract class ContextActionConfigurator<T, TBuilder> : GameActionConfigurator<T, TBuilder>
+    public abstract class BaseContextActionConfigurator<T, TBuilder> : BaseGameActionConfigurator<T, TBuilder>
         where T : ContextAction
-        where TBuilder : ContextActionConfigurator<T, TBuilder>
+        where TBuilder : BaseContextActionConfigurator<T, TBuilder>
     {
-        public ContextActionConfigurator(T instance)
+        public BaseContextActionConfigurator(T instance)
             : base(instance)
         {
 
         }
     }
-    public class ContextConditionDifficultyHigherThanConfigurator : ContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
+    public class ContextConditionDifficultyHigherThanConfigurator : BaseContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
     {
         public ContextConditionDifficultyHigherThanConfigurator(ContextConditionDifficultyHigherThan instance)
             : base(instance)
@@ -97,7 +97,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class ConditionalConfigurator : GameActionConfigurator<Conditional, ConditionalConfigurator>
+    public class ConditionalConfigurator : BaseGameActionConfigurator<Conditional, ConditionalConfigurator>
     {
         public ConditionalConfigurator(Conditional instance)
             : base(instance)
@@ -133,7 +133,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class ContextActionDealDamageConfigurator : ContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
+    public class ContextActionDealDamageConfigurator : BaseContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
     {
         public ContextActionDealDamageConfigurator(ContextActionDealDamage instance)
             : base(instance)

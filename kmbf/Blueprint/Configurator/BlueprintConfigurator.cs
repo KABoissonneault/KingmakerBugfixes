@@ -7,14 +7,14 @@ using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
 {
-    public abstract class ObjectConfigurator<T, TBuilder> 
+    public abstract class BaseObjectConfigurator<T, TBuilder> 
         where T : ScriptableObject 
-        where TBuilder : ObjectConfigurator<T, TBuilder>
+        where TBuilder : BaseObjectConfigurator<T, TBuilder>
     {
         protected T instance;
         protected TBuilder Self => (TBuilder)this;
 
-        public ObjectConfigurator(T instance)
+        public BaseObjectConfigurator(T instance)
         {
             this.instance = instance;
         }
@@ -32,11 +32,11 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public abstract class BlueprintObjectConfigurator<T, TBuilder> : ObjectConfigurator<T, TBuilder>
+    public abstract class BaseBlueprintObjectConfigurator<T, TBuilder> : BaseObjectConfigurator<T, TBuilder>
         where T : BlueprintScriptableObject
-        where TBuilder : BlueprintObjectConfigurator<T, TBuilder>
+        where TBuilder : BaseBlueprintObjectConfigurator<T, TBuilder>
     {
-        public BlueprintObjectConfigurator(T instance)
+        public BaseBlueprintObjectConfigurator(T instance)
             : base(instance)
         {
 
@@ -82,11 +82,11 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public abstract class BlueprintFactConfigurator<T, TBuilder> : BlueprintObjectConfigurator<T, TBuilder>
+    public abstract class BaseBlueprintFactConfigurator<T, TBuilder> : BaseBlueprintObjectConfigurator<T, TBuilder>
         where T : BlueprintFact
-        where TBuilder : BlueprintFactConfigurator<T, TBuilder>
+        where TBuilder : BaseBlueprintFactConfigurator<T, TBuilder>
     {
-        public BlueprintFactConfigurator(T instance)
+        public BaseBlueprintFactConfigurator(T instance)
             : base(instance)
         {
 
@@ -95,11 +95,11 @@ namespace kmbf.Blueprint.Configurator
 
 
 
-    public class BlueprintUnitFactConfigurator<T, TBuilder> : BlueprintFactConfigurator<T, TBuilder>
+    public class BaseBlueprintUnitFactConfigurator<T, TBuilder> : BaseBlueprintFactConfigurator<T, TBuilder>
         where T : BlueprintUnitFact
-        where TBuilder : BlueprintFactConfigurator<T, TBuilder>
+        where TBuilder : BaseBlueprintFactConfigurator<T, TBuilder>
     {
-        public BlueprintUnitFactConfigurator(T instance)
+        public BaseBlueprintUnitFactConfigurator(T instance)
             : base(instance)
         {
 
@@ -113,7 +113,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintBuffConfigurator : BlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffConfigurator>
+    public class BlueprintBuffConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffConfigurator>
     {
         public BlueprintBuffConfigurator(BlueprintBuff instance) 
             : base(instance)
@@ -127,7 +127,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintAbilityConfigurator : BlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityConfigurator>
+    public class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityConfigurator>
     {
         public BlueprintAbilityConfigurator(BlueprintAbility instance)
             : base(instance)
@@ -151,7 +151,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintFeatureConfigurator : BlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureConfigurator>
+    public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureConfigurator>
     {
         public BlueprintFeatureConfigurator(BlueprintFeature instance)
             : base(instance)

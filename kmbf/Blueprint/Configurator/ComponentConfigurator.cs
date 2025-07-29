@@ -3,26 +3,26 @@ using Kingmaker.UnitLogic.Abilities.Components;
 
 namespace kmbf.Blueprint.Configurator
 {
-    public abstract class BlueprintComponentConfigurator<T, TBuilder> : ObjectConfigurator<T, BlueprintComponentConfigurator<T, TBuilder>>
+    public abstract class BaseBlueprintComponentConfigurator<T, TBuilder> : BaseObjectConfigurator<T, TBuilder>
         where T : BlueprintComponent
-        where TBuilder : BlueprintComponentConfigurator<T, TBuilder>
+        where TBuilder : BaseBlueprintComponentConfigurator<T, TBuilder>
     {
-        public BlueprintComponentConfigurator(T instance)
+        public BaseBlueprintComponentConfigurator(T instance)
             : base(instance)
         {
 
         }
     }
 
-    public class AbitlityEffectRunActionConfigurator : BlueprintComponentConfigurator<AbilityEffectRunAction, AbitlityEffectRunActionConfigurator>
+    public class AbilityEffectRunActionConfigurator : BaseBlueprintComponentConfigurator<AbilityEffectRunAction, AbilityEffectRunActionConfigurator>
     {
-        public AbitlityEffectRunActionConfigurator(AbilityEffectRunAction instance)
+        public AbilityEffectRunActionConfigurator(AbilityEffectRunAction instance)
             : base(instance)
         {
 
         }
 
-        public static AbitlityEffectRunActionConfigurator From(AbilityEffectRunAction instance)
+        public static AbilityEffectRunActionConfigurator From(AbilityEffectRunAction instance)
         {
             return new(instance);
         }
