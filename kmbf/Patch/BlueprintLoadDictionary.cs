@@ -11,6 +11,7 @@ using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
@@ -109,6 +110,11 @@ namespace kmbf.Patch
 
             // Scroll of Summon Nature's Ally V (Single) would Summon Monster V (Single) instead
             ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle, BlueprintAbilityGuid.SummonMonsterVSingle, BlueprintAbilityGuid.SummonNaturesAllyVSingle);
+
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.DwarvenChampionEnchant)
+                .RemoveComponent<AddConditionImmunity>()
+                .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
+                .Configure();
 
             #endregion
 

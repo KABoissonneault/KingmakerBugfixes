@@ -1,14 +1,8 @@
 ﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Facts;
-using Kingmaker.Blueprints.GameDifficulties;
-using Kingmaker.Designers.EventConditionActionSystem.Actions;
-using Kingmaker.ElementsSystem;
-using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.UnitLogic.Mechanics;
-using Kingmaker.UnitLogic.Mechanics.Actions;
-using Kingmaker.UnitLogic.Mechanics.Conditions;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
@@ -46,6 +40,33 @@ namespace kmbf.Blueprint.Configurator
             : base(instance)
         {
 
+        }
+
+        public TBuilder AddComponent<C>(Action<C> init = null) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                C c = ScriptableObject.CreateInstance<C>();
+                UnityEngine.Object.DontDestroyOnLoad(c);
+                if (init != null)
+                    init(c);
+                instance.Components = [.. instance.Components, c];
+            }
+
+            return Self;
+        }
+
+        public TBuilder RemoveComponent<C>() where C : BlueprintComponent
+        {
+            if(instance != null)
+            {
+                List<BlueprintComponent> components = new(instance.Components);
+                int index = Array.FindIndex(instance.Components, c => c is C);
+                components.RemoveAt(index);
+                instance.Components = components.ToArray();
+            }
+
+            return Self;
         }
 
         public TBuilder EditComponent<C>(Action<C> action) where C : BlueprintComponent
@@ -130,121 +151,20 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class ContextConditionDifficultyHigherThanConfigurator : ContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
+    public class BlueprintFeatureConfigurator : BlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureConfigurator>
     {
-        public ContextConditionDifficultyHigherThanConfigurator(ContextConditionDifficultyHigherThan instance)
+        public BlueprintFeatureConfigurator(BlueprintFeature instance)
             : base(instance)
         {
 
         }
 
-        public static ContextConditionDifficultyHigherThanConfigurator New(BlueprintGameDifficulty difficulty)
+        public static BlueprintFeatureConfigurator From(BlueprintFeatureGuid featureId)
         {
-            ContextConditionDifficultyHigherThan instance = CreateInstance();
-            instance.CheckedDifficulty = difficulty;
-            return new ContextConditionDifficultyHigherThanConfigurator(instance);
-        }
-
-        public ContextConditionDifficultyHigherThanConfigurator SetCheckedDifficulty(BlueprintGameDifficulty difficulty)
-        {
-            instance.CheckedDifficulty = difficulty;
-            return this;
-        }
-
-        public ContextConditionDifficultyHigherThanConfigurator SetCheckOnlyForMonsterCaster(bool checkOnlyForMonsterCaster)
-        {
-            instance.CheckOnlyForMonsterCaster = checkOnlyForMonsterCaster;
-            return this;
+            if (featureId.GetBlueprint(out BlueprintFeature instance))
+                return new(instance);
+            else
+                return new(null);
         }
     }
-
-    public class ConditionalConfigurator : GameActionConfigurator<Conditional, ConditionalConfigurator>
-    {
-        public ConditionalConfigurator(Conditional instance)
-            : base(instance)
-        {
-
-        }
-
-        public static ConditionalConfigurator New(ConditionsChecker conditionsChecker, ActionList ifTrue = null, ActionList ifFalse = null)
-        {
-            Conditional instance = CreateInstance();
-            instance.ConditionsChecker = conditionsChecker;
-            instance.IfTrue = ifTrue ?? Constants.Empty.Actions;
-            instance.IfFalse = ifFalse ?? Constants.Empty.Actions;
-            return new ConditionalConfigurator(instance);
-        }
-
-        public ConditionalConfigurator SetConditionsChecker(ConditionsChecker conditionsChecker)
-        {
-            instance.ConditionsChecker = conditionsChecker;
-            return this;
-        }
-
-        public ConditionalConfigurator SetIfTrue(ActionList ifTrue)
-        {
-            instance.IfTrue = ifTrue;
-            return this;
-        }
-
-        public ConditionalConfigurator SetIfFalse(ActionList ifFalse)
-        {
-            instance.IfFalse = ifFalse;
-            return this;
-        }
-    }
-
-    public class ContextActionDealDamageConfigurator : ContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
-    {
-        public ContextActionDealDamageConfigurator(ContextActionDealDamage instance)
-            : base(instance)
-        {
-
-        }
-
-        public static ContextActionDealDamageConfigurator New(ContextActionDealDamage.Type Type, ContextDiceValue Value)
-        {
-            ContextActionDealDamage instance = CreateInstance();
-            instance.m_Type = Type;
-            instance.Value = Value;
-            return new ContextActionDealDamageConfigurator(instance);
-        }
-
-        public static ContextActionDealDamageConfigurator NewPermanentEnergyDrain(ContextDiceValue Value)
-        {
-            ContextActionDealDamage instance = CreateInstance();
-            instance.m_Type = ContextActionDealDamage­.Type.EnergyDrain;
-            instance.EnergyDrainType = EnergyDrainType.Permanent;
-            instance.Value = Value;
-            return new ContextActionDealDamageConfigurator(instance);
-        }
-
-        public static ContextActionDealDamageConfigurator NewTemporaryEnergyDrain(ContextDiceValue value, ContextDurationValue duration)
-        {
-            ContextActionDealDamage instance = CreateInstance();
-            instance.m_Type = ContextActionDealDamage­.Type.EnergyDrain;
-            instance.EnergyDrainType = EnergyDrainType.Temporary;
-            instance.Value = value;
-            instance.Duration = duration;
-            return new ContextActionDealDamageConfigurator(instance);
-        }
-
-        public ContextActionDealDamageConfigurator SetType(ContextActionDealDamage.Type Type)
-        {
-            instance.m_Type = Type;
-            return this;
-        }
-
-        public ContextActionDealDamageConfigurator SetEnergyDrainType(EnergyDrainType drainType)
-        {
-            instance.EnergyDrainType = drainType;
-            return this;
-        }
-
-        public ContextActionDealDamageConfigurator SetValue(ContextDiceValue Value)
-        {
-            instance.Value = Value;
-            return this;
-        }
-    }   
 }

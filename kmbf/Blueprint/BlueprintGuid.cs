@@ -142,7 +142,7 @@ public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
     public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMudBlast = new BlueprintAbilityAreaEffectGuid("0af604484b5fcbb41b328750797e3948");
 }
 
-class BlueprintCharacterClassGuid : BlueprintObjectGuid
+public class BlueprintCharacterClassGuid : BlueprintObjectGuid
 {
     public BlueprintCharacterClassGuid(string guid)
         : base(guid)
@@ -170,7 +170,7 @@ class BlueprintCharacterClassGuid : BlueprintObjectGuid
     public static readonly BlueprintCharacterClassGuid Druid = new BlueprintCharacterClassGuid("610d836f3a3a9ed42a4349b62f002e96");
 }
 
-class BlueprintCueGuid : BlueprintObjectGuid
+public class BlueprintCueGuid : BlueprintObjectGuid
 {
     public BlueprintCueGuid(string guid)
         : base(guid)
@@ -198,7 +198,7 @@ class BlueprintCueGuid : BlueprintObjectGuid
     public static readonly BlueprintCueGuid IrleneGiftCue3 = new BlueprintCueGuid("03807d3897f73e44b84b476ae63a62f1");
 }
 
-class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
+public class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
 {
     public BlueprintKingdomArtisanGuid(string guid)
         : base(guid)
@@ -227,7 +227,7 @@ class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
     public static readonly BlueprintKingdomArtisanGuid ShadyTrader = new BlueprintKingdomArtisanGuid("42efca2aecce9ff43ad3ed2d4d516124");
 }
 
-class BlueprintItemEnchantmentGuid : BlueprintFactGuid
+public class BlueprintItemEnchantmentGuid : BlueprintFactGuid
 {
     public BlueprintItemEnchantmentGuid(string guid)
         : base(guid)
@@ -253,7 +253,7 @@ class BlueprintItemEnchantmentGuid : BlueprintFactGuid
     }
 }
 
-class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
+public class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
 {
     public BlueprintWeaponEnchantmentGuid(string guid)
         : base(guid)
@@ -283,7 +283,7 @@ class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
     public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new BlueprintWeaponEnchantmentGuid("afa5d47f05724ac43a4dc19e5ecbd150");
 }
 
-class BlueprintBuffGuid : BlueprintFactGuid
+public class BlueprintBuffGuid : BlueprintFactGuid
 {
     public BlueprintBuffGuid(string guid)
         : base(guid)
@@ -321,7 +321,7 @@ class BlueprintBuffGuid : BlueprintFactGuid
     public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedEffect = new BlueprintBuffGuid("5bfefc22a68e736488b0c309d9c1c1d4");
 }
 
-class BlueprintItemGuid : BlueprintObjectGuid
+public class BlueprintItemGuid : BlueprintObjectGuid
 {
     public BlueprintItemGuid(string guid)
         : base(guid)
@@ -347,7 +347,7 @@ class BlueprintItemGuid : BlueprintObjectGuid
     }
 }
 
-class BlueprintItemEquipmentGuid : BlueprintItemGuid
+public class BlueprintItemEquipmentGuid : BlueprintItemGuid
 {
     public BlueprintItemEquipmentGuid(string guid)
         : base(guid)
@@ -373,7 +373,7 @@ class BlueprintItemEquipmentGuid : BlueprintItemGuid
     }
 }
 
-class BlueprintItemWeaponGuid : BlueprintItemGuid
+public class BlueprintItemWeaponGuid : BlueprintItemGuid
 {
     public BlueprintItemWeaponGuid(string guid)
         : base(guid)
@@ -401,7 +401,7 @@ class BlueprintItemWeaponGuid : BlueprintItemGuid
     public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
 }
 
-class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
+public class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
 {
     public BlueprintItemEquipmentUsableGuid(string guid)
         : base(guid)
@@ -429,7 +429,7 @@ class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
     public static readonly BlueprintItemEquipmentUsableGuid ScrollSummonNaturesAllyVSingle = new BlueprintItemEquipmentUsableGuid("4e9e261a93c7aa144a7b29c9fcfb4986");
 }
 
-class BlueprintCheckGuid : BlueprintObjectGuid
+public class BlueprintCheckGuid : BlueprintObjectGuid
 {
     public BlueprintCheckGuid(string guid)
         : base(guid)
@@ -458,7 +458,7 @@ class BlueprintCheckGuid : BlueprintObjectGuid
     public static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
 }
 
-class BlueprintWeaponTypeGuid : BlueprintObjectGuid
+public class BlueprintWeaponTypeGuid : BlueprintObjectGuid
 {
     public BlueprintWeaponTypeGuid(string guid)
         : base(guid)
@@ -488,7 +488,7 @@ class BlueprintWeaponTypeGuid : BlueprintObjectGuid
     public static readonly BlueprintWeaponTypeGuid GiantSlugTongue = new BlueprintWeaponTypeGuid("4957290cee0b59542808c65c77bfbee3");
 }
 
-class BlueprintFeatureGuid : BlueprintUnitFactGuid
+public class BlueprintFeatureGuid : BlueprintUnitFactGuid
 {
     public BlueprintFeatureGuid(string guid)
         : base(guid)
@@ -513,15 +513,17 @@ class BlueprintFeatureGuid : BlueprintUnitFactGuid
         return feature != null;
     }
 
-    public static readonly BlueprintFeatureGuid DoubleDebilitation = new BlueprintFeatureGuid("dd699394df0ef8847abba26038333f02");
+    public static readonly BlueprintFeatureGuid DoubleDebilitation = new("dd699394df0ef8847abba26038333f02");
 
-    public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new BlueprintFeatureGuid("64f74b75ed0d1f8478de5245cf061bcc");
-    public static readonly BlueprintFeatureGuid EkunWolfDefensiveMaster = new BlueprintFeatureGuid("915616ab61446694dbd73c7d269ea184");
-    public static readonly BlueprintFeatureGuid EkunWolfOffensiveBuff = new BlueprintFeatureGuid("29b33987fae4f81448410007f8f9b902");
-    public static readonly BlueprintFeatureGuid EkunWolfDefensiveBuff = new BlueprintFeatureGuid("b6cb208baaff10542a8230f1b9f6b26d");
+    public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new("64f74b75ed0d1f8478de5245cf061bcc");
+    public static readonly BlueprintFeatureGuid EkunWolfDefensiveMaster = new("915616ab61446694dbd73c7d269ea184");
+    public static readonly BlueprintFeatureGuid EkunWolfOffensiveBuff = new("29b33987fae4f81448410007f8f9b902");
+    public static readonly BlueprintFeatureGuid EkunWolfDefensiveBuff = new("b6cb208baaff10542a8230f1b9f6b26d");
+
+    public static readonly BlueprintFeatureGuid DwarvenChampionEnchant = new("09de6da5469ab1943924139d5145835f");
 }
 
-class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
+public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
 {
     public BlueprintKingdomUpgradeGuid(string guid)
         : base(guid)
