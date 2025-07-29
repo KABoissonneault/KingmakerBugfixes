@@ -8,6 +8,7 @@ using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.Kingdom.Artisans;
 using Kingmaker.Kingdom.Blueprints;
+using Kingmaker.Kingdom.Settlements;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 namespace kmbf.Blueprint;
@@ -549,4 +550,60 @@ public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintKingdomUpgradeGuid ItsAMagicalPlace = new BlueprintKingdomUpgradeGuid("f9e28dd6f77a0b5468b2325b91c4195c");
+}
+
+public class BlueprintKingdomRootGuid : BlueprintObjectGuid
+{
+    public BlueprintKingdomRootGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out KingdomRoot kingdomRoot)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<KingdomRoot>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Root blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        kingdomRoot = cachedObject as KingdomRoot;
+
+        return kingdomRoot != null;
+    }
+
+    public static readonly BlueprintKingdomRootGuid KingdomRoot = new("cdba36795a8ae944091f4b9f94e6d689");
+}
+
+public class BlueprintSettlementBuildingGuid : BlueprintFactGuid
+{
+    public BlueprintSettlementBuildingGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintSettlementBuilding building)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintSettlementBuilding>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Settlement Building blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        building = cachedObject as BlueprintSettlementBuilding;
+
+        return building != null;
+    }
+
+    public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
 }

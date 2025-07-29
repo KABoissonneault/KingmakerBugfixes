@@ -7,6 +7,8 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.Kingdom.Blueprints;
+using Kingmaker.Kingdom.Settlements;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
@@ -122,6 +124,18 @@ namespace kmbf.Patch
 
             // Irlene "Relations rank 3" tier 3 gift
             ReplaceArtisan(BlueprintCueGuid.IrleneGiftCue3, BlueprintKingdomArtisanGuid.Woodmaster, BlueprintKingdomArtisanGuid.ShadyTrader);
+
+            // Fix Temple of Abadar being unusable
+            {
+                if (BlueprintKingdomRootGuid.KingdomRoot.GetBlueprint(out KingdomRoot kingdomRoot))
+                {
+                    if (BlueprintSettlementBuildingGuid.TempleOfAbadar.GetBlueprint(out BlueprintSettlementBuilding templeOfAbadar) 
+                        && !kingdomRoot.Buildings.Contains(templeOfAbadar))
+                    {
+                        kingdomRoot.Buildings = [.. kingdomRoot.Buildings, templeOfAbadar];
+                    }
+                }
+            }
 
             #endregion
 
