@@ -102,15 +102,19 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
         return ability != null;
     }
 
-    public static readonly BlueprintAbilityGuid RaiseDead = new BlueprintAbilityGuid("a0fc99f0933d01643b2b8fe570caa4c5");
-    public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new BlueprintAbilityGuid("cbd03c874e39e6c4795fe0093544f2a2");
+    public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
+    public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
 
-    public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new BlueprintAbilityGuid("31acd268039966940872c916782ae018");
+    public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new("31acd268039966940872c916782ae018");
+    public static readonly BlueprintAbilityGuid DeadlyEarthMudBlast = new("0be97d0e752060f468bbf62ce032b9f5");
+    public static readonly BlueprintAbilityGuid DeadlyEarthEarthBlast = new("e29cf5372f89c40489227edc9ffc52be");
+    public static readonly BlueprintAbilityGuid DeadlyEarthMagmaBlast = new("c0704daaf6e4c5840a94e7db6d7dbe0e");
+    public static readonly BlueprintAbilityGuid DeadlyEarthMetalBlast = new("44804ca6ba7d495439cc9d5ad6d6cfcf");
 
-    public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new BlueprintAbilityGuid("0964bf88b582bed41b74e79596c4f6d9");
-    public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new BlueprintAbilityGuid("28ea1b2e0c4a9094da208b4c186f5e4f");
+    public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new("0964bf88b582bed41b74e79596c4f6d9");
+    public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new("28ea1b2e0c4a9094da208b4c186f5e4f");
 
-    public static readonly BlueprintAbilityGuid MimicOozeSpit = new BlueprintAbilityGuid("3ea0add618aab444bb5a4e2701a3ee4b");
+    public static readonly BlueprintAbilityGuid MimicOozeSpit = new("3ea0add618aab444bb5a4e2701a3ee4b");
 }
 
 public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid

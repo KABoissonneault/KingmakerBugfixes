@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
@@ -94,8 +95,6 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-
-
     public class BaseBlueprintUnitFactConfigurator<T, TBuilder> : BaseBlueprintFactConfigurator<T, TBuilder>
         where T : BlueprintUnitFact
         where TBuilder : BaseBlueprintFactConfigurator<T, TBuilder>
@@ -148,6 +147,24 @@ namespace kmbf.Blueprint.Configurator
         {
             if(instance)
                 instance.m_IsFullRoundAction = fullRoundAction;
+            return this;
+        }
+
+        public BlueprintAbilityConfigurator AddSpellDescriptor(SpellDescriptor descriptor)
+        {
+            if(instance != null)
+            {
+                SpellDescriptorComponent spellDescriptorComponent = instance.GetComponent<SpellDescriptorComponent>();
+                if(spellDescriptorComponent != null)
+                {
+                    spellDescriptorComponent.Descriptor.m_IntValue |= (long)descriptor;
+                }
+                else
+                {
+                    AddComponent<SpellDescriptorComponent>(c => c.Descriptor = descriptor);
+                }
+            }
+
             return this;
         }
     }
