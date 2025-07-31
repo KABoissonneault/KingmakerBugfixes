@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.EventConditionActionSystem.Events;
 using Kingmaker.ElementsSystem;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -41,45 +42,53 @@ namespace kmbf.Blueprint
             return actionList.Actions.OfType<T>().FirstOrDefault();
         }
 
+        public static IEnumerable<GameAction> GetGameActionsRecursive(this BlueprintComponent bpComponent)
+        {
+            switch(bpComponent)
+            {
+                case ActivateTrigger activateTrigger:
+                    foreach (GameAction action in activateTrigger.Actions.GetGameActionsRecursive()) yield return action;
+                    break;
+            }
+        }
+            
         public static IEnumerable<GameAction> GetGameActionsRecursive(this ActionList actionList)
         {
             foreach (GameAction gameAction in actionList.Actions.EmptyIfNull())
             {
                 yield return gameAction;
 
-                if (gameAction is Conditional)
+                switch (gameAction)
                 {
-                    var conditionalAction = (Conditional)gameAction;
-                    foreach (GameAction trueAction in conditionalAction.IfTrue.GetGameActionsRecursive())
-                    {
-                        yield return trueAction;
-                    }
+                    case Conditional conditionalAction:
+                        foreach (GameAction trueAction in conditionalAction.IfTrue.GetGameActionsRecursive()) yield return trueAction;
+                        foreach (GameAction falseAction in conditionalAction.IfFalse.GetGameActionsRecursive()) yield return falseAction;
+                        break;
 
-                    foreach (GameAction falseAction in conditionalAction.IfFalse.GetGameActionsRecursive())
-                    {
-                        yield return falseAction;
-                    }
-                }
-                else if (gameAction is ContextActionSavingThrow)
-                {
-                    var savingThrowAction = (ContextActionSavingThrow)gameAction;
-                    foreach (GameAction action in savingThrowAction.Actions.GetGameActionsRecursive())
-                    {
-                        yield return action;
-                    }
-                }
-                else if (gameAction is ContextActionConditionalSaved)
-                {
-                    var conditionalAction = (ContextActionConditionalSaved)gameAction;
-                    foreach (GameAction trueAction in conditionalAction.Succeed.GetGameActionsRecursive())
-                    {
-                        yield return trueAction;
-                    }
+                    case ContextActionSavingThrow savingThrowAction:
+                        foreach (GameAction action in savingThrowAction.Actions.GetGameActionsRecursive()) yield return action;
+                        break;
 
-                    foreach (GameAction falseAction in conditionalAction.Failed.GetGameActionsRecursive())
-                    {
-                        yield return falseAction;
-                    }
+                    case ContextActionConditionalSaved conditionalSavedAction:
+                        foreach (GameAction trueAction in conditionalSavedAction.Succeed.GetGameActionsRecursive()) yield return trueAction;
+                        foreach (GameAction falseAction in conditionalSavedAction.Failed.GetGameActionsRecursive()) yield return falseAction;
+                        break;
+
+                    case RunActionHolder actionHolder:
+                        foreach (GameAction action in actionHolder.Holder.Actions.GetGameActionsRecursive()) yield return action;
+                        break;
+
+                    case AlignmentSelector alignmentSelector:
+                        foreach (GameAction action in alignmentSelector.LawfulGood.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.LawfulNeutral.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.LawfulEvil.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.NeutralGood.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.TrueNeutral.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.NeutralEvil.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.ChaoticGood.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.ChaoticNeutral.Action.GetGameActionsRecursive()) yield return action;
+                        foreach (GameAction action in alignmentSelector.ChaoticEvil.Action.GetGameActionsRecursive()) yield return action;
+                        break;
                 }
             }
         }

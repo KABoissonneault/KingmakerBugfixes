@@ -2,6 +2,8 @@
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.ElementsSystem;
+using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
@@ -97,6 +99,43 @@ namespace kmbf.Blueprint.Configurator
             }
 
             return Self;
+        }
+
+        public TBuilder EditFirstGameActionWhere<A>(Predicate<A> pred, Action<A> action) where A : GameAction
+        {
+            if (instance != null)
+            {
+                foreach(var c in instance.Components)
+                {
+                    A foundAction = c.GetGameActionsRecursive()
+                        .OfType<A>()
+                        .FirstOrDefault(a => pred(a));
+                    if (foundAction != null)
+                    {
+                        action(foundAction);
+                        break;
+                    }
+                }
+            }
+
+            return Self;
+        }
+    }
+
+    public class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectConfigurator>
+    {
+        public BlueprintObjectConfigurator(BlueprintScriptableObject instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintObjectConfigurator From(BlueprintObjectGuid bpId)
+        {
+            if (bpId.GetBlueprint(out BlueprintScriptableObject instance))
+                return new(instance);
+            else
+                return new(null);
         }
     }
 
@@ -308,6 +347,47 @@ namespace kmbf.Blueprint.Configurator
                     c.RequireAll = requireAll;
                     c.Invert = inverted;
                 });
+            }
+
+            return this;
+        }
+    }
+
+    public class BlueprintKingdomEventConfigurator : BaseBlueprintObjectConfigurator<BlueprintKingdomEvent, BlueprintKingdomEventConfigurator>
+    {
+        public BlueprintKingdomEventConfigurator(BlueprintKingdomEvent instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintKingdomEventConfigurator From(BlueprintKingdomEventGuid eventId)
+        {
+            if (eventId.GetBlueprint(out BlueprintKingdomEvent instance))
+                return new(instance);
+            else
+                return new(null);
+        }
+
+        public BlueprintKingdomEventConfigurator EditPossibleSolution(LeaderType leaderType, Action<PossibleEventSolution> action)
+        {
+            if (instance != null)
+            {
+                PossibleEventSolution solution = instance.Solutions.Entries.FirstOrDefault(e => e.Leader == leaderType);
+                if (solution != null)
+                    action(solution);
+                else
+                    Main.Log.Error($"Could not find a solution with leader \"{leaderType}\" in \"{instance.GetDebugName()}\"");
+            }
+
+            return this;
+        }
+
+        public BlueprintKingdomEventConfigurator SetAutoResolve(EventResult.MarginType margin)
+        {
+            if (instance != null)
+            {
+                instance.AutoResolveResult = margin;
             }
 
             return this;

@@ -5,6 +5,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.Kingdom.Artisans;
 using Kingmaker.Kingdom.Blueprints;
@@ -40,6 +41,17 @@ public class BlueprintObjectGuid
         bp = cachedObject;
         return bp != null;
     }
+}
+
+public class BlueprintComponentListGuid : BlueprintObjectGuid
+{
+    public BlueprintComponentListGuid(string guid) 
+        : base(guid)
+    {
+
+    }
+
+    public static BlueprintComponentListGuid CapitalThroneRoomActions = new("d528c9a3bfea3ba4fb69ae5811c15499");
 }
 
 public class BlueprintFactGuid : BlueprintObjectGuid
@@ -670,4 +682,62 @@ public class BlueprintKingdomRegionGuid : BlueprintObjectGuid
     }
 
     public static readonly BlueprintKingdomRegionGuid SouthNarlmarches = new("cd92c3a23b092584a95eb39f64225923");
+}
+
+public class BlueprintKingdomEventGuid : BlueprintObjectGuid
+{    
+    public BlueprintKingdomEventGuid(string guid) 
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintKingdomEvent kingdomEvent)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintKingdomEvent>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Kingdom Event blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        kingdomEvent = cachedObject as BlueprintKingdomEvent;
+
+        return kingdomEvent != null;
+    }
+
+    public static readonly BlueprintKingdomEventGuid HonorAndDuty = new("acd37baba5a0d4343b7b184780bd68cf");
+}
+
+public class BlueprintQuestObjectiveGuid : BlueprintFactGuid
+{
+    public BlueprintQuestObjectiveGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintQuestObjective objective)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintQuestObjective>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Quest Objective blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        objective = cachedObject as BlueprintQuestObjective;
+
+        return objective != null;
+    }
+
+    public static readonly BlueprintQuestObjectiveGuid HonorAndDutyProtectOrKickOut = new("d45987ff311b94d40940167aae5356e9");
+    public static readonly BlueprintQuestObjectiveGuid HonorAndDutyWaitForPeopleReaction = new("7368326029429d14286d5447e2dde37b");
+    public static readonly BlueprintQuestObjectiveGuid HonorAndDutyFail = new("4adc57ec7cf0ea24b99acf1095eeefd9");
 }

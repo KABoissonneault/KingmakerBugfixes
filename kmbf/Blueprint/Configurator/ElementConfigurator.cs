@@ -1,5 +1,7 @@
 ﻿using Kingmaker.Blueprints.GameDifficulties;
+using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Mechanics;
@@ -69,6 +71,7 @@ namespace kmbf.Blueprint.Configurator
 
         }
     }
+
     public class ContextConditionDifficultyHigherThanConfigurator : BaseContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
     {
         public ContextConditionDifficultyHigherThanConfigurator(ContextConditionDifficultyHigherThan instance)
@@ -184,6 +187,49 @@ namespace kmbf.Blueprint.Configurator
         {
             instance.Value = Value;
             return this;
+        }
+    }
+
+    public class SetObjectiveStatusConfigurator : BaseGameActionConfigurator<SetObjectiveStatus, SetObjectiveStatusConfigurator>
+    {
+        public SetObjectiveStatusConfigurator(SetObjectiveStatus instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static SetObjectiveStatusConfigurator New(BlueprintQuestObjectiveGuid objectiveId, SummonPoolCountTrigger.ObjectiveStatus objectiveStatus)
+        {
+            if(!objectiveId.GetBlueprint(out BlueprintQuestObjective objective))
+            {
+                return new(null);
+            }
+
+            SetObjectiveStatus instance = CreateInstance();
+            instance.Objective = objective;
+            instance.Status = objectiveStatus;
+            return new(instance);
+        }
+    }
+
+    public class GiveObjectiveConfigurator : BaseGameActionConfigurator<GiveObjective, GiveObjectiveConfigurator>
+    {
+        public GiveObjectiveConfigurator(GiveObjective instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static GiveObjectiveConfigurator New(BlueprintQuestObjectiveGuid objectiveId)
+        {
+            if (!objectiveId.GetBlueprint(out BlueprintQuestObjective objective))
+            {
+                return new(null);
+            }
+
+            GiveObjective instance = CreateInstance();
+            instance.Objective = objective;
+            return new(instance);
         }
     }
 }

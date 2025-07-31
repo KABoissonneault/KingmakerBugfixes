@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
@@ -183,6 +184,74 @@ namespace kmbf.Patch
                 }
             }
 
+            // "Honor and Duty" is the Lawful Good quest from Renown Across Golarion
+            // The quest starts with a Kingdom event which can be assigned a Regent or a General
+            // The intention is that a Good or Neutral Regent, or a Good General, would inspire locals
+            // to join the cause, while an Evil Regen or a Neutral or Evil General would evict the crusaders from the city
+            // The quest objectives are:
+            //  1. Deal with the Missionaries (Support or Evict)
+            //  2. Wait for news of alliance with Mendev 
+            //  ...
+            //  5. Hidden Objective called "Fail"
+            //
+            // The Kingdom event therefore should assign Objective 1's success based on Kingdom Event success (even if the crusaders end up leaving in all cases)
+            // Also, a "Good" successful resolution should start objective 2, and an "Evil" successful resolution should complete the entire quest
+            // Any failure should fail the entire quest
+            //
+            // In the actual data, most outcomes are not assigned actions, and an awkward "Final Result" only covers the Success case, and forgets to filter for the "evict" scenarios
+            {
+                void FixSolution(PossibleEventSolution solution)
+                {
+                    foreach(EventResult result in solution.Resolutions)
+                    {
+                        List<GameAction> actions = new List<GameAction>();
+
+                        if (result.Margin == EventResult.MarginType.Success || result.Margin == EventResult.MarginType.GreatSuccess || result.Margin == EventResult.MarginType.AnySuccess)
+                        {
+                            actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
+
+                            // We check if the solution includes Good leaders. For regent, this should also allow the Neutral case
+                            if ((result.LeaderAlignment & AlignmentMaskType.Good) != 0)
+                            {
+                                actions.Add(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyWaitForPeopleReaction).Configure());
+                            }
+                            else
+                            {
+                                actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
+                            }
+                        }
+                        else
+                        {
+                            actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
+                            actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
+                        }
+
+                        result.Actions = ActionListFactory.Enumerable(actions);
+                    }
+                }
+
+                BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.HonorAndDuty)
+                    .EditPossibleSolution(LeaderType.Regent, FixSolution)
+                    .EditPossibleSolution(LeaderType.General, FixSolution)
+                    .EditComponent<EventFinalResults>(c =>
+                    {
+                        c.Results = []; // All cases are handled in solutions
+                    })
+                    .Configure();
+
+                BlueprintObjectConfigurator.From(BlueprintComponentListGuid.CapitalThroneRoomActions)
+                    .EditFirstGameActionWhere<AlignmentSelector>(a =>
+                    {
+                        return a.LawfulGood.Action.GetGameActionsRecursive()
+                            .OfType<KingdomActionStartEvent>()
+                            .Any(s => s.Event.AssetGuid == BlueprintKingdomEventGuid.HonorAndDuty.guid);
+                    }, a =>
+                    {
+                        a.LawfulGood.Action = ActionListFactory.Enumerable(a.LawfulGood.Action.Actions
+                            .AddItem(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut).Configure())
+                            );
+                    });
+            }
             #endregion
 
             #region Script
