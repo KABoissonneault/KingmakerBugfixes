@@ -12,9 +12,11 @@ using Kingmaker.Kingdom.Actions;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Buffs;
 using Kingmaker.Kingdom.Settlements;
+using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -122,7 +124,7 @@ namespace kmbf.Patch
             ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle, BlueprintAbilityGuid.SummonMonsterVSingle, BlueprintAbilityGuid.SummonNaturesAllyVSingle);
 
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.DwarvenChampionEnchant)
-                .RemoveComponent<AddConditionImmunity>()
+                .RemoveComponents<AddConditionImmunity>()
                 .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
                 .Configure();
 
@@ -166,6 +168,19 @@ namespace kmbf.Patch
                         c.IncludeAdjacent = true;
                     })
                     .Configure();
+            }
+
+            {
+                AlignmentMaskType nonLawfulOrGood = AlignmentMaskType.TrueNeutral | AlignmentMaskType.ChaoticNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.ChaoticEvil;
+                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.AssassinsGuild).SetAlignmentRestriction(nonLawfulOrGood).Configure();
+                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.ThievesGuild).SetAlignmentRestriction(nonLawfulOrGood).Configure();
+                if (Main.UMMSettings.BalanceSettings.FixKingdomBuildingAccess)
+                {
+                    BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.BlackMarket)
+                        .SetAlignmentRestriction(nonLawfulOrGood)
+                        .SetOtherBuildRestriction([BlueprintSettlementBuildingGuid.ThievesGuild])
+                        .Configure();
+                }
             }
 
             #endregion

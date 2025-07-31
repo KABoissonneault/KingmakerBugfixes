@@ -11,6 +11,7 @@ namespace kmbf
         public bool FixNauseatedPoisonDescriptor = true;
         public bool FixBaneLiving = true;
         public bool FixCandlemereTowerResearch = true;
+        public bool FixKingdomBuildingAccess = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable

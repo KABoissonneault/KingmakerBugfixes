@@ -611,6 +611,9 @@ public class BlueprintSettlementBuildingGuid : BlueprintFactGuid
     }
 
     public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
+    public static readonly BlueprintSettlementBuildingGuid AssassinsGuild = new("449a534c27f58ad47b36a32517f99bb5");
+    public static readonly BlueprintSettlementBuildingGuid ThievesGuild = new("73526a963bbe73748af8a37299907dea");
+    public static readonly BlueprintSettlementBuildingGuid BlackMarket = new("3ea99e66901503e479cf6b58ba46265d");
 }
 
 public class BlueprintKingdomBuffGuid : BlueprintFactGuid

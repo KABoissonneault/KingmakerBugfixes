@@ -3,7 +3,10 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Kingdom.Blueprints;
+using Kingmaker.Kingdom.Settlements;
+using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using UnityEngine;
 
@@ -58,14 +61,11 @@ namespace kmbf.Blueprint.Configurator
             return Self;
         }
 
-        public TBuilder RemoveComponent<C>() where C : BlueprintComponent
+        public TBuilder RemoveComponents<C>() where C : BlueprintComponent
         {
             if(instance != null)
             {
-                List<BlueprintComponent> components = new(instance.Components);
-                int index = Array.FindIndex(instance.Components, c => c is C);
-                components.RemoveAt(index);
-                instance.Components = components.ToArray();
+                instance.Components = instance.Components.Where(c => !(c is C)).ToArray();
             }
 
             return Self;
@@ -78,6 +78,22 @@ namespace kmbf.Blueprint.Configurator
                 C c = instance.GetComponent<C>();
                 if (c != null)
                     action(c);
+                else
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" in \"{instance.GetDebugName()}\"");
+            }
+
+            return Self;
+        }
+
+        public TBuilder EditOrAddComponent<C>(Action<C> action) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                C c = instance.GetComponent<C>();
+                if (c != null)
+                    action(c);
+                else
+                    AddComponent<C>(action);
             }
 
             return Self;
@@ -245,6 +261,56 @@ namespace kmbf.Blueprint.Configurator
                 return new(instance);
             else
                 return new(null);
+        }
+    }
+
+    public class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingConfigurator>
+    {
+        public BlueprintSettlementBuildingConfigurator(BlueprintSettlementBuilding instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintSettlementBuildingConfigurator From(BlueprintSettlementBuildingGuid buffId)
+        {
+            if (buffId.GetBlueprint(out BlueprintSettlementBuilding instance))
+                return new(instance);
+            else
+                return new(null);
+        }
+
+        public BlueprintSettlementBuildingConfigurator SetAlignmentRestriction(AlignmentMaskType alignment)
+        {
+            if(instance != null)
+            {
+                RemoveComponents<AlignmentRestriction>(); // Some BPs have multiple, which is just invalid
+                AddComponent<AlignmentRestriction>(c => c.Allowed = alignment);
+            }
+
+            return this;
+        }
+
+        public BlueprintSettlementBuildingConfigurator SetOtherBuildRestriction(IEnumerable<BlueprintSettlementBuildingGuid> buildings, bool requireAll=false, bool inverted=false)
+        {
+            if(instance != null)
+            {
+                EditOrAddComponent<OtherBuildingRestriction>(c =>
+                {
+                    c.Buildings = new List<BlueprintSettlementBuilding>();
+                    foreach(var buildingId in buildings)
+                    {
+                        if(buildingId.GetBlueprint(out BlueprintSettlementBuilding building))
+                        {
+                            c.Buildings.Add(building);
+                        }
+                    }
+                    c.RequireAll = requireAll;
+                    c.Invert = inverted;
+                });
+            }
+
+            return this;
         }
     }
 }
