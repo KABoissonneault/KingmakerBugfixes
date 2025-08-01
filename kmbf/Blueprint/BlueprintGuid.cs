@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
+using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom.Artisans;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
@@ -740,4 +741,32 @@ public class BlueprintQuestObjectiveGuid : BlueprintFactGuid
     public static readonly BlueprintQuestObjectiveGuid HonorAndDutyProtectOrKickOut = new("d45987ff311b94d40940167aae5356e9");
     public static readonly BlueprintQuestObjectiveGuid HonorAndDutyWaitForPeopleReaction = new("7368326029429d14286d5447e2dde37b");
     public static readonly BlueprintQuestObjectiveGuid HonorAndDutyFail = new("4adc57ec7cf0ea24b99acf1095eeefd9");
+}
+
+public class BlueprintRandomEncounterGuid : BlueprintObjectGuid
+{
+    public BlueprintRandomEncounterGuid(string guid) 
+        : base(guid)
+    {
+
+    }
+
+    public bool GetBlueprint(out BlueprintRandomEncounter encounter)
+    {
+        if (!cached)
+        {
+            cachedObject = ResourcesLibrary.TryGetBlueprint<BlueprintRandomEncounter>(guid);
+            if (cachedObject == null)
+            {
+                Main.Log.Error($"Could not find Random Encounter blueprint with GUID '{guid}'");
+            }
+            cached = true;
+        }
+
+        encounter = cachedObject as BlueprintRandomEncounter;
+
+        return encounter != null;
+    }
+
+    public static readonly BlueprintRandomEncounterGuid HonorAndDuty = new("d46dea989708a6f4c84e800fdb999449");
 }

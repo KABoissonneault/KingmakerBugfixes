@@ -8,6 +8,7 @@ using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Actions;
 using Kingmaker.Kingdom.Blueprints;
@@ -251,6 +252,10 @@ namespace kmbf.Patch
                             .AddItem(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut).Configure())
                             );
                     });
+
+                BlueprintRandomEncounterConfigurator.From(BlueprintRandomEncounterGuid.HonorAndDuty)
+                    .SetPool(EncounterPool.Mixed) // Putting it in the Combat pool makes it harder to get than other special encounters. Plus you don't necessarily fight
+                    .Configure();
             }
             #endregion
 

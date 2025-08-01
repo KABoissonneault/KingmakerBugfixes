@@ -3,6 +3,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
@@ -122,7 +123,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectConfigurator>
+    public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectConfigurator>
     {
         public BlueprintObjectConfigurator(BlueprintScriptableObject instance) 
             : base(instance)
@@ -388,6 +389,31 @@ namespace kmbf.Blueprint.Configurator
             if (instance != null)
             {
                 instance.AutoResolveResult = margin;
+            }
+
+            return this;
+        }
+    }
+
+    public sealed class BlueprintRandomEncounterConfigurator : BaseBlueprintObjectConfigurator<BlueprintRandomEncounter, BlueprintRandomEncounterConfigurator>
+    {
+        public BlueprintRandomEncounterConfigurator(BlueprintRandomEncounter instance) 
+            : base(instance)
+        {
+
+        }
+
+        public static BlueprintRandomEncounterConfigurator From(BlueprintRandomEncounterGuid encounterId)
+        {
+            encounterId.GetBlueprint(out BlueprintRandomEncounter instance);
+            return new(instance);
+        }
+
+        public BlueprintRandomEncounterConfigurator SetPool(EncounterPool pool)
+        {
+            if (instance != null)
+            {
+                instance.Pool = pool;
             }
 
             return this;
