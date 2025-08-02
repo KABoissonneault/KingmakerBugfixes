@@ -4,6 +4,8 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
@@ -153,7 +155,7 @@ namespace kmbf.Patch
             if (Main.UMMSettings.BalanceSettings.FixCandlemereTowerResearch)
             {
                 BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ResearchOftheCandlemere)
-                    .EditFirstResult(r =>
+                    .EditEventSuccessAnyFinalResult(r =>
                     {
                         var addBuffAction = r.Actions.GetGameAction<KingdomActionAddBuff>();
                         if (addBuffAction != null)
@@ -172,6 +174,31 @@ namespace kmbf.Patch
                     .Configure();
             }
 
+            BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ItsAMagicalPlace)
+                .EditEventSuccessAnyFinalResult(r =>
+                {
+                    r.Actions = ActionListFactory.Add(r.Actions, KingdomActionAddBuffConfigurator.NewRegional(BlueprintKingdomBuffGuid.ItsAMagicalPlace, BlueprintRegionGuid.ShrikeHills)
+                        .Configure());
+                })
+                .Configure();
+
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ItsAMagicalPlace)
+                .RemoveComponents<AbilityScoreCheckBonus>()
+                .AddComponent<BuffSkillBonus>(b =>
+                {
+                    b.Stat = StatType.SkillKnowledgeArcana;
+                    b.Descriptor = ModifierDescriptor.Competence;
+                    b.Value = 5;
+                })
+                .AddComponent<BuffSkillBonus>(b =>
+                {
+                    b.Stat = StatType.SkillLoreReligion;
+                    b.Descriptor = ModifierDescriptor.Competence;
+                    b.Value = 5;
+                })
+                .Configure();
+
+            // Assassin's Guild, Thieves Guild, Black Market
             {
                 AlignmentMaskType nonLawfulOrGood = AlignmentMaskType.TrueNeutral | AlignmentMaskType.ChaoticNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.ChaoticEvil;
                 BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.AssassinsGuild).SetAlignmentRestriction(nonLawfulOrGood).Configure();
@@ -332,7 +359,7 @@ namespace kmbf.Patch
             Fixup(DisorientedActive, [HamperedActive, BewilderedActive], [HamperedEffect, BewilderedEffect]);
             Fixup(HamperedActive, [DisorientedActive, BewilderedActive], [DisorientedEffect, BewilderedEffect]);
 
-            BlueprintBuffConfigurator.From(HamperedEffect)
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
                 .SetIcon(HamperedActive.Icon)
                 .Configure();
         }
@@ -346,7 +373,7 @@ namespace kmbf.Patch
             AbilityEffectRunAction runAction = raiseDead.GetComponent<AbilityEffectRunAction>();
             if(runAction == null)
             {
-                Main.Log.Error($"Could not find Ability Effect Run Action in Blueprint {raiseDead.GetDebugName()}");
+                Main.Log.Error($"Could not find Ability Effect Run Action in Blueprint {BlueprintAbilityGuid.RaiseDead.GetDebugName()}");
                 return;
             }
 

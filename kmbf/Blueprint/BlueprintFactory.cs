@@ -43,6 +43,11 @@ namespace kmbf.Blueprint
             return new() { Actions = actions.ToArray() };
         }
 
+        public static ActionList Add(ActionList current, GameAction action)
+        {
+            return new() { Actions = [.. current.Actions, action] };
+        }
+
         public static ActionList From(params GameAction[] actions)
         {
             return new() { Actions = actions };

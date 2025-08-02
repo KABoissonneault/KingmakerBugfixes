@@ -20,6 +20,7 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
+using kmbf.Blueprint.Configurator;
 using UnityEngine;
 
 namespace kmbf.Blueprint
@@ -28,14 +29,17 @@ namespace kmbf.Blueprint
     {
         public static void AddAbilityDamageDiceRankClass(BlueprintAbilityGuid abilityId, BlueprintCharacterClassGuid characterClassId)
         {
-            if (!abilityId.GetBlueprint(out BlueprintAbility ability)) return;
-            if (!ability.GetDamageDiceRankConfig(out ContextRankConfig damageDiceRankConfig)) return;
-            if (!characterClassId.GetBlueprint(out BlueprintCharacterClass characterClass)) return;
+            BlueprintAbilityConfigurator.From(abilityId)
+                .EditDamageDiceRankConfig(damageDiceRankConfig =>
+                {
+                    if (!characterClassId.GetBlueprint(out BlueprintCharacterClass characterClass)) return;
 
-            if (!damageDiceRankConfig.m_Class.Any(c => c.AssetGuid == characterClass.AssetGuid))
-            {
-                damageDiceRankConfig.m_Class = damageDiceRankConfig.m_Class.AddItem(characterClass).ToArray();
-            }
+                    if (!damageDiceRankConfig.m_Class.Any(c => c.AssetGuid == characterClass.AssetGuid))
+                    {
+                        damageDiceRankConfig.m_Class = damageDiceRankConfig.m_Class.AddItem(characterClass).ToArray();
+                    }
+                })
+                .Configure();            
         }
 
         public static void ReplaceArtisan(BlueprintCueGuid cueId, BlueprintKingdomArtisanGuid currentArtisan, BlueprintKingdomArtisanGuid newArtisan)
@@ -129,7 +133,7 @@ namespace kmbf.Blueprint
             var attackTrigger = bp.Components.FirstOrDefault(c => c is AddInitiatorAttackRollTrigger || c is AddInitiatorAttackWithWeaponTrigger);
             if (attackTrigger == null)
             {
-                Main.Log.Error($"Could not find Attack trigger component in blueprint '{bp.GetDebugName()}'");
+                Main.Log.Error($"Could not find Attack trigger component in blueprint '{bpId.GetDebugName()}'");
                 return;
             }
 
@@ -248,25 +252,11 @@ namespace kmbf.Blueprint
             var spellDescriptorComponent = bp.GetComponent<SpellDescriptorComponent>();
             if (spellDescriptorComponent == null)
             {
-                Main.Log.Error($"Could not find Spell Descriptor Component on Blueprint {bp.GetDebugName()}'");
+                Main.Log.Error($"Could not find Spell Descriptor Component on Blueprint {bpId.GetDebugName()}'");
                 return;
             }
 
             spellDescriptorComponent.Descriptor &= ~descriptor;
-        }
-
-        public static void AddEventResultBuff(BlueprintObjectGuid bpId, BlueprintBuffGuid buffId)
-        {
-            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
-
-            var finalResults = bp.GetComponent<EventFinalResults>();
-            if (finalResults == null)
-            {
-                Main.Log.Error($"Could not find Event Final Results Component on Blueprint {bp.GetDebugName()}'");
-                return;
-            }
-
-            // TODO: 
         }
 
         public static void SetDisplayName(BlueprintUnitFactGuid factId, LocalizedString displayName)

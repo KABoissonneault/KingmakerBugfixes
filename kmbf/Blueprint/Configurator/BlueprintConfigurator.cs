@@ -11,20 +11,23 @@ using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Mechanics.Components;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
 {
     public abstract class BaseObjectConfigurator<T, TBuilder> 
         where T : ScriptableObject 
-        where TBuilder : BaseObjectConfigurator<T, TBuilder>
+        where TBuilder : BaseObjectConfigurator<T, TBuilder>, new()
     {
         protected T instance;
         protected TBuilder Self => (TBuilder)this;
 
-        public BaseObjectConfigurator(T instance)
+        public static TBuilder From(T instance)
         {
-            this.instance = instance;
+            TBuilder builder = new();
+            builder.instance = instance;
+            return builder;
         }
 
         public T Configure()
@@ -40,14 +43,40 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public abstract class BaseBlueprintObjectConfigurator<T, TBuilder> : BaseObjectConfigurator<T, TBuilder>
-        where T : BlueprintScriptableObject
-        where TBuilder : BaseBlueprintObjectConfigurator<T, TBuilder>
+    public abstract class BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder> : BaseObjectConfigurator<BPType, TBuilder>
+        where BPType : BlueprintScriptableObject
+        where GuidType : BlueprintObjectGuid, new()
+        where TBuilder : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>, new()
     {
-        public BaseBlueprintObjectConfigurator(T instance)
-            : base(instance)
+        public static TBuilder From(GuidType id)
         {
+            id.GetBlueprint(out BlueprintScriptableObject bp);
+            TBuilder builder = new();
+            builder.instance = bp as BPType;
+            return builder;
+        }
 
+        public GuidType GetId()
+        {
+            if (instance != null)
+            {
+                var id = new GuidType();
+                id.guid = instance.AssetGuid.ToString();
+                return id;
+            }
+
+            return null;
+        }
+
+        public string GetDebugName()
+        {
+            GuidType id = GetId();
+            if(id != null)
+            {
+                return id.GetDebugName();
+            }
+
+            return "<Invalid Instance>";
         }
 
         public TBuilder AddComponent<C>(Action<C> init = null) where C : BlueprintComponent
@@ -82,7 +111,21 @@ namespace kmbf.Blueprint.Configurator
                 if (c != null)
                     action(c);
                 else
-                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" in \"{instance.GetDebugName()}\"");
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" in \"{GetDebugName()}\"");
+            }
+
+            return Self;
+        }
+
+        public TBuilder EditComponentWhere<C>(Predicate<C> pred, Action<C> action) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                C c = instance.GetComponentWhere(pred);
+                if (c != null)
+                    action(c);
+                else
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" with condition in \"{GetDebugName()}\"");
             }
 
             return Self;
@@ -123,44 +166,24 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectConfigurator>
+    public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
     {
-        public BlueprintObjectConfigurator(BlueprintScriptableObject instance) 
-            : base(instance)
-        {
 
-        }
-
-        public static BlueprintObjectConfigurator From(BlueprintObjectGuid bpId)
-        {
-            if (bpId.GetBlueprint(out BlueprintScriptableObject instance))
-                return new(instance);
-            else
-                return new(null);
-        }
     }
 
-    public abstract class BaseBlueprintFactConfigurator<T, TBuilder> : BaseBlueprintObjectConfigurator<T, TBuilder>
-        where T : BlueprintFact
-        where TBuilder : BaseBlueprintFactConfigurator<T, TBuilder>
+    public abstract class BaseBlueprintFactConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintFact
+        where GuidType : BlueprintFactGuid, new()
+        where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
     {
-        public BaseBlueprintFactConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
     }
 
-    public class BaseBlueprintUnitFactConfigurator<T, TBuilder> : BaseBlueprintFactConfigurator<T, TBuilder>
-        where T : BlueprintUnitFact
-        where TBuilder : BaseBlueprintFactConfigurator<T, TBuilder>
+    public class BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>
+        where BPType : BlueprintUnitFact
+         where GuidType : BlueprintUnitFactGuid, new()
+        where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
     {
-        public BaseBlueprintUnitFactConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-
         public TBuilder SetIcon(Sprite icon)
         {
             if(instance != null)
@@ -169,36 +192,13 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintBuffConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffConfigurator>
+    public class BlueprintBuffConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffGuid, BlueprintBuffConfigurator>
     {
-        public BlueprintBuffConfigurator(BlueprintBuff instance) 
-            : base(instance)
-        {
 
-        }
-
-        public static BlueprintBuffConfigurator From(BlueprintBuff instance)
-        {
-            return new(instance);
-        }
     }
 
-    public class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityConfigurator>
+    public class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
     {
-        public BlueprintAbilityConfigurator(BlueprintAbility instance)
-            : base(instance)
-        {
-
-        }
-
-        public static BlueprintAbilityConfigurator From(BlueprintAbilityGuid instanceId)
-        {
-            if (instanceId.GetBlueprint(out BlueprintAbility instance))
-                return new(instance);
-            else
-                return new(null);
-        }
-
         public BlueprintAbilityConfigurator SetFullRoundAction(bool fullRoundAction)
         {
             if(instance)
@@ -223,103 +223,57 @@ namespace kmbf.Blueprint.Configurator
 
             return this;
         }
-    }
 
-    public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureConfigurator>
-    {
-        public BlueprintFeatureConfigurator(BlueprintFeature instance)
-            : base(instance)
+        public BlueprintAbilityConfigurator EditDamageDiceRankConfig(Action<ContextRankConfig> action)
         {
-
-        }
-
-        public static BlueprintFeatureConfigurator From(BlueprintFeatureGuid featureId)
-        {
-            if (featureId.GetBlueprint(out BlueprintFeature instance))
-                return new(instance);
-            else
-                return new(null);
+            return EditComponentWhere(c => c.Type == Kingmaker.Enums.AbilityRankType.DamageDice, action);
         }
     }
 
-    public abstract class BaseBlueprintKingdomProjectConfigurator<T, TBuilder> : BaseBlueprintObjectConfigurator<T, TBuilder>
-        where T : BlueprintKingdomProject
-        where TBuilder : BaseBlueprintKingdomProjectConfigurator<T, TBuilder>
+    public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
     {
-        public BaseBlueprintKingdomProjectConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
+    }
 
+    public abstract class BaseBlueprintKingdomProjectConfigurator<BPType, GuidType,TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintKingdomProject
+        where GuidType : BlueprintObjectGuid, new()
+        where TBuilder : BaseBlueprintKingdomProjectConfigurator<BPType, GuidType,TBuilder>, new()
+    {
         public TBuilder EditEventFinalResults(Action<EventFinalResults> action) => EditComponent(action);
-    }
 
-    public class BlueprintKingdomUpgradeConfigurator : BaseBlueprintKingdomProjectConfigurator<BlueprintKingdomUpgrade, BlueprintKingdomUpgradeConfigurator>
-    {
-        public BlueprintKingdomUpgradeConfigurator(BlueprintKingdomUpgrade instance)
-            : base(instance)
-        {
-
-        }
-
-        public static BlueprintKingdomUpgradeConfigurator From(BlueprintKingdomUpgradeGuid upgradeId)
-        {
-            if (upgradeId.GetBlueprint(out BlueprintKingdomUpgrade instance))
-                return new(instance);
-            else
-                return new(null);
-        }
-
-        public BlueprintKingdomUpgradeConfigurator EditFirstResult(Action<EventResult> action)
+        public TBuilder EditEventFinalResult(EventResult.MarginType MarginType, AlignmentMaskType LeaderType, Action<EventResult> action)
         {
             return EditEventFinalResults(c =>
             {
-                if(c.Results.Length > 0)
+                var result = c.Results.FirstOrDefault(r => r.Margin.Encompasses(MarginType) && (r.LeaderAlignment & LeaderType) != LeaderType);
+                if (result != null)
                 {
-                    action(c.Results[0]);
+                    action(result);
                 }
                 else
                 {
-                    Main.Log.Error($"Missing result in EventFinalResults component for Blueprint {instance.GetDebugName()}");
+                    Main.Log.Error($"Missing result of margin \"{MarginType}\" and LeaderType \"{LeaderType}\" in EventFinalResults component for Blueprint {GetDebugName()}");
                 }
             });
         }
     }
 
-    public class BlueprintKingdomBuffConfigurator : BaseBlueprintFactConfigurator<BlueprintKingdomBuff, BlueprintKingdomBuffConfigurator>
+    public class BlueprintKingdomUpgradeConfigurator : BaseBlueprintKingdomProjectConfigurator<BlueprintKingdomUpgrade, BlueprintKingdomUpgradeGuid, BlueprintKingdomUpgradeConfigurator>
     {
-        public BlueprintKingdomBuffConfigurator(BlueprintKingdomBuff instance)
-            : base(instance)
+        public BlueprintKingdomUpgradeConfigurator EditEventSuccessAnyFinalResult(Action<EventResult> action)
         {
-
-        }
-
-        public static BlueprintKingdomBuffConfigurator From(BlueprintKingdomBuffGuid buffId)
-        {
-            if (buffId.GetBlueprint(out BlueprintKingdomBuff instance))
-                return new(instance);
-            else
-                return new(null);
+            return EditEventFinalResult(EventResult.MarginType.Success, AlignmentMaskType.Any, action);
         }
     }
 
-    public class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingConfigurator>
+    public class BlueprintKingdomBuffConfigurator : BaseBlueprintFactConfigurator<BlueprintKingdomBuff, BlueprintKingdomBuffGuid, BlueprintKingdomBuffConfigurator>
     {
-        public BlueprintSettlementBuildingConfigurator(BlueprintSettlementBuilding instance) 
-            : base(instance)
-        {
 
-        }
+    }
 
-        public static BlueprintSettlementBuildingConfigurator From(BlueprintSettlementBuildingGuid buffId)
-        {
-            if (buffId.GetBlueprint(out BlueprintSettlementBuilding instance))
-                return new(instance);
-            else
-                return new(null);
-        }
-
+    public class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingGuid, BlueprintSettlementBuildingConfigurator>
+    {
         public BlueprintSettlementBuildingConfigurator SetAlignmentRestriction(AlignmentMaskType alignment)
         {
             if(instance != null)
@@ -354,22 +308,8 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintKingdomEventConfigurator : BaseBlueprintObjectConfigurator<BlueprintKingdomEvent, BlueprintKingdomEventConfigurator>
+    public class BlueprintKingdomEventConfigurator : BaseBlueprintObjectConfigurator<BlueprintKingdomEvent, BlueprintKingdomEventGuid, BlueprintKingdomEventConfigurator>
     {
-        public BlueprintKingdomEventConfigurator(BlueprintKingdomEvent instance) 
-            : base(instance)
-        {
-
-        }
-
-        public static BlueprintKingdomEventConfigurator From(BlueprintKingdomEventGuid eventId)
-        {
-            if (eventId.GetBlueprint(out BlueprintKingdomEvent instance))
-                return new(instance);
-            else
-                return new(null);
-        }
-
         public BlueprintKingdomEventConfigurator EditPossibleSolution(LeaderType leaderType, Action<PossibleEventSolution> action)
         {
             if (instance != null)
@@ -378,7 +318,7 @@ namespace kmbf.Blueprint.Configurator
                 if (solution != null)
                     action(solution);
                 else
-                    Main.Log.Error($"Could not find a solution with leader \"{leaderType}\" in \"{instance.GetDebugName()}\"");
+                    Main.Log.Error($"Could not find a solution with leader \"{leaderType}\" in \"{GetDebugName()}\"");
             }
 
             return this;
@@ -395,20 +335,8 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public sealed class BlueprintRandomEncounterConfigurator : BaseBlueprintObjectConfigurator<BlueprintRandomEncounter, BlueprintRandomEncounterConfigurator>
+    public sealed class BlueprintRandomEncounterConfigurator : BaseBlueprintObjectConfigurator<BlueprintRandomEncounter, BlueprintRandomEncounterGuid, BlueprintRandomEncounterConfigurator>
     {
-        public BlueprintRandomEncounterConfigurator(BlueprintRandomEncounter instance) 
-            : base(instance)
-        {
-
-        }
-
-        public static BlueprintRandomEncounterConfigurator From(BlueprintRandomEncounterGuid encounterId)
-        {
-            encounterId.GetBlueprint(out BlueprintRandomEncounter instance);
-            return new(instance);
-        }
-
         public BlueprintRandomEncounterConfigurator SetPool(EncounterPool pool)
         {
             if (instance != null)

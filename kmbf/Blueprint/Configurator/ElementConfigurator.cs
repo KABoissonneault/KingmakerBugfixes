@@ -3,6 +3,8 @@ using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Kingdom.Actions;
+using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -12,25 +14,15 @@ namespace kmbf.Blueprint.Configurator
 {
     public abstract class BaseElementConfigurator<T, TBuilder> : BaseObjectConfigurator<T, TBuilder>
         where T : Element
-        where TBuilder : BaseElementConfigurator<T, TBuilder>
+        where TBuilder : BaseElementConfigurator<T, TBuilder>, new()
     {
-        public BaseElementConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
     }
 
     public abstract class BaseConditionConfigurator<T, TBuilder> : BaseElementConfigurator<T, TBuilder>
         where T : Condition
-        where TBuilder : BaseConditionConfigurator<T, TBuilder>
+        where TBuilder : BaseConditionConfigurator<T, TBuilder>, new()
     {
-        public BaseConditionConfigurator(T instance)
-            : base(instance)
-        {
-
-        }
-
         public BaseConditionConfigurator<T, TBuilder> SetNot(bool Not)
         {
             if (instance != null)
@@ -41,50 +33,32 @@ namespace kmbf.Blueprint.Configurator
 
     public abstract class BaseContextConditionConfigurator<T, TBuilder> : BaseConditionConfigurator<T, TBuilder>
         where T : ContextCondition
-        where TBuilder : BaseContextConditionConfigurator<T, TBuilder>
+        where TBuilder : BaseContextConditionConfigurator<T, TBuilder>, new()
     {
-        public BaseContextConditionConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
     }
 
     public abstract class BaseGameActionConfigurator<T, TBuilder> : BaseElementConfigurator<T, TBuilder>
         where T : GameAction
-        where TBuilder : BaseGameActionConfigurator<T, TBuilder>
+        where TBuilder : BaseGameActionConfigurator<T, TBuilder>, new()
     {
-        public BaseGameActionConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
     }
 
     public abstract class BaseContextActionConfigurator<T, TBuilder> : BaseGameActionConfigurator<T, TBuilder>
         where T : ContextAction
-        where TBuilder : BaseContextActionConfigurator<T, TBuilder>
+        where TBuilder : BaseContextActionConfigurator<T, TBuilder>, new()
     {
-        public BaseContextActionConfigurator(T instance)
-            : base(instance)
-        {
 
-        }
     }
 
     public class ContextConditionDifficultyHigherThanConfigurator : BaseContextConditionConfigurator<ContextConditionDifficultyHigherThan, ContextConditionDifficultyHigherThanConfigurator>
     {
-        public ContextConditionDifficultyHigherThanConfigurator(ContextConditionDifficultyHigherThan instance)
-            : base(instance)
-        {
-
-        }
-
         public static ContextConditionDifficultyHigherThanConfigurator New(BlueprintGameDifficulty difficulty)
         {
             ContextConditionDifficultyHigherThan instance = CreateInstance();
             instance.CheckedDifficulty = difficulty;
-            return new ContextConditionDifficultyHigherThanConfigurator(instance);
+            return From(instance);
         }
 
         public ContextConditionDifficultyHigherThanConfigurator SetCheckedDifficulty(BlueprintGameDifficulty difficulty)
@@ -102,19 +76,13 @@ namespace kmbf.Blueprint.Configurator
 
     public class ConditionalConfigurator : BaseGameActionConfigurator<Conditional, ConditionalConfigurator>
     {
-        public ConditionalConfigurator(Conditional instance)
-            : base(instance)
-        {
-
-        }
-
         public static ConditionalConfigurator New(ConditionsChecker conditionsChecker, ActionList ifTrue = null, ActionList ifFalse = null)
         {
             Conditional instance = CreateInstance();
             instance.ConditionsChecker = conditionsChecker;
             instance.IfTrue = ifTrue ?? Constants.Empty.Actions;
             instance.IfFalse = ifFalse ?? Constants.Empty.Actions;
-            return new ConditionalConfigurator(instance);
+            return From(instance);
         }
 
         public ConditionalConfigurator SetConditionsChecker(ConditionsChecker conditionsChecker)
@@ -138,18 +106,12 @@ namespace kmbf.Blueprint.Configurator
 
     public class ContextActionDealDamageConfigurator : BaseContextActionConfigurator<ContextActionDealDamage, ContextActionDealDamageConfigurator>
     {
-        public ContextActionDealDamageConfigurator(ContextActionDealDamage instance)
-            : base(instance)
-        {
-
-        }
-
         public static ContextActionDealDamageConfigurator New(ContextActionDealDamage.Type Type, ContextDiceValue Value)
         {
             ContextActionDealDamage instance = CreateInstance();
             instance.m_Type = Type;
             instance.Value = Value;
-            return new ContextActionDealDamageConfigurator(instance);
+            return From(instance);
         }
 
         public static ContextActionDealDamageConfigurator NewPermanentEnergyDrain(ContextDiceValue Value)
@@ -158,7 +120,7 @@ namespace kmbf.Blueprint.Configurator
             instance.m_Type = ContextActionDealDamage­.Type.EnergyDrain;
             instance.EnergyDrainType = EnergyDrainType.Permanent;
             instance.Value = Value;
-            return new ContextActionDealDamageConfigurator(instance);
+            return From(instance);
         }
 
         public static ContextActionDealDamageConfigurator NewTemporaryEnergyDrain(ContextDiceValue value, ContextDurationValue duration)
@@ -168,7 +130,7 @@ namespace kmbf.Blueprint.Configurator
             instance.EnergyDrainType = EnergyDrainType.Temporary;
             instance.Value = value;
             instance.Duration = duration;
-            return new ContextActionDealDamageConfigurator(instance);
+            return From(instance);
         }
 
         public ContextActionDealDamageConfigurator SetType(ContextActionDealDamage.Type Type)
@@ -192,44 +154,72 @@ namespace kmbf.Blueprint.Configurator
 
     public class SetObjectiveStatusConfigurator : BaseGameActionConfigurator<SetObjectiveStatus, SetObjectiveStatusConfigurator>
     {
-        public SetObjectiveStatusConfigurator(SetObjectiveStatus instance) 
-            : base(instance)
-        {
-
-        }
-
         public static SetObjectiveStatusConfigurator New(BlueprintQuestObjectiveGuid objectiveId, SummonPoolCountTrigger.ObjectiveStatus objectiveStatus)
         {
             if(!objectiveId.GetBlueprint(out BlueprintQuestObjective objective))
             {
-                return new(null);
+                return new();
             }
 
             SetObjectiveStatus instance = CreateInstance();
             instance.Objective = objective;
             instance.Status = objectiveStatus;
-            return new(instance);
+            return From(instance);
         }
     }
 
     public class GiveObjectiveConfigurator : BaseGameActionConfigurator<GiveObjective, GiveObjectiveConfigurator>
-    {
-        public GiveObjectiveConfigurator(GiveObjective instance) 
-            : base(instance)
-        {
-
-        }
-
-        public static GiveObjectiveConfigurator New(BlueprintQuestObjectiveGuid objectiveId)
+    {        public static GiveObjectiveConfigurator New(BlueprintQuestObjectiveGuid objectiveId)
         {
             if (!objectiveId.GetBlueprint(out BlueprintQuestObjective objective))
             {
-                return new(null);
+                return new();
             }
 
             GiveObjective instance = CreateInstance();
             instance.Objective = objective;
-            return new(instance);
+            return From(instance);
+        }
+    }
+
+    public class BaseKingdomActionConfigurator<T, TBuilder> : BaseGameActionConfigurator<T, TBuilder>
+        where T : KingdomAction
+        where TBuilder : BaseKingdomActionConfigurator<T, TBuilder>, new()
+    {
+
+    }
+
+    public class KingdomActionAddBuffConfigurator : BaseGameActionConfigurator<KingdomActionAddBuff, KingdomActionAddBuffConfigurator>
+    {
+        public static KingdomActionAddBuffConfigurator New(BlueprintKingdomBuffGuid buffId)
+        {
+            if (!buffId.GetBlueprint(out BlueprintKingdomBuff buff))
+            {
+                return new();
+            }
+
+            KingdomActionAddBuff instance = CreateInstance();
+            instance.Blueprint = buff;
+            return From(instance);
+        }
+
+        public static KingdomActionAddBuffConfigurator NewRegional(BlueprintKingdomBuffGuid buffId, BlueprintRegionGuid regionId)
+        {
+            if (!buffId.GetBlueprint(out BlueprintKingdomBuff buff))
+            {
+                return new();
+            }
+
+            if (!regionId.GetBlueprint(out BlueprintRegion region))
+            {
+                return new();
+            }
+
+            KingdomActionAddBuff instance = CreateInstance();
+            instance.Blueprint = buff;
+            instance.ApplyToRegion = true;
+            instance.Region = region;
+            return From(instance);
         }
     }
 }

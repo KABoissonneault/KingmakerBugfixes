@@ -41,19 +41,13 @@ namespace kmbf.Action
 
     public class ContextConditionHasBuffsFromCasterConfigurator : BaseContextConditionConfigurator<ContextConditionHasBuffsFromCaster, ContextConditionHasBuffsFromCasterConfigurator>
     {
-        public ContextConditionHasBuffsFromCasterConfigurator(ContextConditionHasBuffsFromCaster instance)
-            : base(instance)
-        {
-
-        }
-
         public static ContextConditionHasBuffsFromCasterConfigurator New(string captionName, BlueprintBuff[] buffs, int count)
         {
             ContextConditionHasBuffsFromCaster instance = CreateInstance();
             instance.CaptionName = captionName;
             instance.Buffs = buffs;
             instance.Count = count;
-            return new ContextConditionHasBuffsFromCasterConfigurator(instance);
+            return From(instance);
         }
         
         public ContextConditionHasBuffsFromCasterConfigurator SetCaptionName(string captionName)
@@ -101,18 +95,12 @@ namespace kmbf.Action
 
     public class ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator : BaseContextActionConfigurator<ContextActionRemoveTargetBuffIfInitiatorNotActive, ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator>
     {
-        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator(ContextActionRemoveTargetBuffIfInitiatorNotActive instance)
-            : base(instance)
-        {
-
-        }
-
         public static ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator New(BlueprintBuff buff, BlueprintBuff active)
         {
             ContextActionRemoveTargetBuffIfInitiatorNotActive instance = CreateInstance();
             instance.Buff = buff;
             instance.Active = active;
-            return new ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator(instance);
+            return From(instance);
         }
 
         public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator SetBuff(BlueprintBuff buff)
