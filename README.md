@@ -8,8 +8,13 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 ## Fixes
 
+[Opt-out] means those fixes can be disabled in the Unity Mod Manager settings (CTRL+F10 while in-game). Generally, those fixes remove exploits that benefit the player.
+[Modify Save] means those fixes may not be able to fully fix the issue if your save already contains the bug. In that case, to fix the issue, you need to go into the UMM settings (CTRL+F10) and press the "Modify Current Save" while a save is loaded. **Those fixes are permanent, and can only be reverted by going back to an earlier save**
+
 ### Core
-- [Opt-out setting] "Area of Effect" with UnitEnter and Round events (ex: Stinking Cloud) do not double trigger on cast
+- [Opt-out] "Area of Effect" with UnitEnter and Round events (ex: Stinking Cloud) do not double trigger on cast
+- Fixed turn-based combat sometimes making the main character lose their surprise action, and sometimes giving the party a surprise round for no reason
+- Fixed peaceful or quest-related world map encounters not being possible to trigger on upgraded regions, making some quests impossible to complete in those conditions
 - Polymorphed characters now preserve their natural weapon enchantments (ex: Magic Fang) through save and load
 - Feral Mutagen characters now preserve their natural weapon enchantments (ex: Magic Fang) through save. Unfortunately, they still lose it on load
 
@@ -36,15 +41,28 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out setting] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
+- "Solid Strategy" now gives Immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
 
 #### Misc
 
 - [Opt-out setting] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
 
-### Event
+### Quests & Event
 
+- Fixed "Honor and Duty" quest from Renown Across Golarion to always trigger when solving the Kingdom event with a Regent (General expels the crusaders). Easier to find the cultists in North Narlmarches after
+- Fixed "Unrest in the Streets" angry mob first check having wrong DCs with unrest modifiers at -2, -3, or -4. The DC is now 13, 8, and 3, instead of 23, 23, -22
 - Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
+
+### Kingdom
+
+- Can now build Temple of Abadar (with proper event), Assassin's Guild (with proper event and alignment), and Thieves Guild (with proper alignment and town size)
+- [Opt-out] Black Market now requires Thieves Guild and non-Lawful, non-Good alignment, as described
+- Erastil's Holy Place now properly grants a kingdom buff that gives a +5 competence bonus to Lore (Nature)
+- [Modify Save] It's a Magical Place now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). Modify Save only required if you already have the upgrade
+- [Opt-out, Modify Save] The Magic of Candlemere Tower now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
+- [Opt-out] Embassy Row now only works in the region where it is built. Now applies to Opportunities
+- The "Wigmold System" from the Stability Rank 10 event now applies to Opportunities 
 
 ### Text and UI
 
