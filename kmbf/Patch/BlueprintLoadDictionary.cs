@@ -212,6 +212,17 @@ namespace kmbf.Patch
                 }
             }
 
+            if (Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandMagisterBonus)
+            {
+                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.EmbassyRow)
+                    .EditComponent<KingdomEventModifier>(m =>
+                    {
+                        m.ApplyToOpportunities = true;
+                        m.OnlyInRegion = true;
+                    })
+                    .Configure();
+            }
+
             // "Honor and Duty" is the Lawful Good quest from Renown Across Golarion
             // The quest starts with a Kingdom event which can be assigned a Regent or a General
             // The intention is that a Good or Neutral Regent, or a Good General, would inspire locals
