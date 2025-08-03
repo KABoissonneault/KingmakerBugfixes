@@ -246,7 +246,7 @@ namespace kmbf.Blueprint.Configurator
         {
             return EditEventFinalResults(c =>
             {
-                var result = c.Results.FirstOrDefault(r => r.Margin.Encompasses(MarginType) && (r.LeaderAlignment & LeaderType) != LeaderType);
+                var result = c.Results.FirstOrDefault(r => r.Margin.Encompasses(MarginType) && (r.LeaderAlignment & LeaderType) == LeaderType);
                 if (result != null)
                 {
                     action(result);
