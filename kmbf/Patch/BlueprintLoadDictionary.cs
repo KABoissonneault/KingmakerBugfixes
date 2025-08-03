@@ -213,16 +213,13 @@ namespace kmbf.Patch
                 }
             }
 
-            if (Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandMagisterBonus)
-            {
-                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.EmbassyRow)
-                    .EditComponent<KingdomEventModifier>(m =>
-                    {
-                        m.ApplyToOpportunities = true;
-                        m.OnlyInRegion = true;
-                    })
-                    .Configure();
-            }
+            BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.EmbassyRow)
+                .EditComponent<KingdomEventModifier>(m =>
+                {
+                    m.ApplyToOpportunities = true;
+                    m.OnlyInRegion = Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandMagisterBonus;
+                })
+                .Configure();
 
             BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.StaRank10_WigmoldSystem)
                 .EditAllComponents<KingdomEventModifier>(m =>
