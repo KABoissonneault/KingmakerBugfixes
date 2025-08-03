@@ -461,6 +461,7 @@ public class BlueprintKingdomBuffGuid : BlueprintFactGuid
 
     public static readonly BlueprintKingdomBuffGuid CandlemereTowerResearch = new("b92f2b91fe37f4f4e8000842069cf4a3");
     public static readonly BlueprintKingdomBuffGuid ItsAMagicalPlace = new("540f7dfba39b96c46bb76680e46077da");
+    public static readonly BlueprintKingdomBuffGuid StaRank10_WigmoldSystem = new("133818e83c8fb724fa9a59b547a7e0c6");
 }
 
 public class BlueprintRegionGuid : BlueprintObjectGuid

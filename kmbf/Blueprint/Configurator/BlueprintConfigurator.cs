@@ -164,6 +164,17 @@ namespace kmbf.Blueprint.Configurator
 
             return Self;
         }
+
+        public TBuilder EditAllComponents<C>(Action<C> action) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                foreach(C c in instance.GetComponents<C>())
+                    action(c);
+            }
+
+            return Self;
+        }
     }
 
     public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
