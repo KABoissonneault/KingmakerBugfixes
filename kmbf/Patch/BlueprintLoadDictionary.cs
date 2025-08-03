@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Quests.Common;
@@ -310,8 +311,23 @@ namespace kmbf.Patch
             ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageTwoActions, StatType.SkillLoreNature, StatType.SkillAthletics);
             ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageThreeActions, StatType.SkillLoreNature, StatType.SkillAthletics);
 
+            // Fix the "Magic of the Candlemere Tower" region upgrade not getting unlocked when delaying the Duke Dazzleflare fight
             BlueprintCueConfigurator.From(BlueprintCueGuid.CandlemereRismelDelayedStartFight)
                 .AddOnStopAction(UnlockFlagConfigurator.New(BlueprintUnlockableFlagGuid.SouthNarlmarches_MagicalUpgrade, 1).Configure());
+
+            // Unrest in the Streets Angry First Check DC goes from DC23 at 0, to 18 at -1, to 23 at -2 and -3, to -22 at -4
+            // Fix the modifiers to actually check for -2 and -3 instead of all three checking for -4, giving the intended DC progression
+            BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Diplomacy)
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2).Configure()))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3).Configure()))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4).Configure()))
+                .Configure();
+
+            BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Intimidate)
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2).Configure()))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3).Configure()))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4).Configure()))
+                .Configure();
 
             #endregion
 

@@ -1,7 +1,9 @@
-﻿using Kingmaker.Blueprints;
+﻿using JetBrains.Annotations;
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Actions;
@@ -24,11 +26,24 @@ namespace kmbf.Blueprint.Configurator
         where T : Condition
         where TBuilder : BaseConditionConfigurator<T, TBuilder>, new()
     {
-        public BaseConditionConfigurator<T, TBuilder> SetNot(bool Not)
+        public TBuilder SetNot(bool Not)
         {
             if (instance != null)
                 instance.Not = Not;
-            return this;
+            return Self;
+        }
+    }
+
+    public sealed class FlagUnlockedConfigurator : BaseConditionConfigurator<FlagUnlocked, FlagUnlockedConfigurator>
+    {
+        public static FlagUnlockedConfigurator New(BlueprintUnlockableFlagGuid flagId, params int[] values)
+        {
+            if (!flagId.GetBlueprint(out BlueprintUnlockableFlag flag)) return new();
+
+            FlagUnlocked instance = CreateInstance();
+            instance.ConditionFlag = flag;
+            instance.SpecifiedValues = values;
+            return From(instance);
         }
     }
 

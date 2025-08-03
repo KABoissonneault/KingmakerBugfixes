@@ -371,5 +371,27 @@ namespace kmbf.Blueprint.Configurator
 
             return this;
         }
+
+        
+    }
+
+    public sealed class BlueprintCheckConfigurator : BaseBlueprintObjectConfigurator<BlueprintCheck, BlueprintCheckGuid, BlueprintCheckConfigurator>
+    {
+        public BlueprintCheckConfigurator EditDCModifierAt(int index, Action<DCModifier> action)
+        {
+            if (instance != null)
+            {
+                if (index > 0 && index < instance.DCModifiers.Length)
+                {
+                    action(instance.DCModifiers[index]);
+                }
+                else
+                {
+                    Main.Log.Error($"Invalid DCModifier index {index}, length was {instance.DCModifiers.Length}");
+                }
+            }
+
+            return this;
+        }
     }
 }

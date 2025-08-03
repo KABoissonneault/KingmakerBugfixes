@@ -214,6 +214,7 @@ public class BlueprintCueGuid : BlueprintObjectGuid
     public bool GetBlueprint(out BlueprintCue bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintCueGuid IrleneGiftCue3 = new("03807d3897f73e44b84b476ae63a62f1");
+
     public static readonly BlueprintCueGuid CandlemereRismelDelayedStartFight = new("f099ec070656d0f45981e29aeac9d190");
 }
 
@@ -357,6 +358,9 @@ public class BlueprintCheckGuid : BlueprintObjectGuid
 
     public static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
     public static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
+
+    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Diplomacy = new("f0a74d43a46cff44e9cefa07710bb1e6");
+    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Intimidate = new("46b410623d176764fbd57bdc0e5b921d");
 }
 
 public class BlueprintWeaponTypeGuid : BlueprintObjectGuid
@@ -539,6 +543,8 @@ public class BlueprintUnlockableFlagGuid : BlueprintObjectGuid
 
     public override string BlueprintTypeName => "Unlockable Flag";
     public bool GetBlueprint(out BlueprintUnlockableFlag bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintUnlockableFlagGuid AngryMob_FirstCheckModifier = new("8258f133257832541bf2b7bd9f99ed05");
 
     public static readonly BlueprintUnlockableFlagGuid SouthNarlmarches_MagicalUpgrade = new("a069e9ffe15aa214c830c8ef57a7bee0");
 }
