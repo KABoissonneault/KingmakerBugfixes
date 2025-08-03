@@ -213,7 +213,8 @@ public class BlueprintCueGuid : BlueprintObjectGuid
     public override string BlueprintTypeName => "Cue";
     public bool GetBlueprint(out BlueprintCue bp) => GetBlueprintAs(out bp);
 
-    public static readonly BlueprintCueGuid IrleneGiftCue3 = new BlueprintCueGuid("03807d3897f73e44b84b476ae63a62f1");
+    public static readonly BlueprintCueGuid IrleneGiftCue3 = new("03807d3897f73e44b84b476ae63a62f1");
+    public static readonly BlueprintCueGuid CandlemereRismelDelayedStartFight = new("f099ec070656d0f45981e29aeac9d190");
 }
 
 public class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
@@ -525,4 +526,19 @@ public class BlueprintRandomEncounterGuid : BlueprintObjectGuid
     public bool GetBlueprint(out BlueprintRandomEncounter bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintRandomEncounterGuid HonorAndDuty = new("d46dea989708a6f4c84e800fdb999449");
+}
+
+public class BlueprintUnlockableFlagGuid : BlueprintObjectGuid
+{
+    public BlueprintUnlockableFlagGuid() { }
+    public BlueprintUnlockableFlagGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Unlockable Flag";
+    public bool GetBlueprint(out BlueprintUnlockableFlag bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintUnlockableFlagGuid SouthNarlmarches_MagicalUpgrade = new("a069e9ffe15aa214c830c8ef57a7bee0");
 }

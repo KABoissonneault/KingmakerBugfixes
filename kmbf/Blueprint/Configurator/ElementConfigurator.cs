@@ -1,4 +1,5 @@
-﻿using Kingmaker.Blueprints.GameDifficulties;
+﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Quests.Common;
@@ -169,7 +170,8 @@ namespace kmbf.Blueprint.Configurator
     }
 
     public class GiveObjectiveConfigurator : BaseGameActionConfigurator<GiveObjective, GiveObjectiveConfigurator>
-    {        public static GiveObjectiveConfigurator New(BlueprintQuestObjectiveGuid objectiveId)
+    {        
+        public static GiveObjectiveConfigurator New(BlueprintQuestObjectiveGuid objectiveId)
         {
             if (!objectiveId.GetBlueprint(out BlueprintQuestObjective objective))
             {
@@ -178,6 +180,19 @@ namespace kmbf.Blueprint.Configurator
 
             GiveObjective instance = CreateInstance();
             instance.Objective = objective;
+            return From(instance);
+        }
+    }
+
+    public sealed class UnlockFlagConfigurator : BaseGameActionConfigurator<UnlockFlag, UnlockFlagConfigurator>
+    {
+        public static UnlockFlagConfigurator New(BlueprintUnlockableFlagGuid flagId, int value = 0)
+        {
+            if (!flagId.GetBlueprint(out BlueprintUnlockableFlag flag)) return new();
+
+            UnlockFlag instance = CreateInstance();
+            instance.flag = flag;
+            instance.flagValue = value;
             return From(instance);
         }
     }

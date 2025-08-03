@@ -2,6 +2,7 @@
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom;
@@ -353,6 +354,19 @@ namespace kmbf.Blueprint.Configurator
             if (instance != null)
             {
                 instance.Pool = pool;
+            }
+
+            return this;
+        }
+    }
+
+    public sealed class BlueprintCueConfigurator : BaseBlueprintObjectConfigurator<BlueprintCue, BlueprintCueGuid, BlueprintCueConfigurator>
+    {
+        public BlueprintCueConfigurator AddOnStopAction(GameAction action)
+        {
+            if (instance != null)
+            {
+                instance.OnStop = ActionListFactory.Add(instance.OnStop, action);
             }
 
             return this;

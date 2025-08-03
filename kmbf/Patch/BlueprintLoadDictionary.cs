@@ -310,6 +310,9 @@ namespace kmbf.Patch
             ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageTwoActions, StatType.SkillLoreNature, StatType.SkillAthletics);
             ReplaceCheckSkillType(BlueprintCheckGuid.ShrewishGulchLastStageThreeActions, StatType.SkillLoreNature, StatType.SkillAthletics);
 
+            BlueprintCueConfigurator.From(BlueprintCueGuid.CandlemereRismelDelayedStartFight)
+                .AddOnStopAction(UnlockFlagConfigurator.New(BlueprintUnlockableFlagGuid.SouthNarlmarches_MagicalUpgrade, 1).Configure());
+
             #endregion
 
             #region UI and Text
