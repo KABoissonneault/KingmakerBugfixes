@@ -25,7 +25,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 - Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
 - "Magic Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
-- Fixed Freedom of Movement's Immunity to Grapple
+- Fixed Freedom of Movement to properly grant Immunity to Grapple
 - Fixed Rogue "Double Debilitation" not applying two Debilitating Injuries
 - Fixed Hampering Injury debuff icon to match the active
 - Fixed Kineticist "Deadly Earth: Metal" (and Rare Metal) having half the damage scaling it should have
