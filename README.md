@@ -62,8 +62,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Erastil's Holy Place now properly grants a kingdom buff that gives a +5 competence bonus to Lore (Nature)
 - [Modify Save] It's a Magical Place now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). Modify Save only required if you already have the upgrade
 - [Opt-out, Modify Save] The Magic of Candlemere Tower now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
-- [Opt-out] Embassy Row now only works in the region where it is built. Now applies to Opportunities
-- The "Wigmold System" from the Stability Rank 10 event now applies to Opportunities 
+- [Opt-out] Embassy Row now only works in the region where it is built. Now also applies to Opportunities in addition to Problems
+- The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems 
 
 ### Text and UI
 
