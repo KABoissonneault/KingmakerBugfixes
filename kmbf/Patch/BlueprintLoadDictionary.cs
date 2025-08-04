@@ -231,6 +231,8 @@ namespace kmbf.Patch
                     m.ApplyToOpportunities = true;
                     m.OnlyInRegion = Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandMagisterBonus;
                 })
+                .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, BlueprintSettlementBuildingGuid.School)
+                .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket)
                 .Configure();
 
             BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.StaRank10_WigmoldSystem)

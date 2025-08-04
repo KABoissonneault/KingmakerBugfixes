@@ -35,6 +35,15 @@ namespace kmbf.Patch
                     }
                 }
             }
+
+            if (KingdomState.Instance != null)
+            {
+                if(KingdomState.Instance.CurrentRegion != null)
+                {
+                    // Adjacency bonus changes require Building/Upgrading/Selling. Add the ability to refresh here
+                    KingdomState.Instance.CurrentRegion.Settlement?.Update();
+                }
+            }
         }
     }
 }

@@ -318,6 +318,25 @@ namespace kmbf.Blueprint.Configurator
 
             return this;
         }
+
+        public BlueprintSettlementBuildingConfigurator AddAdjacencyBonusBuildings(KingdomStats.Type type, params BlueprintSettlementBuildingGuid[] buildingIds)
+        {
+            if(instance != null)
+            {
+                EditComponentWhere<BuildingAdjacencyBonus>(c => c.Stats[type] > 0, c =>
+                {
+                    foreach(var buildingId in buildingIds)
+                    {
+                        if (buildingId.GetBlueprint(out BlueprintSettlementBuilding bp) && !c.Buildings.Contains(bp))
+                        {
+                            c.Buildings.Add(bp);
+                        }
+                    }
+                });
+            }
+
+            return this;
+        }
     }
 
     public class BlueprintKingdomEventConfigurator : BaseBlueprintObjectConfigurator<BlueprintKingdomEvent, BlueprintKingdomEventGuid, BlueprintKingdomEventConfigurator>

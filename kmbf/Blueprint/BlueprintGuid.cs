@@ -446,12 +446,14 @@ public class BlueprintSettlementBuildingGuid : BlueprintFactGuid
     public override string BlueprintTypeName => "Settlement Building";
     public bool GetBlueprint(out BlueprintSettlementBuilding bp) => GetBlueprintAs(out bp);
 
-    public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
     public static readonly BlueprintSettlementBuildingGuid AssassinsGuild = new("449a534c27f58ad47b36a32517f99bb5");
-    public static readonly BlueprintSettlementBuildingGuid ThievesGuild = new("73526a963bbe73748af8a37299907dea");
+    public static readonly BlueprintSettlementBuildingGuid Aviary = new("cb8281c84a460704989e099eccacc7ca");
     public static readonly BlueprintSettlementBuildingGuid BlackMarket = new("3ea99e66901503e479cf6b58ba46265d");
-    public static readonly BlueprintSettlementBuildingGuid GamblingDen = new("13e6ce05f2aca6843b0cda6dff79e73b");
     public static readonly BlueprintSettlementBuildingGuid EmbassyRow = new("f7e58e7f377c9fa46a10d2eecedd8c7c");
+    public static readonly BlueprintSettlementBuildingGuid GamblingDen = new("13e6ce05f2aca6843b0cda6dff79e73b");
+    public static readonly BlueprintSettlementBuildingGuid School = new("442cd4e83d39fb245853d23bfd3c158c");
+    public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
+    public static readonly BlueprintSettlementBuildingGuid ThievesGuild = new("73526a963bbe73748af8a37299907dea");
 }
 
 public class BlueprintKingdomBuffGuid : BlueprintFactGuid
