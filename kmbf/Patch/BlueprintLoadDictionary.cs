@@ -207,11 +207,15 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            // Assassin's Guild, Thieves Guild, Black Market
+            // Assassin's Guild, Thieves Guild, Black Market, Gambling Den
             {
                 AlignmentMaskType nonLawfulOrGood = AlignmentMaskType.TrueNeutral | AlignmentMaskType.ChaoticNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.ChaoticEvil;
                 BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.AssassinsGuild).SetAlignmentRestriction(nonLawfulOrGood).Configure();
-                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.ThievesGuild).SetAlignmentRestriction(nonLawfulOrGood).Configure();
+                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.GamblingDen).SetAlignmentRestriction(nonLawfulOrGood).Configure();
+                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.ThievesGuild)
+                    .SetAlignmentRestriction(nonLawfulOrGood)
+                    .RemoveComponents<AdjacencyRestriction>() // Adjacency restrictions are easy to work around and not documented by the game, just remove it
+                    .Configure();
                 if (Main.UMMSettings.BalanceSettings.FixKingdomBuildingAccess)
                 {
                     BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.BlackMarket)
