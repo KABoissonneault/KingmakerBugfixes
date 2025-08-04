@@ -13,6 +13,7 @@ namespace kmbf
         public bool FixCandlemereTowerResearch = true;
         public bool FixKingdomBuildingAccess = true;
         public bool FixEmbassyRowGrandMagisterBonus = true;
+        public bool FixNecklaceOfDoubleCrosses = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable

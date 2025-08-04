@@ -400,6 +400,7 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public static readonly BlueprintFeatureGuid EkunWolfDefensiveBuff = new("b6cb208baaff10542a8230f1b9f6b26d");
 
     public static readonly BlueprintFeatureGuid DwarvenChampionEnchant = new("09de6da5469ab1943924139d5145835f");
+    public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
 }
 
 public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid

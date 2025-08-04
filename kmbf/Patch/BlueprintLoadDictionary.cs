@@ -30,6 +30,7 @@ using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
+using kmbf.Component;
 using UnityEngine;
 
 namespace kmbf.Patch
@@ -132,6 +133,13 @@ namespace kmbf.Patch
                 .RemoveComponents<AddConditionImmunity>()
                 .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
                 .Configure();
+
+            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixNecklaceOfDoubleCrosses)
+            {
+                BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.NecklaceOfDoubleCrosses)
+                    .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
+                    .AddComponent<AooAgainstAllies>();
+            }
 
             #endregion
 
