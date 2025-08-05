@@ -2,6 +2,7 @@
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.ElementsSystem;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Conditions;
 using Kingmaker.UnitLogic.Mechanics;
@@ -29,6 +30,15 @@ namespace kmbf.Blueprint.Builder
             FlagUnlocked instance = CreateInstance<FlagUnlocked>();
             instance.ConditionFlag = flag;
             instance.SpecifiedValues = values;
+            return instance;
+        }
+
+        public static ContextConditionHasConditions MakeContextConditionHasConditions(UnitCondition[] conditions, bool any = false, bool not = false)
+        {
+            ContextConditionHasConditions instance = CreateInstance<ContextConditionHasConditions>();
+            instance.Conditions = conditions;
+            instance.Any = any;
+            instance.Not = not;
             return instance;
         }
 

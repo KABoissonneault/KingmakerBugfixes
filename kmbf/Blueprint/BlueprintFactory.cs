@@ -39,6 +39,11 @@ namespace kmbf.Blueprint
         {
             return new() { Conditions = [condition] };
         }
+
+        public static ConditionsChecker From(Operation operation, params Condition[] conditions)
+        {
+            return new() { Operation = operation, Conditions =  conditions };
+        }
     }
 
     public static class ActionListFactory

@@ -5,6 +5,8 @@ using kmbf.Blueprint.Configurator;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.UnitLogic;
+using Kingmaker.ElementsSystem;
 
 namespace kmbf.Patch
 {
@@ -55,9 +57,11 @@ namespace kmbf.Patch
                 (
                     MakeGameActionConditional
                     (
-                        ConditionsCheckerFactory.Single
+                        ConditionsCheckerFactory.From
                         (
-                            MakeContextConditionHasBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, not: true)
+                            Operation.And
+                            , MakeContextConditionHasConditions([UnitCondition.Shaken, UnitCondition.Frightened], any: true)
+                            , MakeContextConditionHasBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, not: true)
                         )
                         , ifTrue: ActionListFactory.From
                         (

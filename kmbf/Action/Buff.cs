@@ -1,5 +1,6 @@
 ﻿using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Entities;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
@@ -9,6 +10,29 @@ using kmbf.Blueprint.Configurator;
 
 namespace kmbf.Action
 {
+    public class ContextConditionHasConditions : ContextCondition
+    {
+        public UnitCondition[] Conditions;
+        public bool Any;
+
+        public override string GetConditionCaption()
+        {
+            return $"Check if target has one or multiple conditions";
+        }
+
+        public override bool CheckCondition()
+        {
+            if (Any)
+            {
+                return Conditions.Any(Target.Unit.Descriptor.State.HasCondition);
+            }
+            else
+            {
+                return Conditions.All(Target.Unit.Descriptor.State.HasCondition);
+            }
+        }
+    }
+
     public class ContextConditionHasBuffsFromCaster : ContextCondition
     {
         public BlueprintBuff[] Buffs;
