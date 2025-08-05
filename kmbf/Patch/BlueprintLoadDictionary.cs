@@ -24,11 +24,11 @@ using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
 using kmbf.Blueprint;
+using static kmbf.Blueprint.Builder.ElementBuilder;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
 using UnityEngine;
@@ -329,15 +329,15 @@ namespace kmbf.Patch
             // Unrest in the Streets Angry First Check DC goes from DC23 at 0, to 18 at -1, to 23 at -2 and -3, to -22 at -4
             // Fix the modifiers to actually check for -2 and -3 instead of all three checking for -4, giving the intended DC progression
             BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Diplomacy)
-                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2).Configure()))
-                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3).Configure()))
-                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4).Configure()))
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2)))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3)))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
 
             BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Intimidate)
-                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2).Configure()))
-                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3).Configure()))
-                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(FlagUnlockedConfigurator.New(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4).Configure()))
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2)))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3)))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
 
             #endregion
@@ -363,36 +363,34 @@ namespace kmbf.Patch
             if (!BlueprintBuffGuid.DebilitatingInjuryBewilderedActive.GetBlueprint(out BlueprintBuff BewilderedActive)) return;
             if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedActive.GetBlueprint(out BlueprintBuff DisorientedActive)) return;
             if (!BlueprintBuffGuid.DebilitatingInjuryHamperedActive.GetBlueprint(out BlueprintBuff HamperedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect.GetBlueprint(out BlueprintBuff BewilderedEffect)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect.GetBlueprint(out BlueprintBuff DisorientedEffect)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryHamperedEffect.GetBlueprint(out BlueprintBuff HamperedEffect)) return;
 
-            Conditional MakeConditional(BlueprintBuff[] otherActives, BlueprintBuff[] otherBuffs, Conditional[] normalConditionals)
+            Conditional MakeConditional(BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs, Conditional[] normalConditionals)
             {
                 var featureCondition = ScriptableObject.CreateInstance<ContextConditionCasterHasFact>();
                 featureCondition.Fact = DoubleDebilitation;
 
                 // If the target has at least two of the "other injuries" from the caster, remove all the existing ones
-                var doubleDebilitationAction = ConditionalConfigurator.New(
-                    ConditionsCheckerFactory.Single(
-                        ContextConditionHasBuffsFromCasterConfigurator.New("Debilitating Injury", otherBuffs, 2).Configure()
-                    ),
-                    ifTrue: ActionListFactory.From(
-                        ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator.New(buff: otherBuffs[0], active: otherActives[0]).Configure()
-                        , ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator.New(buff: otherBuffs[1], active: otherActives[1]).Configure()
+                var doubleDebilitationAction = MakeGameActionConditional
+                (
+                    ConditionsCheckerFactory.Single(MakeContextConditionHasBuffsFromCaster("Debilitating Injury", otherBuffs, 2)),
+                    ifTrue: ActionListFactory.From
+                    (
+                        MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[0], activeId: otherActives[0])
+                        , MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[1], activeId: otherActives[1])
                     )
-                ).Configure();
+                );
 
                 // If user has Double Debilitation, use the new "Remove if two buffs". Else, use the current "Remove if any buff"
 
-                return ConditionalConfigurator.New(
+                return MakeGameActionConditional
+                (
                     ConditionsCheckerFactory.Single(featureCondition)
                     , ifTrue: ActionListFactory.From(doubleDebilitationAction)
                     , ifFalse: ActionListFactory.From(normalConditionals)
-                    ).Configure();
+                );
             }
 
-            void Fixup(BlueprintBuff active, BlueprintBuff[] otherActives, BlueprintBuff[] otherBuffs)
+            void Fixup(BlueprintBuff active, BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs)
             {
                 var triggerComponent = active.GetComponent<AddInitiatorAttackRollTrigger>();
                 ActionList triggerActions = triggerComponent.Action;
@@ -403,9 +401,24 @@ namespace kmbf.Patch
                     .ToArray();
             }
 
-            Fixup(BewilderedActive, [DisorientedActive, HamperedActive], [DisorientedEffect, HamperedEffect]);
-            Fixup(DisorientedActive, [HamperedActive, BewilderedActive], [HamperedEffect, BewilderedEffect]);
-            Fixup(HamperedActive, [DisorientedActive, BewilderedActive], [DisorientedEffect, BewilderedEffect]);
+            Fixup
+            (
+                BewilderedActive
+                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryHamperedActive]
+                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryHamperedEffect]
+            );
+            Fixup
+            (
+                DisorientedActive
+                , [BlueprintBuffGuid.DebilitatingInjuryHamperedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
+                , [BlueprintBuffGuid.DebilitatingInjuryHamperedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
+            );
+            Fixup
+            (
+                HamperedActive
+                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
+                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
+            );
 
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
                 .SetIcon(HamperedActive.Icon)
@@ -434,10 +447,11 @@ namespace kmbf.Patch
                 .NewPermanentEnergyDrain(ContextDiceFactory.BonusConstant(2))
                 .Configure();
 
-            Conditional difficultyConditional = ConditionalConfigurator.New(
+            Conditional difficultyConditional = MakeGameActionConditional
+            (
                 new ConditionsChecker() { Conditions = [difficultyCheck] }
-                , ifTrue: new ActionList() { Actions = [dealDamageAction] })
-                .Configure();
+                , ifTrue: new ActionList() { Actions = [dealDamageAction] }
+             );
 
             // Put the drain first, resurrection makes the unit untargetable
             runAction.Actions.Actions = [difficultyConditional, .. runAction.Actions.Actions];
@@ -456,16 +470,21 @@ namespace kmbf.Patch
                         if(isPartyMemberConditional != null)
                         {
 
-                            var difficultyConditional = ConditionalConfigurator.New(
-                                ConditionsCheckerFactory.Single(
+                            var difficultyConditional = MakeGameActionConditional
+                            (
+                                ConditionsCheckerFactory.Single
+                                (
                                     ContextConditionDifficultyHigherThanConfigurator.New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
                                         .SetCheckOnlyForMonsterCaster(false)
                                         .Configure()
                                 ),
-                                ifTrue: ActionListFactory.From(ContextActionDealDamageConfigurator
-                                    .NewTemporaryEnergyDrain(ContextDiceFactory.BonusConstant(1), ContextDurationFactory.ConstantDays(1))
-                                    .Configure()))
-                                .Configure();
+                                ifTrue: ActionListFactory.From
+                                (
+                                    ContextActionDealDamageConfigurator
+                                        .NewTemporaryEnergyDrain(ContextDiceFactory.BonusConstant(1), ContextDurationFactory.ConstantDays(1))
+                                        .Configure()
+                                )
+                            );
 
                             isPartyMemberConditional.IfTrue.Actions = [difficultyConditional, .. isPartyMemberConditional.IfTrue.Actions];
                         }

@@ -87,8 +87,7 @@ public class BlueprintObjectGuid
         return false;
     }
 
-    public bool TryFetchBP<BPType>(out BPType bp)
-        where BPType : BlueprintScriptableObject
+    public bool TryFetchBP(out BlueprintScriptableObject bp)
     {
         if (!cached)
         {
@@ -96,8 +95,34 @@ public class BlueprintObjectGuid
             cached = true;
         }
 
-        bp = (BPType)cachedObject;
+        bp = cachedObject;
         return bp != null;
+    }
+
+    public void AssignNewInstance(BlueprintScriptableObject bp)
+    {
+        cachedObject = bp;
+        cached = true;
+    }
+
+    public static bool GetBlueprintArray<GuidType, BPType>(IEnumerable<GuidType> guids, out BPType[] bps)
+        where GuidType : BlueprintObjectGuid
+        where BPType : BlueprintScriptableObject
+    {
+        List<BPType> result = new List<BPType>();
+        foreach (var guid in guids)
+        {
+            if (!guid.GetBlueprintAs(out BPType value))
+            {
+                bps = null;
+                return false;
+            }
+
+            result.Add(value);
+        }
+
+        bps = result.ToArray();
+        return true;
     }
 }
 

@@ -41,15 +41,6 @@ namespace kmbf.Action
 
     public class ContextConditionHasBuffsFromCasterConfigurator : BaseContextConditionConfigurator<ContextConditionHasBuffsFromCaster, ContextConditionHasBuffsFromCasterConfigurator>
     {
-        public static ContextConditionHasBuffsFromCasterConfigurator New(string captionName, BlueprintBuff[] buffs, int count)
-        {
-            ContextConditionHasBuffsFromCaster instance = CreateInstance();
-            instance.CaptionName = captionName;
-            instance.Buffs = buffs;
-            instance.Count = count;
-            return From(instance);
-        }
-        
         public ContextConditionHasBuffsFromCasterConfigurator SetCaptionName(string captionName)
         {
             instance.CaptionName = captionName;
@@ -66,6 +57,40 @@ namespace kmbf.Action
         {
             instance.Count = count;
             return this;
+        }
+    }
+
+    public class ContextActionRemoveBuffFromCaster : ContextAction
+    {
+        public BlueprintBuff Buff;
+        public bool ToCaster;
+
+        public override string GetCaption()
+        {
+            return $"Remove Target Buff \"{Buff.Name}\" coming from Caster";
+        }
+
+        public override void RunAction()
+        {
+            MechanicsContext mechanicsContext = ElementsContext.GetData<MechanicsContext.Data>()?.Context;
+            if (mechanicsContext == null)
+            {
+                Main.Log.Error("Unable to remove buff: no context found");
+                return;
+            }
+
+            UnitEntityData unitEntityData = ToCaster ? Context.MaybeCaster : Target.Unit;
+            if (unitEntityData == null)
+            {
+                Main.Log.Error("Unable to remove buff: no target found");
+                return;
+            }
+
+            var buff = unitEntityData.Buffs.Enumerable.FirstOrDefault(b => b.Blueprint == Buff && b.Context.MaybeCaster == Context.MaybeCaster);
+            if (buff != null)
+            {
+                buff.Remove();
+            }
         }
     }
 
@@ -90,29 +115,6 @@ namespace kmbf.Action
             {                
                 Target.Unit.Buffs.RemoveFact(Buff);
             }
-        }
-    }
-
-    public class ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator : BaseContextActionConfigurator<ContextActionRemoveTargetBuffIfInitiatorNotActive, ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator>
-    {
-        public static ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator New(BlueprintBuff buff, BlueprintBuff active)
-        {
-            ContextActionRemoveTargetBuffIfInitiatorNotActive instance = CreateInstance();
-            instance.Buff = buff;
-            instance.Active = active;
-            return From(instance);
-        }
-
-        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator SetBuff(BlueprintBuff buff)
-        {
-            instance.Buff = buff;
-            return this;
-        }
-
-        public ContextActionRemoveTargetBuffIfInitiatorNotActiveConfigurator SetActive(BlueprintBuff active)
-        {
-            instance.Active = active;
-            return this;
         }
     }
 }

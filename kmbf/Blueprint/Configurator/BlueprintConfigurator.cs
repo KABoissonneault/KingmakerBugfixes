@@ -9,6 +9,7 @@ using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
+using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
@@ -23,6 +24,8 @@ namespace kmbf.Blueprint.Configurator
     {
         protected T instance;
         protected TBuilder Self => (TBuilder)this;
+
+        public T Instance { get => instance; }
 
         public static TBuilder From(T instance)
         {
@@ -49,6 +52,18 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintObjectGuid, new()
         where TBuilder : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>, new()
     {
+        protected static BPType CreateInstance(GuidType id, string objectName)
+        {
+            BPType bp = CreateInstance();
+            bp.AssetGuid = id.guid;
+            bp.name = objectName;
+            bp.Components = [];
+
+            id.AssignNewInstance(bp);
+
+            return bp;
+        }
+
         public static TBuilder From(GuidType id)
         {
             id.GetBlueprint(out BlueprintScriptableObject bp);
@@ -63,6 +78,7 @@ namespace kmbf.Blueprint.Configurator
             {
                 var id = new GuidType();
                 id.guid = instance.AssetGuid.ToString();
+                id.AssignNewInstance(instance);
                 return id;
             }
 
@@ -78,6 +94,16 @@ namespace kmbf.Blueprint.Configurator
             }
 
             return "<Invalid Instance>";
+        }
+
+        public TBuilder AddComponent<C>(C c) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                instance.Components = [.. instance.Components, c];
+            }
+
+            return Self;
         }
 
         public TBuilder AddComponent<C>(Action<C> init = null) where C : BlueprintComponent
@@ -196,6 +222,15 @@ namespace kmbf.Blueprint.Configurator
          where GuidType : BlueprintUnitFactGuid, new()
         where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
     {
+        protected static BPType CreateInstance(GuidType id, string objectName, LocalizedString displayName, LocalizedString description, Sprite icon)
+        {
+            BPType bp = CreateInstance(id, objectName);
+            bp.m_DisplayName = displayName;
+            bp.m_Description = description;
+            bp.m_Icon = icon;
+            return bp;
+        }
+
         public TBuilder SetIcon(Sprite icon)
         {
             if(instance != null)
@@ -206,7 +241,38 @@ namespace kmbf.Blueprint.Configurator
 
     public class BlueprintBuffConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffGuid, BlueprintBuffConfigurator>
     {
+        public static BlueprintBuffConfigurator New(BlueprintBuffGuid buffId, string objectName, LocalizedString displayName, LocalizedString description, Sprite icon)
+        {
+            BlueprintBuff buff = CreateInstance(buffId, objectName, displayName: displayName, description: description, icon: icon);
+            return From(buff);
+        }
 
+        public static BlueprintBuffConfigurator NewHidden(BlueprintBuffGuid buffId, string objectName)
+        {
+            BlueprintBuff buff = CreateInstance(buffId, objectName, displayName: new LocalizedString(), description: new LocalizedString(), icon: null);
+            buff.m_Flags = BlueprintBuff.Flags.HiddenInUi;
+            return From(buff);
+        }
+
+        public BlueprintBuffConfigurator AddFlag(BlueprintBuff.Flags flag)
+        {
+            if(instance != null)
+            {
+                instance.m_Flags |= flag;
+            }
+
+            return this;
+        }
+
+        public BlueprintBuffConfigurator SetStacking(StackingType stackingType)
+        {
+            if(instance != null)
+            {
+                instance.Stacking = stackingType;
+            }
+
+            return this;
+        }
     }
 
     public class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>

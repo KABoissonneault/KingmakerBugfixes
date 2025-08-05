@@ -26,6 +26,11 @@ namespace kmbf.Blueprint
         {
             return new() { Rate = DurationRate.Days, DiceCountValue = 0, BonusValue = value };
         }
+
+        public static ContextDurationValue ConstantRounds(int value)
+        {
+            return new() { Rate = DurationRate.Rounds, DiceCountValue = 0, BonusValue = value };
+        }
     }
 
     public static class ConditionsCheckerFactory
@@ -41,6 +46,11 @@ namespace kmbf.Blueprint
         public static ActionList Enumerable(IEnumerable<GameAction> actions)
         {
             return new() { Actions = actions.ToArray() };
+        }
+
+        public static ActionList Single(GameAction action)
+        {
+            return new() { Actions = [action] };
         }
 
         public static ActionList Add(ActionList current, GameAction action)

@@ -1,9 +1,7 @@
-﻿using JetBrains.Annotations;
-using Kingmaker.Blueprints;
+﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
-using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.Designers.Quests.Common;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Actions;
@@ -31,19 +29,6 @@ namespace kmbf.Blueprint.Configurator
             if (instance != null)
                 instance.Not = Not;
             return Self;
-        }
-    }
-
-    public sealed class FlagUnlockedConfigurator : BaseConditionConfigurator<FlagUnlocked, FlagUnlockedConfigurator>
-    {
-        public static FlagUnlockedConfigurator New(BlueprintUnlockableFlagGuid flagId, params int[] values)
-        {
-            if (!flagId.GetBlueprint(out BlueprintUnlockableFlag flag)) return new();
-
-            FlagUnlocked instance = CreateInstance();
-            instance.ConditionFlag = flag;
-            instance.SpecifiedValues = values;
-            return From(instance);
         }
     }
 
@@ -92,15 +77,6 @@ namespace kmbf.Blueprint.Configurator
 
     public class ConditionalConfigurator : BaseGameActionConfigurator<Conditional, ConditionalConfigurator>
     {
-        public static ConditionalConfigurator New(ConditionsChecker conditionsChecker, ActionList ifTrue = null, ActionList ifFalse = null)
-        {
-            Conditional instance = CreateInstance();
-            instance.ConditionsChecker = conditionsChecker;
-            instance.IfTrue = ifTrue ?? Constants.Empty.Actions;
-            instance.IfFalse = ifFalse ?? Constants.Empty.Actions;
-            return From(instance);
-        }
-
         public ConditionalConfigurator SetConditionsChecker(ConditionsChecker conditionsChecker)
         {
             instance.ConditionsChecker = conditionsChecker;
