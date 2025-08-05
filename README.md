@@ -1,3 +1,4 @@
+
 # KingmakerBugfixes
 
 Bug fixing mod for Pathfinder: Kingmaker. Many long-standing bugs in Kingmaker are simple mistakes in the game data (Blueprints) that can easily be patched by a mod.
@@ -8,7 +9,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 ## Fixes
 
-[Opt-out] means those fixes can be disabled in the Unity Mod Manager settings (CTRL+F10 while in-game). Generally, those fixes remove exploits that benefit the player.
+[Opt-out] means those fixes can be disabled in the Unity Mod Manager settings (CTRL+F10 while in-game). Generally, those fixes remove exploits that benefit the player. You need to reboot the game after changing the settings for the fixes to apply or be reverted.
 
 [Modify Save] means those fixes may not be able to fully fix the issue if your save already contains the bug. In that case, to fix the issue, you need to go into the UMM settings (CTRL+F10) and press the "Modify Current Save" while a save is loaded. **Those fixes are permanent, and can only be reverted by going back to an earlier save**
 
@@ -34,35 +35,40 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Feat & Traits
 
+- [Opt-out] Fixed Shatter Defenses to only apply after landing a hit, like in Wrath of the Righteous and tabletop
 - Fixed Vital Strike not working on ranged weapons
 - Fixed Ekundayo's Dog "Loyal Companion" and "Enraged Companion" not giving stats
 
 #### Item
+
+- [Opt-out] Fixed Necklace of Double Crosses to only apply to melee attacks, and implemented the "ally attack of opportunity" mechanics as described
+- [Opt-out] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described
-- [Opt-out setting] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 - "Solid Strategy" now gives Immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
 
 #### Misc
 
-- [Opt-out setting] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
+- [Opt-out] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
 
 ### Quests & Event
 
 - Fixed "Honor and Duty" quest from Renown Across Golarion to always trigger when solving the Kingdom event with a Regent (General expels the crusaders). Easier to find the cultists in North Narlmarches after
+- Fixed issue where Storyteller would grabs relics one at a time if using a mod to stack them (ex: Inventory Tweaks)
 - Fixed "Unrest in the Streets" angry mob first check having wrong DCs with unrest modifiers at -2, -3, or -4. The DC is now 13, 8, and 3, instead of 23, 23, -22
 - Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
 
 ### Kingdom
 
-- Can now build Temple of Abadar (with proper event), Assassin's Guild (with proper event and alignment), and Thieves Guild (with proper alignment and town size)
+- Can now build Temple of Abadar (with proper event), Assassin's Guild (with proper event and alignment), and Thieves Guild and Gambling Den (with proper alignment and town size)
 - [Opt-out] Black Market now requires Thieves Guild and non-Lawful, non-Good alignment, as described
 - Erastil's Holy Place now properly grants a kingdom buff that gives a +5 competence bonus to Lore (Nature)
 - [Modify Save] It's a Magical Place now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). Modify Save only required if you already have the upgrade
 - [Opt-out, Modify Save] The Magic of Candlemere Tower now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
 - [Opt-out] Embassy Row now only works in the region where it is built. Now also applies to Opportunities in addition to Problems
+- [Modify Save] Fixed Embassy Row adjacency bonuses to include School, Aviary, and Black Market. Updating the bonus requires Building, Selling, or Upgrading a building in the settlement, or you can use the "Modify Current Save" button while in the settlement
 - The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems 
 
 ### Text and UI
