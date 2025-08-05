@@ -14,6 +14,7 @@ namespace kmbf
         public bool FixKingdomBuildingAccess = true;
         public bool FixEmbassyRowGrandDiplomatBonus = true;
         public bool FixNecklaceOfDoubleCrosses = true;
+        public bool FixShatterDefenses = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable

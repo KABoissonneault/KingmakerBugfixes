@@ -41,6 +41,7 @@ namespace kmbf.Patch
     static class LibraryScriptableObject_LoadDictionary_Patch
     {
         static bool loaded = false;
+        static public bool Loaded { get => loaded; }
 
         [HarmonyPostfix]
         public static void BlueprintPatch()
@@ -86,6 +87,13 @@ namespace kmbf.Patch
             FixRaiseDead();
             FixBreathOfLife();
 
+            #endregion
+
+            #region Feat
+            if(!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
+            {
+                OptionalFixes.FixShatterDefenses();
+            }
             #endregion
 
             #region Buff

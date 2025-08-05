@@ -313,6 +313,10 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
     public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedEffect = new("5bfefc22a68e736488b0c309d9c1c1d4");
 
     public static readonly BlueprintBuffGuid ItsAMagicalPlace = new("670ab5958ff9ab246966ecb968132f37");
+
+    // GUIDs taken from CotW. Should not run together
+    public static readonly BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
+    public static readonly BlueprintBuffGuid KMBF_ShatterDefensesAppliedThisRound = new("cf3e721e93044a21b87692526b3c45e3");
 }
 
 public class BlueprintItemGuid : BlueprintObjectGuid
@@ -426,6 +430,8 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintFeatureGuid DwarvenChampionEnchant = new("09de6da5469ab1943924139d5145835f");
     public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
+
+    public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
 }
 
 public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
