@@ -229,7 +229,7 @@ namespace kmbf.Patch
                 .EditComponent<KingdomEventModifier>(m =>
                 {
                     m.ApplyToOpportunities = true;
-                    m.OnlyInRegion = Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandMagisterBonus;
+                    m.OnlyInRegion = Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandDiplomatBonus;
                 })
                 .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, BlueprintSettlementBuildingGuid.School)
                 .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket)
