@@ -2,7 +2,8 @@
     "Releases": [
       {
         "Id": "KingmakerBugfixes",
-        "Version": "1.1.1"
+        "Version": "1.1.1",
+        "DownloadUrl": "https://github.com/KABoissonneault/KingmakerBugfixes/releases/download/1.1.1/KingmakerBugfixes-1.1.1.zip"
       }
     ]
 }
