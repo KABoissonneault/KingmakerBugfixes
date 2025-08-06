@@ -4,7 +4,6 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
-using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Designers.Quests.Common;
@@ -18,15 +17,12 @@ using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Buffs;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
-using Kingmaker.RuleSystem.Rules;
-using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
-using kmbf.Action;
 using kmbf.Blueprint;
 using static kmbf.Blueprint.Builder.ElementBuilder;
 using kmbf.Blueprint.Configurator;
@@ -241,6 +237,10 @@ namespace kmbf.Patch
                 })
                 .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, BlueprintSettlementBuildingGuid.School)
                 .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket)
+                .Configure();
+
+            BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CulRank5_DiscountCulBuildings)
+                .AddBuildingCostModifierBuilding(BlueprintSettlementBuildingGuid.Theater)
                 .Configure();
 
             BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.StaRank10_WigmoldSystem)

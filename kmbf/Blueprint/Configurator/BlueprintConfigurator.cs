@@ -9,6 +9,7 @@ using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
+using Kingmaker.Kingdom.Tasks;
 using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Alignments;
@@ -347,7 +348,26 @@ namespace kmbf.Blueprint.Configurator
 
     public class BlueprintKingdomBuffConfigurator : BaseBlueprintFactConfigurator<BlueprintKingdomBuff, BlueprintKingdomBuffGuid, BlueprintKingdomBuffConfigurator>
     {
+        public BlueprintKingdomBuffConfigurator AddBuildingCostModifierBuilding(BlueprintSettlementBuildingGuid buildingId)
+        {
+            if(instance != null)
+            {
+                var costModifier = instance.GetComponent<BuildingCostModifier>();
+                if(costModifier != null)
+                {
+                    if(buildingId.GetBlueprint(out BlueprintSettlementBuilding building) && !costModifier.Buildings.Contains(building))
+                    {
+                        costModifier.Buildings = [.. costModifier.Buildings, building];
+                    }
+                }
+                else
+                {
+                    Main.Log.Error($"Could not find Building Cost Modifier component in Blueprint {GetDebugName()}");
+                }
+            }
 
+            return this;
+        }
     }
 
     public class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingGuid, BlueprintSettlementBuildingConfigurator>

@@ -484,6 +484,7 @@ public class BlueprintSettlementBuildingGuid : BlueprintFactGuid
     public static readonly BlueprintSettlementBuildingGuid GamblingDen = new("13e6ce05f2aca6843b0cda6dff79e73b");
     public static readonly BlueprintSettlementBuildingGuid School = new("442cd4e83d39fb245853d23bfd3c158c");
     public static readonly BlueprintSettlementBuildingGuid TempleOfAbadar = new("7ccdcde2587eeb449b0b6cb6e2bfbda6");
+    public static readonly BlueprintSettlementBuildingGuid Theater = new("74a922aaafbd23f4cb6f0b571d398cfa");
     public static readonly BlueprintSettlementBuildingGuid ThievesGuild = new("73526a963bbe73748af8a37299907dea");
 }
 
@@ -501,6 +502,7 @@ public class BlueprintKingdomBuffGuid : BlueprintFactGuid
 
     public static readonly BlueprintKingdomBuffGuid CandlemereTowerResearch = new("b92f2b91fe37f4f4e8000842069cf4a3");
     public static readonly BlueprintKingdomBuffGuid ItsAMagicalPlace = new("540f7dfba39b96c46bb76680e46077da");
+    public static readonly BlueprintKingdomBuffGuid CulRank5_DiscountCulBuildings = new ("60e1176b4240bda409ce6a2ba7037f8c");
     public static readonly BlueprintKingdomBuffGuid StaRank10_WigmoldSystem = new("133818e83c8fb724fa9a59b547a7e0c6");
 }
 
