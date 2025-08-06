@@ -64,9 +64,9 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 - Can now build Temple of Abadar (with proper event), Assassin's Guild (with proper event and alignment), and Thieves Guild and Gambling Den (with proper alignment and town size)
 - [Opt-out] Black Market now requires Thieves Guild and non-Lawful, non-Good alignment, as described
-- Erastil's Holy Place now properly grants a kingdom buff that gives a +5 competence bonus to Lore (Nature)
-- [Modify Save] It's a Magical Place now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). Modify Save only required if you already have the upgrade
-- [Opt-out, Modify Save] The Magic of Candlemere Tower now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
+- "Erastil's Holy Place" now properly grants a kingdom buff that gives a +5 sacred bonus to Lore (Nature)
+- [Modify Save] "It's a Magical Place" now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). It also properly gives +5 bonus to resolve any situation with the Magister or High Priest in the North Narlmarches. Modify Save only required if you already have the upgrade
+- [Opt-out, Modify Save] "The Magic of Candlemere Tower" now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
 - [Opt-out] Embassy Row now only works in the region where it is built. Now also applies to Opportunities in addition to Problems
 - [Modify Save] Fixed Embassy Row adjacency bonuses to include School, Aviary, and Black Market. Updating the bonus requires Building, Selling, or Upgrading a building in the settlement, or you can use the "Modify Current Save" button while in the settlement
 - The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems 
