@@ -236,7 +236,7 @@ namespace kmbf.Patch
                     m.OnlyInRegion = Main.UMMSettings.BalanceSettings.FixEmbassyRowGrandDiplomatBonus;
                 })
                 .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, BlueprintSettlementBuildingGuid.School)
-                .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket)
+                .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket, BlueprintSettlementBuildingGuid.ThievesGuild)
                 .Configure();
 
             BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CulRank5_DiscountCulBuildings)
