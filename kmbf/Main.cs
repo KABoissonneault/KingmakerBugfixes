@@ -14,16 +14,23 @@ public static class Main
     internal static UMMSettings UMMSettings;
     internal static UnityModManager.ModEntry ModEntry;
 
-    internal static bool RunsCallOfTheWild = false;
+    static bool runsCallOfTheWild = false;
+    internal static bool RunsCallOfTheWild { get => runsCallOfTheWild; }
 
-    public static bool Load(UnityModManager.ModEntry modEntry) {
+    static bool loadedGui = false;
+    static GUIStyle guiStyleWarning;
+
+    public static bool Load(UnityModManager.ModEntry modEntry) 
+    {
         ModEntry = modEntry;
         Log = modEntry.Logger;
         UMMSettings = UnityModManager.ModSettings.Load<UMMSettings>(modEntry);
         modEntry.OnGUI = OnGUI;
         modEntry.OnSaveGUI = OnSaveGUI;
 
-        RunsCallOfTheWild = UnityModManager.modEntries.Any(mod => mod.Info.Id.Equals("CallOfTheWild") && mod.Enabled && !mod.ErrorOnLoading);
+        runsCallOfTheWild = UnityModManager.modEntries.Any(mod => mod.Info.Id.Equals("CallOfTheWild") && mod.Enabled && !mod.ErrorOnLoading);
+
+        ModLocalizationManager.TryLoadingStringsOnLoad();
 
         try {
             HarmonyInstance = new Harmony(modEntry.Info.Id);
@@ -37,6 +44,24 @@ public static class Main
 
     static void OnGUI(UnityModManager.ModEntry modEntry)
     {
+        if (!loadedGui)
+        {
+            guiStyleWarning = new GUIStyle(GUI.skin.label);
+            guiStyleWarning.normal.textColor = Color.red;
+
+            loadedGui = true;
+        }
+
+        if (Game.Instance.Player.ControllableCharacters.Any())
+        {
+            if (!LibraryScriptableObject_LoadDictionary_Patch.Loaded)
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(KMBFLocalizedStrings.CreateString("mod-load-warning"), guiStyleWarning);
+                GUILayout.EndHorizontal();
+            }
+        }
+
         UMMSettings.Draw(modEntry);
 
         if (Game.Instance.Player.ControllableCharacters.Any())

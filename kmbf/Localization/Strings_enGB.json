@@ -1,5 +1,9 @@
 ﻿[
   {
+    "Key": "mod-load-warning",
+    "Value":  "Mod turned on during gameplay, no fixes are applied. Reboot the game for fixes to take effect."
+  },
+  {
     "Key": "saves-fixes",
     "Value": "Some fixes need to modify your current save to work. Use this button to apply them. Cannot be reverted - keep backups, load to an earlier save"
   },

@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.EntitySystem.Persistence.JsonUtility;
 using Kingmaker.Localization;
+using Kingmaker.Localization.Shared;
 using Newtonsoft.Json;
 using System.IO;
 
@@ -15,7 +16,8 @@ namespace kmbf
     static class ModLocalizationManager
     {
         private static readonly string RootKey = "kab.bug-fixes";
-        
+        private static Locale lastLoadedLocale = Locale.Sound;
+
         public static string CreateKey(string subKey)
         {
             return $"{RootKey}.{subKey}";
@@ -23,6 +25,9 @@ namespace kmbf
 
         static void LoadLocalization()
         {
+            if (LocalizationManager.CurrentLocale == lastLoadedLocale)
+                return;
+
             var currentLocale = LocalizationManager.CurrentLocale.ToString();
             var fileName = $"{Main.ModEntry.Path}/Localization/Strings_{currentLocale}.json";
 
@@ -52,6 +57,19 @@ namespace kmbf
             catch(Exception e)
             {
                 Main.Log.LogException(e);
+            }
+            finally
+            {
+                lastLoadedLocale = LocalizationManager.CurrentLocale;
+            }
+        }
+
+        // Hot loading the mod misses locale assignment. Try on mod load if the systems are already on and ready
+        public static void TryLoadingStringsOnLoad()
+        {
+            if(LocalizationManager.CurrentLocale != Locale.Sound && LocalizationManager.CurrentPack != null && LocalizationManager.CurrentPack.Strings != null)
+            {
+                LoadLocalization();
             }
         }
 
