@@ -241,6 +241,8 @@ public class BlueprintCueGuid : BlueprintObjectGuid
     public static readonly BlueprintCueGuid IrleneGiftCue3 = new("03807d3897f73e44b84b476ae63a62f1");
 
     public static readonly BlueprintCueGuid CandlemereRismelDelayedStartFight = new("f099ec070656d0f45981e29aeac9d190");
+
+    public static readonly BlueprintCueGuid Act2KestenTourToThroneRoom_Cue01 = new("61fd0dbd69f5c354995a559f79888c6f");
 }
 
 public class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
@@ -584,4 +586,6 @@ public class BlueprintUnlockableFlagGuid : BlueprintObjectGuid
     public static readonly BlueprintUnlockableFlagGuid AngryMob_FirstCheckModifier = new("8258f133257832541bf2b7bd9f99ed05");
 
     public static readonly BlueprintUnlockableFlagGuid SouthNarlmarches_MagicalUpgrade = new("a069e9ffe15aa214c830c8ef57a7bee0");
+    
+    public static readonly BlueprintUnlockableFlagGuid EzvankiDeal = new("00b40c4c7e679cb47be2eeb6cd857311");
 }

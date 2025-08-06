@@ -17,9 +17,16 @@ namespace kmbf
         public bool FixShatterDefenses = true;
     }
 
+    [DrawFields(DrawFieldMask.Public)]
+    public class EventSettings
+    {
+        public bool FixFreeEzvankiTemple = true;
+    }
+
     public class UMMSettings : UnityModManager.ModSettings, IDrawable
     {
-        [Draw("Balance")] public BalanceSettings BalanceSettings = new BalanceSettings();
+        [Draw("Balance")] public BalanceSettings BalanceSettings = new();
+        [Draw("Event")] public EventSettings EventSettings = new();
 
         // Not necessary to override after UMM 0.31.1
         public override void Save(UnityModManager.ModEntry modEntry)

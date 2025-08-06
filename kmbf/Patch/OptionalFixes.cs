@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Designers.EventConditionActionSystem.Actions;
 
 namespace kmbf.Patch
 {
@@ -75,6 +76,19 @@ namespace kmbf.Patch
                 t.WaitForAttackResolve = true;
             })
             .Configure();
+        }
+
+        public static void FixFreeEvzankiTemple()
+        {
+            BlueprintCueConfigurator.From(BlueprintCueGuid.Act2KestenTourToThroneRoom_Cue01)
+                .EditOnStopActionWhere<Conditional>(c =>
+                {
+                    return c.IfTrue.HasActions && c.IfTrue.Actions[0].name.Equals("$KingdomActionStartEvent$9f6659ab-f2f5-4481-b254-0d03340b7ba4");
+                }, c =>
+                {
+                    c.ConditionsChecker = ConditionsCheckerFactory.WithCondition(c.ConditionsChecker, MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.EzvankiDeal));
+                })
+                .Configure();
         }
     }
 }

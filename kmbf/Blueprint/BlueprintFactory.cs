@@ -44,6 +44,11 @@ namespace kmbf.Blueprint
         {
             return new() { Operation = operation, Conditions =  conditions };
         }
+
+        public static ConditionsChecker WithCondition(ConditionsChecker current, Condition condition)
+        {
+            return new() { Operation = current.Operation, Conditions = [.. current.Conditions, condition] };
+        }
     }
 
     public static class ActionListFactory

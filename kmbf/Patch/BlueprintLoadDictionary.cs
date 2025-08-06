@@ -348,6 +348,11 @@ namespace kmbf.Patch
                 .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
 
+            if(Main.UMMSettings.EventSettings.FixFreeEzvankiTemple)
+            {
+                OptionalFixes.FixFreeEvzankiTemple();
+            }
+
             #endregion
 
             #region UI and Text
@@ -389,7 +394,6 @@ namespace kmbf.Patch
                 );
 
                 // If user has Double Debilitation, use the new "Remove if two buffs". Else, use the current "Remove if any buff"
-
                 return MakeGameActionConditional
                 (
                     ConditionsCheckerFactory.Single(featureCondition)
@@ -499,7 +503,6 @@ namespace kmbf.Patch
                     }
                 })
                 .Configure();
-
         }
     }
 }
