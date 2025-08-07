@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Kingmaker.Enums;
-using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Parts;
@@ -8,13 +7,17 @@ using kmbf.Blueprint;
 
 namespace kmbf.Patch.KM.RuleSystem.Rules
 {
+    // Changes the rules around Shatter Defenses to
+    // 1. Not check for Shaken/Frightened (it's checked on hit)
+    // 2. Check for the "Shatter Defenses Hit" buff
+    // Patch should not replace the base logic if not using the fix
     [HarmonyPatch(typeof(RuleCheckTargetFlatFooted), nameof(RuleCheckTargetFlatFooted.OnTrigger))]
     static class RuleCheckFlatFooted_OnTrigger_Prefix
     {
         [HarmonyPrefix]
         static bool OnTrigger(RuleCheckTargetFlatFooted __instance)
         {
-            if(Main.RunsCallOfTheWild)
+            if(Main.RunsCallOfTheWild || !Main.UMMSettings.BalanceSettings.FixShatterDefenses)
                 return true;
 
             __instance.IsFlatFooted =
@@ -25,8 +28,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
                 || (!__instance.Target.Memory.Contains(__instance.Initiator) && !__instance.IgnoreVisibility)
                 || (UnitPartConcealment.Calculate(__instance.Target, __instance.Initiator, attack: false) == Concealment.Total && !__instance.IgnoreConcealment)
                 || __instance.Target.Descriptor.State.HasCondition(UnitCondition.LoseDexterityToAC)
-                || ((__instance.Target.Descriptor.State.HasCondition(UnitCondition.Shaken) || __instance.Target.Descriptor.State.HasCondition(UnitCondition.Frightened)) 
-                    && (bool)__instance.Initiator.Descriptor.State.Features.ShatterDefenses && TargetHasShatterDefensesBuffFromInitiator(__instance));
+                || ((bool)__instance.Initiator.Descriptor.State.Features.ShatterDefenses && TargetHasShatterDefensesBuffFromInitiator(__instance));
 
             return false;
         }
