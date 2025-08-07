@@ -83,10 +83,12 @@ namespace kmbf.Patch
             FixRaiseDead();
             FixBreathOfLife();
 
+            AbilitiesFixes.FixJoyfulRapture();
+
             #endregion
 
             #region Feat
-            if(!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
+            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
             {
                 OptionalFixes.FixShatterDefenses();
             }

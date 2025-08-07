@@ -182,6 +182,7 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
     public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
+    public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");
 
     public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new("31acd268039966940872c916782ae018");
     public static readonly BlueprintAbilityGuid DeadlyEarthMudBlast = new("0be97d0e752060f468bbf62ce032b9f5");

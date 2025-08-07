@@ -15,6 +15,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.Utility;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
@@ -173,10 +174,43 @@ namespace kmbf.Blueprint.Configurator
             return Self;
         }
 
+        public TBuilder EditComponentGameAction<C, A>(string actionId, Action<A> action)
+            where C : BlueprintComponent
+            where A : GameAction
+        {
+            if (instance != null)
+            {
+                var components = instance.Components.OfType<C>();
+                if(components.Empty())
+                    Main.Log.Error($"Could not find a a component of type \"{typeof(C).Name}\" in {GetDebugName()}");
+
+                bool foundAny = false;
+                foreach (var c in instance.Components.OfType<C>())
+                {
+                    A foundAction = c.GetGameActionsRecursive()
+                        .OfType<A>()
+                        .FirstOrDefault(a => a.name == actionId);
+
+                    if (foundAction != null)
+                    {
+                        action(foundAction);
+                        foundAny = true;
+                        break;
+                    }
+                }
+
+                if(!foundAny)
+                    Main.Log.Error($"Could not find a game action under a component of type \"{typeof(C).Name}\" with name \"{actionId}\" in {GetDebugName()}");
+            }
+
+            return Self;
+        }
+
         public TBuilder EditFirstGameActionWhere<A>(Predicate<A> pred, Action<A> action) where A : GameAction
         {
             if (instance != null)
             {
+                bool foundAny = false;
                 foreach(var c in instance.Components)
                 {
                     A foundAction = c.GetGameActionsRecursive()
@@ -185,9 +219,13 @@ namespace kmbf.Blueprint.Configurator
                     if (foundAction != null)
                     {
                         action(foundAction);
+                        foundAny = true;
                         break;
                     }
                 }
+
+                if(!foundAny)
+                    Main.Log.Error($"Could not find a game action with a condition");
             }
 
             return Self;

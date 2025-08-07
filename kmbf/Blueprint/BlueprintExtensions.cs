@@ -4,6 +4,7 @@ using Kingmaker.Designers.EventConditionActionSystem.Events;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
@@ -55,6 +56,10 @@ namespace kmbf.Blueprint
             {
                 case ActivateTrigger activateTrigger:
                     foreach (GameAction action in activateTrigger.Actions.GetGameActionsRecursive()) yield return action;
+                    break;
+
+                case AbilityEffectRunAction runAction:
+                    foreach (GameAction action in runAction.Actions.GetGameActionsRecursive()) yield return action;
                     break;
             }
         }
