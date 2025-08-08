@@ -2,7 +2,6 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
-using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -13,8 +12,6 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Kingdom.Actions;
-using Kingmaker.Kingdom.Blueprints;
-using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -257,34 +254,6 @@ namespace kmbf.Blueprint
             }
 
             spellDescriptorComponent.Descriptor &= ~descriptor;
-        }
-
-        public static void SetDisplayName(BlueprintUnitFactGuid factId, LocalizedString displayName)
-        {
-            if (!factId.GetBlueprint(out BlueprintUnitFact fact)) return;
-
-            fact.m_DisplayName = displayName;
-        }
-
-        public static void SetDescription(BlueprintUnitFactGuid factId, LocalizedString description)
-        {
-            if (!factId.GetBlueprint(out BlueprintUnitFact fact)) return;
-
-            fact.m_Description = description;
-        }
-
-        public static void SetTypeName(BlueprintWeaponTypeGuid weaponTypeId, LocalizedString typeName)
-        {
-            if (!weaponTypeId.GetBlueprint(out BlueprintWeaponType weaponType)) return;
-
-            weaponType.m_TypeNameText = typeName;
-        }
-
-        public static void SetDefaultName(BlueprintWeaponTypeGuid weaponTypeId, LocalizedString defaultName)
-        {
-            if (!weaponTypeId.GetBlueprint(out BlueprintWeaponType weaponType)) return;
-
-            weaponType.m_DefaultNameText = defaultName;
         }
 
         public static void CopyComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId)

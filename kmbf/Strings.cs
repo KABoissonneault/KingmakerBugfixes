@@ -101,7 +101,6 @@ namespace kmbf
             };
         }
 
-        public static LocalizedString OozeSpitDescription = CreateString("ooze-spit-description");
         public static LocalizedString Tongue = CreateString("tongue");
     }
 }

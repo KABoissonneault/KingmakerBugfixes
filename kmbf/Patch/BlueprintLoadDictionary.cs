@@ -152,7 +152,7 @@ namespace kmbf.Patch
                     .AddComponent<AooAgainstAllies>();
             }
 
-            ItemFixes.FixLootRingNames();
+            TextFixes.FixItemNames();
 
             #endregion
 
@@ -366,12 +366,8 @@ namespace kmbf.Patch
 
             #region UI and Text
 
-            // Ooze Spit info
-            SetDisplayName(BlueprintAbilityGuid.MimicOozeSpit, KMLocalizedStrings.Spit);
-            SetDescription(BlueprintAbilityGuid.MimicOozeSpit, KMBFLocalizedStrings.OozeSpitDescription);
-
-            SetTypeName(BlueprintWeaponTypeGuid.GiantSlugTongue, KMBFLocalizedStrings.Tongue);
-            SetDefaultName(BlueprintWeaponTypeGuid.GiantSlugTongue, KMBFLocalizedStrings.Tongue);
+            TextFixes.FixItemNames();
+            TextFixes.FixUnnamedEnemyAbilities();
 
             #endregion
         }

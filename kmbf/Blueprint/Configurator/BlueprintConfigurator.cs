@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Globalmap.Blueprints;
@@ -258,7 +259,7 @@ namespace kmbf.Blueprint.Configurator
 
     }
 
-    public class BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>
+    public abstract class BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>
         where BPType : BlueprintUnitFact
          where GuidType : BlueprintUnitFactGuid, new()
         where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
@@ -272,12 +273,31 @@ namespace kmbf.Blueprint.Configurator
             return bp;
         }
 
+        public TBuilder SetDisplayName(LocalizedString text)
+        {
+            if (instance != null)
+                instance.m_DisplayName = text;
+            return Self;
+        }
+
+        public TBuilder SetDescription(LocalizedString text)
+        {
+            if (instance != null)
+                instance.m_Description = text;
+            return Self;
+        }
+
         public TBuilder SetIcon(Sprite icon)
         {
             if(instance != null)
                 instance.m_Icon = icon;
             return Self;
         }
+    }
+
+    public sealed class BlueprintUnitFactConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintUnitFact, BlueprintUnitFactGuid, BlueprintUnitFactConfigurator>
+    {
+
     }
 
     public class BlueprintBuffConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintBuff, BlueprintBuffGuid, BlueprintBuffConfigurator>
@@ -592,6 +612,25 @@ namespace kmbf.Blueprint.Configurator
             {
                 EditOrAddComponent<PrerequisiteAlignment>(c => c.Alignment = alignmentMask);
             }
+
+            return Self;
+        }
+    }
+
+    public sealed class BlueprintWeaponTypeConfigurator : BaseBlueprintObjectConfigurator<BlueprintWeaponType, BlueprintWeaponTypeGuid, BlueprintWeaponTypeConfigurator>
+    {
+        public BlueprintWeaponTypeConfigurator SetTypeName(LocalizedString typeName)
+        {
+            if (instance != null)
+                instance.m_TypeNameText = typeName;
+
+            return Self;
+        }
+
+        public BlueprintWeaponTypeConfigurator SetDefaultName(LocalizedString defaultName)
+        {
+            if (instance != null)
+                instance.m_DefaultNameText = defaultName;
 
             return Self;
         }

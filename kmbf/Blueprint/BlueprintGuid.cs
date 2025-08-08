@@ -360,6 +360,7 @@ public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
     public bool GetBlueprint(out BlueprintItemWeapon bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
+    public static readonly BlueprintItemWeaponGuid ColdIronRapierPlus3 = new BlueprintItemWeaponGuid("925d399524ae74748ac78b49f48785c0");
 }
 
 public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentGuid
