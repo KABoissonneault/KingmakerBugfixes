@@ -147,6 +147,8 @@ namespace kmbf.Patch
                     .AddComponent<AooAgainstAllies>();
             }
 
+            ItemFixes.FixLootRingNames();
+
             #endregion
 
             #region Kingdom

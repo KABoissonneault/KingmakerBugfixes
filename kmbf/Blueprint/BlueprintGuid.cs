@@ -346,7 +346,7 @@ public class BlueprintItemEquipmentGuid : BlueprintItemGuid
     public override string BlueprintTypeName => "Item Equipment";
 }
 
-public class BlueprintItemWeaponGuid : BlueprintItemGuid
+public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
 {
     public BlueprintItemWeaponGuid() { }
     public BlueprintItemWeaponGuid(string guid)
@@ -359,6 +359,22 @@ public class BlueprintItemWeaponGuid : BlueprintItemGuid
     public bool GetBlueprint(out BlueprintItemWeapon bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
+}
+
+public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentGuid
+{
+    public BlueprintItemEquipmentRingGuid() { }
+    public BlueprintItemEquipmentRingGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Item Equipment Ring";
+    public bool GetBlueprint(out BlueprintItemEquipmentRing bp) => GetBlueprintAs(out bp);
+
+    public static BlueprintItemEquipmentRingGuid AmethystEncrustedRing = new("3cfeae23012c8b9488b5b36d51ee4a8d");
+    public static BlueprintItemEquipmentRingGuid GarnetEncrustedRing = new("489a7b81151c40541b8de88b0eaa6a77");
 }
 
 public class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid

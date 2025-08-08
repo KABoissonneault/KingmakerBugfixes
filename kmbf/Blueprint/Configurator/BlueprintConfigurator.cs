@@ -2,6 +2,7 @@
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.Items;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Globalmap.Blueprints;
@@ -348,6 +349,37 @@ namespace kmbf.Blueprint.Configurator
     }
 
     public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
+    {
+
+    }
+
+    public abstract class BaseBlueprintItemConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintItem
+        where GuidType : BlueprintItemGuid, new()
+        where TBuilder : BaseBlueprintItemConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+        public TBuilder SetDisplayName(LocalizedString name)
+        {
+            if (instance != null)
+            {
+                instance.m_DisplayNameText = name;
+            }
+
+            return Self;
+        }
+
+        public TBuilder SetFlavorText(LocalizedString text)
+        {
+            if (instance != null)
+            {
+                instance.m_FlavorText = text;
+            }
+
+            return Self;
+        }
+    }
+
+    public class BlueprintItemConfigurator : BaseBlueprintItemConfigurator<BlueprintItem, BlueprintItemGuid, BlueprintItemConfigurator>
     {
 
     }

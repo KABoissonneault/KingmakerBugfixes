@@ -87,6 +87,8 @@ namespace kmbf
     static class KMLocalizedStrings
     {
         public static LocalizedString Spit = new LocalizedString() { m_Key = "7063a6bf-494d-4c74-9e62-e35aa0a78215" };
+        public static LocalizedString AmethystRing = new LocalizedString() { m_Key = "09c2b1ec-ffb5-4e26-91a0-3840221676bf" };
+        public static LocalizedString GarnetRing = new LocalizedString() { m_Key = "3fa6ae88-bc24-44d5-ac74-109d250df757" };
     }
 
     static class KMBFLocalizedStrings
