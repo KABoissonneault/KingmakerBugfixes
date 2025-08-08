@@ -35,6 +35,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Kineticist "Deadly Earth: Metal" (and Rare Metal) having half the damage scaling it should have
 - Fixed Raise Dead not draining 2 levels on difficulty Core and above (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
 - Fixed Breath of Life not giving 1 temporary negative level when resurrected (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
+- Fixed Joyful Rapture to properly affect all negative emotion effects
 
 #### Feat & Traits
 
