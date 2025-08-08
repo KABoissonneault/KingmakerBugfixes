@@ -15,6 +15,7 @@ namespace kmbf
         public bool FixEmbassyRowGrandDiplomatBonus = true;
         public bool FixNecklaceOfDoubleCrosses = true;
         public bool FixShatterDefenses = true;
+        public bool FixArcaneTricksterAlignmentRequirement = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]

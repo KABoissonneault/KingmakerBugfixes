@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
@@ -379,7 +380,7 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintItemConfigurator : BaseBlueprintItemConfigurator<BlueprintItem, BlueprintItemGuid, BlueprintItemConfigurator>
+    public sealed class BlueprintItemConfigurator : BaseBlueprintItemConfigurator<BlueprintItem, BlueprintItemGuid, BlueprintItemConfigurator>
     {
 
     }
@@ -580,6 +581,19 @@ namespace kmbf.Blueprint.Configurator
             }
 
             return this;
+        }
+    }
+
+    public sealed class BlueprintCharacterClassConfigurator : BaseBlueprintObjectConfigurator<BlueprintCharacterClass, BlueprintCharacterClassGuid, BlueprintCharacterClassConfigurator>
+    {
+        public BlueprintCharacterClassConfigurator SetAlignmentRestriction(AlignmentMaskType alignmentMask)
+        {
+            if (instance != null)
+            {
+                EditOrAddComponent<PrerequisiteAlignment>(c => c.Alignment = alignmentMask);
+            }
+
+            return Self;
         }
     }
 }

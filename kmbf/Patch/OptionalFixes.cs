@@ -8,6 +8,7 @@ using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic;
 using Kingmaker.ElementsSystem;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.UnitLogic.Alignments;
 
 namespace kmbf.Patch
 {
@@ -88,6 +89,14 @@ namespace kmbf.Patch
                 {
                     c.ConditionsChecker = ConditionsCheckerFactory.WithCondition(c.ConditionsChecker, MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.EzvankiDeal));
                 })
+                .Configure();
+        }
+
+        // Both tabletop and in-game encyclopedia say Arcane Trickster requirement non-lawful, but the game (or WotR) does not enforce it
+        public static void FixArcaneTricksterAlignmentRequirement()
+        {
+            BlueprintCharacterClassConfigurator.From(BlueprintCharacterClassGuid.ArcaneTrickster)
+                .SetAlignmentRestriction(AlignmentMaskType.NeutralGood | AlignmentMaskType.TrueNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.Chaotic)
                 .Configure();
         }
     }

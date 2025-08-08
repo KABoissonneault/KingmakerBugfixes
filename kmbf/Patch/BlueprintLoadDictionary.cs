@@ -49,6 +49,11 @@ namespace kmbf.Patch
 
             #region Class
 
+            if (Main.UMMSettings.BalanceSettings.FixArcaneTricksterAlignmentRequirement)
+            {
+                OptionalFixes.FixArcaneTricksterAlignmentRequirement();
+            }
+
             /// Druid
 
             // Blight Druid Darkness Domain's Moonfire damage scaling

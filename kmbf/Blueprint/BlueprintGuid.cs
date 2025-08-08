@@ -224,6 +224,7 @@ public class BlueprintCharacterClassGuid : BlueprintObjectGuid
     public override string BlueprintTypeName => "Character Class";
     public bool GetBlueprint(out BlueprintCharacterClass bp) => GetBlueprintAs(out bp);
 
+    public static readonly BlueprintCharacterClassGuid ArcaneTrickster = new BlueprintCharacterClassGuid("9c935a076d4fe4d4999fd48d853e3cf3");
     public static readonly BlueprintCharacterClassGuid Druid = new BlueprintCharacterClassGuid("610d836f3a3a9ed42a4349b62f002e96");
 }
 
