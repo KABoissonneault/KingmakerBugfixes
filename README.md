@@ -13,6 +13,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 [Modify Save] means those fixes may not be able to fully fix the issue if your save already contains the bug. In that case, to fix the issue, you need to go into the UMM settings (CTRL+F10) and press the "Modify Current Save" while a save is loaded. **Those fixes are permanent, and can only be reverted by going back to an earlier save**
 
+[!CotW] means this fix is not applied if using the mod Call of the Wild. Note that some fixes may be different from the CotW implementation, but are still disabled to prevent conflicts.
+
 ### Core
 - [Opt-out] "Area of Effect" with UnitEnter and Round events (ex: Stinking Cloud) do not double trigger on cast
 - Fixed turn-based combat sometimes making the main character lose their surprise action, and sometimes giving the party a surprise round for no reason
@@ -24,6 +26,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Class & Spells
 
+- [Opt-out] Fixed Arcane Trickster to properly require non-lawful alignment
 - Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
 - "Magic Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
 - Fixed Freedom of Movement to properly grant Immunity to Grapple
@@ -35,18 +38,19 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Feat & Traits
 
-- [Opt-out] Fixed Shatter Defenses to only apply after landing a hit, like in Wrath of the Righteous and tabletop
-- Fixed Vital Strike not working on ranged weapons
+- [Opt-out, !CotW] Fixed Shatter Defenses to only apply after landing a hit, like in Wrath of the Righteous and tabletop. Unlike the CotW fix, this bonus still applies if you hit a Shaken/Frightened enemy and it no longer is next turn, matching the description
+- [!CotW] Fixed Vital Strike not working on ranged weapons
 - Fixed Ekundayo's Dog "Loyal Companion" and "Enraged Companion" not giving stats
 
 #### Item
 
-- [Opt-out] Fixed Necklace of Double Crosses to only apply to melee attacks, and implemented the "ally attack of opportunity" mechanics as described
+- [Opt-out, !CotW] Fixed Necklace of Double Crosses to only apply to melee attacks, and implemented the "ally attack of opportunity" mechanics as described
 - [Opt-out] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 - "Solid Strategy" now gives Immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
+- Fixed "Amethyst Ring" and "Garnet Ring" to have the proper intended name (the base game has two rings named Topaz Ring, and none named Amethyst Ring)
 
 #### Misc
 
@@ -68,8 +72,9 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Modify Save] "It's a Magical Place" now properly grants a kingdom buff that gives +5 competence bonus to Knowledge (Arcana) and Lore (Religion). It also properly gives +5 bonus to resolve any situation with the Magister or High Priest in the region. Modify Save only required if you already have the upgrade
 - [Opt-out, Modify Save] "The Magic of Candlemere Tower" now grants +3 in the regions around South Narlmarches, rather than +18 everywhere in the barony. Modify Save only required if you already have the upgrade
 - [Opt-out] Embassy Row now only works in the region where it is built. Now also applies to Opportunities in addition to Problems
-- [Modify Save] Fixed Embassy Row adjacency bonuses to include School, Aviary, and Black Market. Updating the bonus requires Building, Selling, or Upgrading a building in the settlement, or you can use the "Modify Current Save" button while in the settlement
-- The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems 
+- [Modify Save] Fixed Embassy Row adjacency bonuses to include School, Aviary, Thieves Guild, and Black Market. Updating the bonus requires Building, Selling, or Upgrading a building in the settlement, or you can use the "Modify Current Save" button while in the settlement
+- The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems
+- Fixed "Improving Cultural Development" not including Theater
 
 ### Text and UI
 
