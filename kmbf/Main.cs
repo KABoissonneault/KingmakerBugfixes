@@ -52,6 +52,13 @@ public static class Main
             loadedGui = true;
         }
 
+        if (UMMSettings.FixesDirty)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(KMBFLocalizedStrings.CreateString("mod-dirty-warning"), guiStyleWarning);
+            GUILayout.EndHorizontal();
+        }
+
         if (Game.Instance.Player.ControllableCharacters.Any())
         {
             if (!LibraryScriptableObject_LoadDictionary_Patch.Loaded)

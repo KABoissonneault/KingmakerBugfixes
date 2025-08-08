@@ -28,6 +28,9 @@ namespace kmbf
         [Draw("Balance")] public BalanceSettings BalanceSettings = new();
         [Draw("Event")] public EventSettings EventSettings = new();
 
+        bool fixesDirty = false;
+        public bool FixesDirty { get => fixesDirty; }
+
         // Not necessary to override after UMM 0.31.1
         public override void Save(UnityModManager.ModEntry modEntry)
         {
@@ -36,7 +39,7 @@ namespace kmbf
 
         public void OnChange()
         {
-
+            fixesDirty = true;
         }
     }
 }

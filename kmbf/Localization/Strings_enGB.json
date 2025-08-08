@@ -4,6 +4,10 @@
     "Value":  "Mod turned on during gameplay, no fixes are applied. Reboot the game for fixes to take effect."
   },
   {
+    "Key": "mod-dirty-warning",
+    "Value":  "Mod fixes changed during gameplay. Reboot the game for changes to take effect."
+  },
+  {
     "Key": "saves-fixes",
     "Value": "Use this button when applying fixes on an existing save, if required by the fix (see changelogs). Cannot be reverted - keep backups, load to an earlier save"
   },
