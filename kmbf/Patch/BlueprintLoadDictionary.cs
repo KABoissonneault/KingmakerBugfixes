@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
-using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
@@ -17,17 +15,12 @@ using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Buffs;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
-using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Alignments;
-using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
-using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Blueprint;
 using static kmbf.Blueprint.Builder.ElementBuilder;
 using kmbf.Blueprint.Configurator;
-using kmbf.Component;
-using UnityEngine;
 
 namespace kmbf.Patch
 {
@@ -48,19 +41,11 @@ namespace kmbf.Patch
             #region Abilities 
 
             #region Class
-
-            if (Main.UMMSettings.BalanceSettings.FixArcaneTricksterAlignmentRequirement)
-            {
-                OptionalFixes.FixArcaneTricksterAlignmentRequirement();
-            }
-
+            
             /// Druid
 
             // Blight Druid Darkness Domain's Moonfire damage scaling
             AddAbilityDamageDiceRankClass(BlueprintAbilityGuid.DarknessDomainGreaterAbility, BlueprintCharacterClassGuid.Druid); 
-
-            /// Rogue
-            FixDoubleDebilitatingInjury();
 
             /// Kineticist
            
@@ -85,18 +70,6 @@ namespace kmbf.Patch
             // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
             ChangeAddStatBonusScaledDescriptor(BlueprintBuffGuid.MagicalVestmentShield, ModifierDescriptor.Shield, ModifierDescriptor.ShieldEnhancement);
 
-            FixRaiseDead();
-            FixBreathOfLife();
-
-            AbilitiesFixes.FixJoyfulRapture();
-
-            #endregion
-
-            #region Feat
-            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
-            {
-                OptionalFixes.FixShatterDefenses();
-            }
             #endregion
 
             #region Buff
@@ -106,13 +79,9 @@ namespace kmbf.Patch
             CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfOffensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfOffensiveMaster);
             CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfDefensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfDefensiveMaster);
 
-            // Nauseated buff: remove Poison descriptor
-            if (Main.UMMSettings.BalanceSettings.FixNauseatedPoisonDescriptor)
-            {
-                RemoveSpellDescriptor(BlueprintBuffGuid.Nauseated, SpellDescriptor.Poison);
-            }
-
             #endregion
+
+            AbilitiesFixes.Apply();
 
             #endregion
 
@@ -144,16 +113,7 @@ namespace kmbf.Patch
                 .RemoveComponents<AddConditionImmunity>()
                 .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
                 .Configure();
-
-            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixNecklaceOfDoubleCrosses)
-            {
-                BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.NecklaceOfDoubleCrosses)
-                    .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
-                    .AddComponent<AooAgainstAllies>();
-            }
-
-            TextFixes.FixItemNames();
-
+            
             #endregion
 
             #region Kingdom
@@ -172,30 +132,7 @@ namespace kmbf.Patch
                     }
                 }
             }
-
-            // Research of Candlemere gives a global buff to all adjacent regions, rather than give a single buff that applies to adjacent regions
-            if (Main.UMMSettings.BalanceSettings.FixCandlemereTowerResearch)
-            {
-                BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ResearchOftheCandlemere)
-                    .EditEventSuccessAnyFinalResult(r =>
-                    {
-                        var addBuffAction = r.Actions.GetGameAction<KingdomActionAddBuff>();
-                        if (addBuffAction != null)
-                        {
-                            addBuffAction.CopyToAdjacentRegions = false;
-                        }
-                    })
-                    .Configure();
-
-                BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CandlemereTowerResearch)
-                    .EditComponent<KingdomEventModifier>(c =>
-                    {
-                        c.OnlyInRegion = true;
-                        c.IncludeAdjacent = true;
-                    })
-                    .Configure();
-            }
-
+            
             BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ItsAMagicalPlace)
                 .EditEventSuccessAnyFinalResult(r =>
                 {
@@ -356,158 +293,11 @@ namespace kmbf.Patch
                 .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3)))
                 .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
-
-            if(Main.UMMSettings.EventSettings.FixFreeEzvankiTemple)
-            {
-                OptionalFixes.FixFreeEvzankiTemple();
-            }
-
+            
             #endregion
 
-            #region UI and Text
-
-            TextFixes.FixItemNames();
-            TextFixes.FixUnnamedEnemyAbilities();
-
-            #endregion
-        }
-
-        // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
-        // This fix adds a Condition on the Double Debilitation feature, which if true, will check whether the target has *two* existing buffs
-        // before removing them
-        static void FixDoubleDebilitatingInjury()
-        {
-            if (!BlueprintFeatureGuid.DoubleDebilitation.GetBlueprint(out BlueprintFeature DoubleDebilitation)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryBewilderedActive.GetBlueprint(out BlueprintBuff BewilderedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedActive.GetBlueprint(out BlueprintBuff DisorientedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryHamperedActive.GetBlueprint(out BlueprintBuff HamperedActive)) return;
-
-            Conditional MakeConditional(BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs, Conditional[] normalConditionals)
-            {
-                var featureCondition = ScriptableObject.CreateInstance<ContextConditionCasterHasFact>();
-                featureCondition.Fact = DoubleDebilitation;
-
-                // If the target has at least two of the "other injuries" from the caster, remove all the existing ones
-                var doubleDebilitationAction = MakeGameActionConditional
-                (
-                    ConditionsCheckerFactory.Single(MakeContextConditionHasBuffsFromCaster("Debilitating Injury", otherBuffs, 2)),
-                    ifTrue: ActionListFactory.From
-                    (
-                        MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[0], activeId: otherActives[0])
-                        , MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[1], activeId: otherActives[1])
-                    )
-                );
-
-                // If user has Double Debilitation, use the new "Remove if two buffs". Else, use the current "Remove if any buff"
-                return MakeGameActionConditional
-                (
-                    ConditionsCheckerFactory.Single(featureCondition)
-                    , ifTrue: ActionListFactory.From(doubleDebilitationAction)
-                    , ifFalse: ActionListFactory.From(normalConditionals)
-                );
-            }
-
-            void Fixup(BlueprintBuff active, BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs)
-            {
-                var triggerComponent = active.GetComponent<AddInitiatorAttackRollTrigger>();
-                ActionList triggerActions = triggerComponent.Action;
-                Conditional[] conditionals = triggerActions.Actions.OfType<Conditional>().ToArray();
-
-                triggerActions.Actions = triggerActions.Actions.Where(a => !(a is Conditional))
-                    .AddItem(MakeConditional(otherActives, otherBuffs, conditionals))
-                    .ToArray();
-            }
-
-            Fixup
-            (
-                BewilderedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryHamperedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryHamperedEffect]
-            );
-            Fixup
-            (
-                DisorientedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
-            );
-            Fixup
-            (
-                HamperedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
-            );
-
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
-                .SetIcon(HamperedActive.Icon)
-                .Configure();
-        }
-        
-        // Raise Dead does not actually give two negative levels
-        // Like in Wrath of the Righteous, we add a condition on whether Enemy Stats Adjustment is Normal or above
-        static void FixRaiseDead()
-        {
-            if (!BlueprintAbilityGuid.RaiseDead.GetBlueprint(out BlueprintScriptableObject raiseDead)) return;
-
-            AbilityEffectRunAction runAction = raiseDead.GetComponent<AbilityEffectRunAction>();
-            if(runAction == null)
-            {
-                Main.Log.Error($"Could not find Ability Effect Run Action in Blueprint {BlueprintAbilityGuid.RaiseDead.GetDebugName()}");
-                return;
-            }
-
-            var difficultyCheck = ContextConditionDifficultyHigherThanConfigurator
-                .New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
-                .SetCheckOnlyForMonsterCaster(false)
-                .Configure();
-
-            var dealDamageAction = ContextActionDealDamageConfigurator
-                .NewPermanentEnergyDrain(ContextDiceFactory.BonusConstant(2))
-                .Configure();
-
-            Conditional difficultyConditional = MakeGameActionConditional
-            (
-                new ConditionsChecker() { Conditions = [difficultyCheck] }
-                , ifTrue: new ActionList() { Actions = [dealDamageAction] }
-             );
-
-            // Put the drain first, resurrection makes the unit untargetable
-            runAction.Actions.Actions = [difficultyConditional, .. runAction.Actions.Actions];
-        }
-
-        static void FixBreathOfLife()
-        {
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreathOfLifeTouch)
-                .SetFullRoundAction(false)
-                .EditComponent<AbilityEffectRunAction>(c =>
-                {
-                    var aliveConditional = c.Actions.GetGameAction<Conditional>();
-                    if(aliveConditional != null)
-                    {
-                        var isPartyMemberConditional = aliveConditional.IfFalse.GetGameAction<Conditional>();
-                        if(isPartyMemberConditional != null)
-                        {
-
-                            var difficultyConditional = MakeGameActionConditional
-                            (
-                                ConditionsCheckerFactory.Single
-                                (
-                                    ContextConditionDifficultyHigherThanConfigurator.New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
-                                        .SetCheckOnlyForMonsterCaster(false)
-                                        .Configure()
-                                ),
-                                ifTrue: ActionListFactory.From
-                                (
-                                    ContextActionDealDamageConfigurator
-                                        .NewTemporaryEnergyDrain(ContextDiceFactory.BonusConstant(1), ContextDurationFactory.ConstantDays(1))
-                                        .Configure()
-                                )
-                            );
-
-                            isPartyMemberConditional.IfTrue.Actions = [difficultyConditional, .. isPartyMemberConditional.IfTrue.Actions];
-                        }
-                    }
-                })
-                .Configure();
+            TextFixes.Apply();
+            OptionalFixes.ApplyAllEnabledFixes();
         }
     }
 }

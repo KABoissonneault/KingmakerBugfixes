@@ -16,6 +16,7 @@ namespace kmbf
         public bool FixNecklaceOfDoubleCrosses = true;
         public bool FixShatterDefenses = true;
         public bool FixArcaneTricksterAlignmentRequirement = true;
+        public bool FixCraneWingRequirements = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]

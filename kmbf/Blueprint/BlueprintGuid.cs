@@ -318,6 +318,8 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintBuffGuid ItsAMagicalPlace = new("670ab5958ff9ab246966ecb968132f37");
 
+    public static readonly BlueprintBuffGuid CraneStyleWingBuff = new("f78a249bacba9924b9595e52495cb02f");
+
     // GUIDs taken from CotW. Should not run together
     public static readonly BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
     public static readonly BlueprintBuffGuid KMBF_ShatterDefensesAppliedThisRound = new("cf3e721e93044a21b87692526b3c45e3");

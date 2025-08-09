@@ -5,8 +5,13 @@ namespace kmbf.Patch
 {
     static class TextFixes
     {
+        public static void Apply()
+        {
+            FixItemNames();
+            FixUnnamedEnemyAbilities();
+        }
         
-        public static void FixItemNames()
+        static void FixItemNames()
         {
             // In the base game, AmethystEncrustedRing has the GarnetRing name, and GarnetEncrustedRing has the TopazRing name
             BlueprintItemConfigurator.From(BlueprintItemEquipmentRingGuid.AmethystEncrustedRing)
@@ -23,7 +28,7 @@ namespace kmbf.Patch
                 .Configure();
         }
         
-        public static void FixUnnamedEnemyAbilities()
+        static void FixUnnamedEnemyAbilities()
         {
             BlueprintUnitFactConfigurator.From(BlueprintAbilityGuid.MimicOozeSpit)
                 .SetDisplayName(KMLocalizedStrings.Spit)

@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
-using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -120,39 +119,6 @@ namespace kmbf.Blueprint
             }
         }
 
-        // Replaces the "Apply Buff" action in the "Add Initiator Attack Role Trigger" component
-        public static void ReplaceAttackBuff(BlueprintObjectGuid bpId, BlueprintBuffGuid currentBuffId, BlueprintBuffGuid newBuffId)
-        {
-            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
-
-            ActionList attackActions = null;
-
-            var attackTrigger = bp.Components.FirstOrDefault(c => c is AddInitiatorAttackRollTrigger || c is AddInitiatorAttackWithWeaponTrigger);
-            if (attackTrigger == null)
-            {
-                Main.Log.Error($"Could not find Attack trigger component in blueprint '{bpId.GetDebugName()}'");
-                return;
-            }
-
-            if (attackTrigger is AddInitiatorAttackRollTrigger)
-            {
-                attackActions = ((AddInitiatorAttackRollTrigger)attackTrigger).Action;
-            }
-            else if (attackTrigger is AddInitiatorAttackWithWeaponTrigger)
-            {
-                attackActions = ((AddInitiatorAttackWithWeaponTrigger)attackTrigger).Action;
-            }
-
-            if (!newBuffId.GetBlueprint(out BlueprintBuff newBuff)) return;
-
-
-            attackActions.GetGameActionsRecursive()
-                .Select(a => a as ContextActionApplyBuff)
-                .NotNull()
-                .Where(a => a.Buff.AssetGuid == currentBuffId.guid)
-                .ForEach(a => a.Buff = newBuff);
-        }
-
         public static void SetContextSetAbilityParamsDC(BlueprintObjectGuid bpId, int DC)
         {
             if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
@@ -240,20 +206,6 @@ namespace kmbf.Blueprint
 
             foreach (var statBonusComponent in bp.Components.OfType<AddStatBonusScaled>().Where(c => c.Descriptor == expectedDescriptor))
                 statBonusComponent.Descriptor = newDescriptor;
-        }
-
-        public static void RemoveSpellDescriptor(BlueprintObjectGuid bpId, SpellDescriptor descriptor)
-        {
-            if (!bpId.GetBlueprint(out BlueprintScriptableObject bp)) return;
-
-            var spellDescriptorComponent = bp.GetComponent<SpellDescriptorComponent>();
-            if (spellDescriptorComponent == null)
-            {
-                Main.Log.Error($"Could not find Spell Descriptor Component on Blueprint {bpId.GetDebugName()}'");
-                return;
-            }
-
-            spellDescriptorComponent.Descriptor &= ~descriptor;
         }
 
         public static void CopyComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId)

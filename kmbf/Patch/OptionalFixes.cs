@@ -1,21 +1,89 @@
-﻿using Kingmaker.Designers.Mechanics.Facts;
-using kmbf.Blueprint;
-using static kmbf.Blueprint.Builder.ElementBuilder;
-using kmbf.Blueprint.Configurator;
-using Kingmaker.UnitLogic.Buffs.Blueprints;
-using Kingmaker.Blueprints.Classes;
-using Kingmaker.UnitLogic.Mechanics.Components;
-using Kingmaker.UnitLogic;
-using Kingmaker.ElementsSystem;
+﻿using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.ElementsSystem;
+using Kingmaker.Kingdom.Actions;
+using Kingmaker.Kingdom.Buffs;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Alignments;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Mechanics.Components;
+using kmbf.Blueprint;
+using kmbf.Blueprint.Configurator;
+using kmbf.Component;
+using static kmbf.Blueprint.Builder.ElementBuilder;
 
 namespace kmbf.Patch
 {
     static class OptionalFixes
     {
+        public static void ApplyAllEnabledFixes()
+        {
+            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixNecklaceOfDoubleCrosses)
+                FixNecklaceOfDoubleCrosses();
+            if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
+                FixShatterDefenses();
+
+            if (Main.UMMSettings.BalanceSettings.FixNauseatedPoisonDescriptor) 
+                FixNauseatedPoisonDescriptor();
+            if (Main.UMMSettings.BalanceSettings.FixCandlemereTowerResearch) 
+                FixCandlemereTowerResearch();         
+            if (Main.UMMSettings.BalanceSettings.FixArcaneTricksterAlignmentRequirement) 
+                FixArcaneTricksterAlignmentRequirement();
+            if (Main.UMMSettings.BalanceSettings.FixCraneWingRequirements) 
+                FixCraneWingHandCheck();
+            if (Main.UMMSettings.EventSettings.FixFreeEzvankiTemple)
+                FixFreeEzvankiTemple();
+        }
+
+        // In the base game, Necklace of Double Crosses applies to all sneak attacks, and the "attack against allies" mechanic is not implemented at all
+        private static void FixNecklaceOfDoubleCrosses()
+        {
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.NecklaceOfDoubleCrosses)
+                .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
+                .AddComponent<AooAgainstAllies>()
+                .Configure();
+        }
+
+        // Nauseated buff: remove Poison descriptors
+        static void FixNauseatedPoisonDescriptor()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Nauseated)
+                .RemoveSpellDescriptor(SpellDescriptor.Poison)
+                .Configure();
+        }            
+
+        // Research of Candlemere gives a global buff to all adjacent regions, rather than give a single buff that applies to adjacent regions
+        // Requires a fix in SaveFixes too, like all Kingdom buffs
+        static void FixCandlemereTowerResearch()
+        {
+            BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ResearchOftheCandlemere)
+                .EditEventSuccessAnyFinalResult(r =>
+                {
+                    var addBuffAction = r.Actions.GetGameAction<KingdomActionAddBuff>();
+                    if (addBuffAction != null)
+                    {
+                        addBuffAction.CopyToAdjacentRegions = false;
+                    }
+                })
+                .Configure();
+
+            BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CandlemereTowerResearch)
+                .EditComponent<KingdomEventModifier>(c =>
+                {
+                    c.OnlyInRegion = true;
+                    c.IncludeAdjacent = true;
+                })
+                .Configure();
+        }
+
+        // Shatter Defenses should, by description, make the target flat-footed until the end of next round if hit while shaken or frightnened
+        // In the base game, it instead makes the target flat footed for the current round if shaken or frightened
+        // The fix applies a debuff on hit while shaken or frightened, and flat-footed only checks for the debuff (not the conditions)
+        // This differs from the CotW fix, which double-checks the conditions for flat-footed
         // Depends on the RuleCheckTargetFlatFooted patch
-        public static void FixShatterDefenses()
+        static void FixShatterDefenses()
         {
             var shatterDefensesFeatureConfig = BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ShatterDefenses);
             BlueprintFeature shatterDefenses = shatterDefensesFeatureConfig.Instance;
@@ -79,7 +147,8 @@ namespace kmbf.Patch
             .Configure();
         }
 
-        public static void FixFreeEvzankiTemple()
+        // In the base game, "Ezvanki's Offer" is always offered, when it should only be given on a successful diplomacy check
+        static void FixFreeEzvankiTemple()
         {
             BlueprintCueConfigurator.From(BlueprintCueGuid.Act2KestenTourToThroneRoom_Cue01)
                 .EditOnStopActionWhere<Conditional>(c =>
@@ -93,10 +162,20 @@ namespace kmbf.Patch
         }
 
         // Both tabletop and in-game encyclopedia say Arcane Trickster requirement non-lawful, but the game (or WotR) does not enforce it
-        public static void FixArcaneTricksterAlignmentRequirement()
+        static void FixArcaneTricksterAlignmentRequirement()
         {
             BlueprintCharacterClassConfigurator.From(BlueprintCharacterClassGuid.ArcaneTrickster)
                 .SetAlignmentRestriction(AlignmentMaskType.NeutralGood | AlignmentMaskType.TrueNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.Chaotic)
+                .Configure();
+        }
+
+        // Crane Wing should require a free hand to give its bonus
+        // This means that 1) nothing should be equipped there 2) it shouldn't be used for any purpose (ex: wielding with two hands)
+        // KM easily supports checking for a shield, but the rest is a bit of a mess without adding a full-on "Wield 1h weapon with Two Hands" toggle to turn off
+        static void FixCraneWingHandCheck()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.CraneStyleWingBuff)
+                .EditComponent<ACBonusAgainstAttacks>(c => c.NoShield = true)
                 .Configure();
         }
     }

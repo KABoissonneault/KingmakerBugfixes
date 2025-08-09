@@ -19,6 +19,7 @@ using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
+using System;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
@@ -72,6 +73,9 @@ namespace kmbf.Blueprint.Configurator
         public static TBuilder From(GuidType id)
         {
             id.GetBlueprint(out BlueprintScriptableObject bp);
+            if (bp != null && !(bp is BPType))
+                Main.Log.Error($"Blueprint with GUID '{id.guid}' did not have expected type {id.BlueprintTypeName}");
+
             TBuilder builder = new();
             builder.instance = bp as BPType;
             return builder;
@@ -320,6 +324,19 @@ namespace kmbf.Blueprint.Configurator
             if(instance != null)
             {
                 instance.m_Flags |= flag;
+            }
+
+            return this;
+        }
+
+        public BlueprintBuffConfigurator RemoveSpellDescriptor(SpellDescriptor descriptor)
+        {
+            if(instance != null)
+            {
+                EditComponent<SpellDescriptorComponent>(c =>
+                {
+                    c.Descriptor &= ~descriptor;
+                });
             }
 
             return this;
