@@ -179,7 +179,7 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public override string BlueprintTypeName => "Ability";
     public bool GetBlueprint(out BlueprintAbility bp) => GetBlueprintAs(out bp);
 
-
+    public static readonly BlueprintAbilityGuid ProtectionFromArrowsCommunal = new("96c9d98b6a9a7c249b6c4572e4977157");
     public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
     public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
     public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");
@@ -304,6 +304,8 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
     public override string BlueprintTypeName => "Buff";
     public bool GetBlueprint(out BlueprintBuff bp) => GetBlueprintAs(out bp);
 
+    public static readonly BlueprintBuffGuid ProtectionFromArrows = new("241ee6bd8c8767343994bce5dc1a95e0");
+    public static readonly BlueprintBuffGuid ProtectionFromArrowsCommunal = new("10014a817b0780c49a2d2d954f62fa55");
     public static readonly BlueprintBuffGuid MagicalVestmentArmor = new("9e265139cf6c07c4fb8298cb8b646de9");
     public static readonly BlueprintBuffGuid MagicalVestmentShield = new("2e8446f820936a44f951b50d70a82b16");
 

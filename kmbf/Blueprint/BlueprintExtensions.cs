@@ -122,5 +122,14 @@ namespace kmbf.Blueprint
 
             throw new ArgumentException($"MarginType Requirement had invalid type {Requirement}");
         }
+
+        public static void SetMultiplyByModifier(this ContextRankConfig config, int step, int? max)
+        {
+            config.m_Progression = ContextRankProgression.MultiplyByModifier;
+            config.m_StepLevel = step;
+            config.m_UseMax = max.HasValue;
+            if (config.m_UseMax)
+                config.m_Max = max.Value;
+        }
     }
 }

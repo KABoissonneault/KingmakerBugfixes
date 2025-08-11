@@ -1,4 +1,5 @@
 ﻿using Kingmaker.ElementsSystem;
+using Kingmaker.Enums;
 using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
@@ -17,6 +18,20 @@ namespace kmbf.Blueprint
         public static ContextDiceValue BonusConstant(int value)
         {
             return Value(DiceType.Zero, diceCount: null, bonus: value);
+        }
+    }
+
+    public static class ContextValueFactory
+    {
+        public static ContextValue Simple(int value)
+        {
+            return new() { Value = value };
+        }
+        
+        // Actual values derived from ContextRankConfig component
+        public static ContextValue Rank(AbilityRankType rankType = AbilityRankType.Default)
+        {
+            return new() { ValueType = ContextValueType.Rank, ValueRank = rankType };
         }
     }
 

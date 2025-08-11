@@ -4,9 +4,11 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
@@ -26,6 +28,7 @@ namespace kmbf.Patch
             FixRaiseDead();
             FixBreathOfLife();
             FixJoyfulRapture();
+            FixProtectionFromArrows();
         }
 
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
@@ -177,6 +180,50 @@ namespace kmbf.Patch
                 .EditComponentGameAction<AbilityEffectRunAction, ContextActionDispelMagic>("$ContextActionDispelBuffs$b4781573-55ad-4e71-9dd9-75a0c38652e0", a =>
                 {
                     a.Descriptor |= SpellDescriptor.Fear | SpellDescriptor.Shaken | SpellDescriptor.Frightened | SpellDescriptor.NegativeEmotion;
+                })
+                .Configure();
+        }
+
+        // Protection From Arrows Communal should not have spell resistance, like Protection from Arrows, and like other communal buffs
+        static void FixProtectionFromArrows()
+        {
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ProtectionFromArrowsCommunal)
+                .SetSpellResistance(false)
+                .Configure();
+
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ProtectionFromArrows)
+                .RemoveComponents<DRAgainstRangedWithPool>()
+                .AddComponent<AddDamageResistancePhysical>(c =>
+                {
+                    c.Or = true;
+                    c.BypassedByMagic = true;
+                    c.BypassedByMeleeWeapon = true;
+                    c.Value = ContextValueFactory.Simple(10);
+                    c.UsePool = true;
+                    c.Pool = ContextValueFactory.Rank();
+                })
+                .AddOrEditDefaultContextRankConfig(c =>
+                {
+                    c.m_BaseValueType = ContextRankBaseValueType.CasterLevel;
+                    c.SetMultiplyByModifier(step: 10, max: 100);
+                })
+                .Configure();
+
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ProtectionFromArrowsCommunal)
+                .RemoveComponents<DRAgainstRangedWithPool>()
+                .AddComponent<AddDamageResistancePhysical>(c =>
+                {
+                    c.Or = true;
+                    c.BypassedByMagic = true;
+                    c.BypassedByMeleeWeapon = true;
+                    c.Value = ContextValueFactory.Simple(10);
+                    c.UsePool = true;
+                    c.Pool = ContextValueFactory.Rank();
+                })
+                .AddOrEditDefaultContextRankConfig(c =>
+                {
+                    c.m_BaseValueType = ContextRankBaseValueType.CasterLevel;
+                    c.SetMultiplyByModifier(step: 10, max: 100);
                 })
                 .Configure();
         }

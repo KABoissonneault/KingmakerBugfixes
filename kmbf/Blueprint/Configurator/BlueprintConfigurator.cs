@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
+using Kingmaker.Enums;
 using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom;
 using Kingmaker.Kingdom.Blueprints;
@@ -157,7 +158,7 @@ namespace kmbf.Blueprint.Configurator
         {
             if (instance != null)
             {
-                C c = instance.GetComponentWhere(pred);
+                C c = instance.GetComponentWhere<C>(pred);
                 if (c != null)
                     action(c);
                 else
@@ -260,7 +261,27 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintFactGuid, new()
         where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
     {
+        public TBuilder AddOrEditDefaultContextRankConfig(Action<ContextRankConfig> action)
+        {
+            if (instance != null)
+            {
+                ContextRankConfig rankConfig = instance.GetComponentWhere<ContextRankConfig>(c => c.m_Type == AbilityRankType.Default);
+                if (rankConfig != null)
+                {
+                    action(rankConfig);
+                }
+                else
+                {
+                    AddComponent<ContextRankConfig>(c =>
+                    {
+                        c.m_Type = AbilityRankType.Default;
+                        action(c);
+                    });
+                }
+            }
 
+            return Self;
+        }
     }
 
     public abstract class BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>
@@ -353,8 +374,16 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
+    public sealed class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
     {
+        public BlueprintAbilityConfigurator SetSpellResistance(bool value)
+        {
+            if (instance != null)
+                instance.SpellResistance = value;
+
+            return this;
+        }
+
         public BlueprintAbilityConfigurator SetFullRoundAction(bool fullRoundAction)
         {
             if(instance)
