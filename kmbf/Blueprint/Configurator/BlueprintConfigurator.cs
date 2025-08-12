@@ -140,6 +140,21 @@ namespace kmbf.Blueprint.Configurator
             return Self;
         }
 
+        public TBuilder RemoveComponentsWhere<C>(Predicate<C> pred) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                instance.Components = instance.Components.Where(c =>
+                {
+                    var dc = c as C;
+                    if (!dc) return true;
+                    return !pred(dc);
+                }).ToArray();
+            }
+
+            return Self;
+        }
+
         public TBuilder EditComponent<C>(Action<C> action) where C : BlueprintComponent
         {
             if(instance != null)

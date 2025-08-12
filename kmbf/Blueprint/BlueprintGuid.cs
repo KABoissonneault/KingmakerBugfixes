@@ -457,6 +457,8 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
 
     public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
+
+    public static readonly BlueprintFeatureGuid AnimalCompanionUpgradeLeopard = new("b8c98af302ee334499d30a926306327d");
 }
 
 public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid

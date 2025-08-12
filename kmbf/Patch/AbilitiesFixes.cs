@@ -6,6 +6,7 @@ using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
@@ -29,6 +30,7 @@ namespace kmbf.Patch
             FixBreathOfLife();
             FixJoyfulRapture();
             FixProtectionFromArrows();
+            FixLeopardCompanionUpgrade();
         }
 
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
@@ -225,6 +227,15 @@ namespace kmbf.Patch
                     c.m_BaseValueType = ContextRankBaseValueType.CasterLevel;
                     c.SetMultiplyByModifier(step: 10, max: 100);
                 })
+                .Configure();
+        }
+
+        static void FixLeopardCompanionUpgrade()
+        {
+            BlueprintObjectConfigurator.From(BlueprintFeatureGuid.AnimalCompanionUpgradeLeopard)
+                .RemoveComponentsWhere<AddStatBonus>(b => b.Stat == StatType.Strength)
+                .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Constitution, b => b.Value = 2)
+                .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Dexterity, b => b.Value = 2)
                 .Configure();
         }
     }
