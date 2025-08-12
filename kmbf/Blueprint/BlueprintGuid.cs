@@ -180,6 +180,7 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public bool GetBlueprint(out BlueprintAbility bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintAbilityGuid ProtectionFromArrowsCommunal = new("96c9d98b6a9a7c249b6c4572e4977157");
+    public static readonly BlueprintAbilityGuid ControlledFireball = new("f72f8f03bf0136c4180cd1d70eb773a5");
     public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
     public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
     public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");

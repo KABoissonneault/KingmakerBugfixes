@@ -6,6 +6,7 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Actions;
 using Kingmaker.Kingdom.Buffs;
 using Kingmaker.UnitLogic;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Components;
@@ -33,6 +34,8 @@ namespace kmbf.Patch
                 FixArcaneTricksterAlignmentRequirement();
             if (Main.UMMSettings.BalanceSettings.FixCraneWingRequirements) 
                 FixCraneWingHandCheck();
+            if (Main.UMMSettings.BalanceSettings.FixControlledFireball)
+                FixControlledFireball();
             if (Main.UMMSettings.EventSettings.FixFreeEzvankiTemple)
                 FixFreeEzvankiTemple();
         }
@@ -176,6 +179,14 @@ namespace kmbf.Patch
         {
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.CraneStyleWingBuff)
                 .EditComponent<ACBonusAgainstAttacks>(c => c.NoShield = true)
+                .Configure();
+        }
+        
+        // Controlled Fireball has the default Target Type of "Enemy". This is fixed to "Any" in Wrath
+        static void FixControlledFireball()
+        {
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ControlledFireball)
+                .EditComponent<AbilityTargetsAround>(c => c.m_TargetType = TargetType.Any)
                 .Configure();
         }
     }
