@@ -9,7 +9,6 @@ using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
-using kmbf.Blueprint.Configurator;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Builder
@@ -60,6 +59,12 @@ namespace kmbf.Blueprint.Builder
             instance.CaptionName = captionName;
             instance.Buffs = buffs;
             instance.Count = count;
+            return instance;
+        }
+
+        public static ContextConditionHasSpellImmunityToContextDescriptors MakeContextConditionHasSpellImmunityToContextDescriptors()
+        {
+            ContextConditionHasSpellImmunityToContextDescriptors instance = CreateInstance<ContextConditionHasSpellImmunityToContextDescriptors>();
             return instance;
         }
 

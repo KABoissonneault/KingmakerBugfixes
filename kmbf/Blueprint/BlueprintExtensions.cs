@@ -52,7 +52,7 @@ namespace kmbf.Blueprint
 
         public static IEnumerable<GameAction> GetGameActionsRecursive(this BlueprintComponent bpComponent)
         {
-            switch(bpComponent)
+            switch (bpComponent)
             {
                 case ActivateTrigger activateTrigger:
                     foreach (GameAction action in activateTrigger.Actions.GetGameActionsRecursive()) yield return action;
@@ -63,51 +63,66 @@ namespace kmbf.Blueprint
                     break;
             }
         }
-            
+
+        public static IEnumerable<ActionList> GetChildActionLists(this GameAction action)
+        {
+            switch (action)
+            {
+                case Conditional conditionalAction:
+                    return [conditionalAction.IfTrue, conditionalAction.IfFalse];
+
+                case ContextActionSavingThrow savingThrowAction:
+                    return [savingThrowAction.Actions];
+
+                case ContextActionConditionalSaved conditionalSavedAction:
+                    return [conditionalSavedAction.Succeed, conditionalSavedAction.Failed];
+
+                case RunActionHolder actionHolder:
+                    return [actionHolder.Holder.Actions];
+
+                case AlignmentSelector alignmentSelector:
+                    return [
+                        alignmentSelector.LawfulGood.Action,
+                        alignmentSelector.LawfulNeutral.Action,
+                        alignmentSelector.LawfulEvil.Action,
+                        alignmentSelector.NeutralGood.Action,
+                        alignmentSelector.TrueNeutral.Action,
+                        alignmentSelector.NeutralEvil.Action,
+                        alignmentSelector.ChaoticGood.Action,
+                        alignmentSelector.ChaoticNeutral.Action,
+                        alignmentSelector.ChaoticEvil.Action
+                        ];
+
+                case ContextActionRandomize randomizeAction:
+                    return randomizeAction.m_Actions.Select(w => w.Action);
+
+                default:
+                    return Enumerable.Empty<ActionList>();
+            }
+        }
+
+        public static IEnumerable<GameAction> GetChildActions(this GameAction action)
+        {
+            foreach (ActionList list in action.GetChildActionLists())
+                foreach (GameAction childAction in list.Actions)
+                    yield return childAction;
+        }
+
         public static IEnumerable<GameAction> GetGameActionsRecursive(this ActionList actionList)
         {
             foreach (GameAction gameAction in actionList.Actions.EmptyIfNull())
             {
                 yield return gameAction;
 
-                switch (gameAction)
-                {
-                    case Conditional conditionalAction:
-                        foreach (GameAction trueAction in conditionalAction.IfTrue.GetGameActionsRecursive()) yield return trueAction;
-                        foreach (GameAction falseAction in conditionalAction.IfFalse.GetGameActionsRecursive()) yield return falseAction;
-                        break;
-
-                    case ContextActionSavingThrow savingThrowAction:
-                        foreach (GameAction action in savingThrowAction.Actions.GetGameActionsRecursive()) yield return action;
-                        break;
-
-                    case ContextActionConditionalSaved conditionalSavedAction:
-                        foreach (GameAction trueAction in conditionalSavedAction.Succeed.GetGameActionsRecursive()) yield return trueAction;
-                        foreach (GameAction falseAction in conditionalSavedAction.Failed.GetGameActionsRecursive()) yield return falseAction;
-                        break;
-
-                    case RunActionHolder actionHolder:
-                        foreach (GameAction action in actionHolder.Holder.Actions.GetGameActionsRecursive()) yield return action;
-                        break;
-
-                    case AlignmentSelector alignmentSelector:
-                        foreach (GameAction action in alignmentSelector.LawfulGood.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.LawfulNeutral.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.LawfulEvil.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.NeutralGood.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.TrueNeutral.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.NeutralEvil.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.ChaoticGood.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.ChaoticNeutral.Action.GetGameActionsRecursive()) yield return action;
-                        foreach (GameAction action in alignmentSelector.ChaoticEvil.Action.GetGameActionsRecursive()) yield return action;
-                        break;
-                }
+                foreach (ActionList childList in gameAction.GetChildActionLists())
+                    foreach (GameAction childAction in childList.GetGameActionsRecursive())
+                        yield return childAction;
             }
         }
 
         public static bool Encompasses(this EventResult.MarginType Requirement, EventResult.MarginType Current)
         {
-            switch(Requirement)
+            switch (Requirement)
             {
                 case EventResult.MarginType.GreatFail:
                 case EventResult.MarginType.Fail:

@@ -198,8 +198,8 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
 
 public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
 {
-    BlueprintAbilityAreaEffectGuid() { }
-    BlueprintAbilityAreaEffectGuid(string guid)
+    public BlueprintAbilityAreaEffectGuid() { }
+    public BlueprintAbilityAreaEffectGuid(string guid)
         : base(guid)
     {
 
@@ -210,6 +210,8 @@ public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
     public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMetalBlast = new BlueprintAbilityAreaEffectGuid("38a2979db34ad0f45a449e5eb174729f");
     public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthRareMetalBlast = new BlueprintAbilityAreaEffectGuid("267f19ba174b21e4d9baf30afd589068");
     public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMudBlast = new BlueprintAbilityAreaEffectGuid("0af604484b5fcbb41b328750797e3948");
+
+    public static readonly BlueprintAbilityAreaEffectGuid BalefulGaze = new BlueprintAbilityAreaEffectGuid("1b6dc09a66357e14ab51b7db86e9a29d");
 }
 
 public class BlueprintCharacterClassGuid : BlueprintObjectGuid

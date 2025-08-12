@@ -16,6 +16,7 @@ using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.Kingdom.Tasks;
 using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Components;
@@ -694,6 +695,36 @@ namespace kmbf.Blueprint.Configurator
                 instance.m_DefaultNameText = defaultName;
 
             return Self;
+        }
+    }
+
+    public sealed class BlueprintAbilityAreaEffectConfigurator : BaseBlueprintObjectConfigurator<BlueprintAbilityAreaEffect, BlueprintAbilityAreaEffectGuid, BlueprintAbilityAreaEffectConfigurator>
+    {
+        public BlueprintAbilityAreaEffectConfigurator EditRoundActions(Action<ActionList> action)
+        {
+            if(instance != null)
+            {
+                var c = instance.GetComponent<AbilityAreaEffectRunAction>();
+                if (c != null)
+                    action(c.Round);
+                else
+                    Main.Log.Error($"Could not find component of type AbilityAreaEffectRunAction in {GetDebugName()}");
+            }
+
+            return this;
+        }
+
+        public BlueprintAbilityAreaEffectConfigurator AddSpellDescriptor(SpellDescriptor descriptor)
+        {
+            if (instance != null)
+            {
+                EditOrAddComponent<SpellDescriptorComponent>(c =>
+                {
+                    c.Descriptor |= descriptor;
+                });
+            }
+
+            return this;
         }
     }
 }

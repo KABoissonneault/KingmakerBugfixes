@@ -7,12 +7,15 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
+using Kingmaker.Utility;
+using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using UnityEngine;
@@ -31,6 +34,7 @@ namespace kmbf.Patch
             FixJoyfulRapture();
             FixProtectionFromArrows();
             FixLeopardCompanionUpgrade();
+            FixGazeImmunities();
         }
 
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
@@ -230,12 +234,49 @@ namespace kmbf.Patch
                 .Configure();
         }
 
+        // Description says +2 Dex, +2 Con, but the game applies +4 str, -2 dex, and +4 con
         static void FixLeopardCompanionUpgrade()
         {
             BlueprintObjectConfigurator.From(BlueprintFeatureGuid.AnimalCompanionUpgradeLeopard)
                 .RemoveComponentsWhere<AddStatBonus>(b => b.Stat == StatType.Strength)
                 .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Constitution, b => b.Value = 2)
                 .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Dexterity, b => b.Value = 2)
+                .Configure();
+        }
+
+        // Baleful Gaze applies stat damage, which does not check descriptor immunities like "Sight Based" or "Gaze Attack"
+        // Add a conditional wrapper that checks for the immunity for now
+        // Still does not cover Saving Throw bonuses and the like, but we'll see if anyone notices
+        static void FixGazeImmunities()
+        {
+            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.BalefulGaze)
+                .EditRoundActions(roundActions =>
+                {
+                    foreach(GameAction action in roundActions.GetGameActionsRecursive())
+                    {
+                        // Skip the own wrappers we're adding
+                        if (action is Conditional cond && cond.ConditionsChecker.HasConditions && cond.ConditionsChecker.Conditions[0] is ContextConditionHasSpellImmunityToContextDescriptors)
+                            continue;
+
+                        foreach(ActionList childList in action.GetChildActionLists())
+                        {
+                            for(int index = 0; index < childList.Actions.Length; ++index)
+                            {
+                                var childAction = childList.Actions[index];
+                                if(childAction is ContextActionSavingThrow)
+                                {
+                                    var conditional = MakeGameActionConditional(
+                                        ConditionsCheckerFactory.Single(MakeContextConditionHasSpellImmunityToContextDescriptors())
+                                        , ifFalse: ActionListFactory.Single(childAction)
+                                        );
+
+                                    childList.Actions[index] = conditional;
+                                }
+                            }
+                        }
+                    }
+                })
+                .AddSpellDescriptor(SpellDescriptor.SightBased)
                 .Configure();
         }
     }
