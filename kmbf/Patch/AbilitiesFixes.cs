@@ -7,14 +7,12 @@ using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
-using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
-using Kingmaker.Utility;
 using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -35,6 +33,7 @@ namespace kmbf.Patch
             FixProtectionFromArrows();
             FixLeopardCompanionUpgrade();
             FixGazeImmunities();
+            FixTieflingFoulspawn();
         }
 
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
@@ -277,6 +276,16 @@ namespace kmbf.Patch
                     }
                 })
                 .AddSpellDescriptor(SpellDescriptor.SightBased)
+                .Configure();
+        }
+
+        static void FixTieflingFoulspawn()
+        {
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.TieflingHeritageFoulspawn)
+                .EditComponent<AttackBonusConditional>(c =>
+                {
+                    c.Conditions.Operation = Operation.Or;
+                })
                 .Configure();
         }
     }
