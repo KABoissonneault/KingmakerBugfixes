@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.RuleSystem.Rules.Damage;
+using Kingmaker.UnitLogic.Buffs.Components;
 using Kingmaker.UnitLogic.FactLogic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -22,18 +23,45 @@ namespace kmbf.Patch.KM.UnitLogic.FactLogic
         static readonly MethodInfo Enchantment = AccessTools.PropertyGetter(typeof(PhysicalDamage), nameof(PhysicalDamage.Enchantment));
         static readonly MethodInfo EnchantmentTotal = AccessTools.PropertyGetter(typeof(PhysicalDamage), nameof(PhysicalDamage.EnchantmentTotal));
 
+        static CodeInstruction PatchOperand(CodeInstruction i)
+        {
+            i.operand = Enchantment;
+            return i;
+        }
+
         [HarmonyPatch(typeof(AddDamageResistancePhysical), nameof(AddDamageResistancePhysical.Bypassed))]
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Bypassed_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return instructions.Select(i => i.Calls(EnchantmentTotal) ? new CodeInstruction(OpCodes.Callvirt, Enchantment) : i);
+            return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
         }
 
         [HarmonyPatch(typeof(AddDamageResistancePhysical), nameof(AddDamageResistancePhysical.CheckBypassedByAlignment))]
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> CheckBypassedByAlignment_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            return instructions.Select(i => i.Calls(EnchantmentTotal) ? new CodeInstruction(OpCodes.Callvirt, Enchantment) : i);
+            return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
+        }
+
+        [HarmonyPatch(typeof(AddEffectRegeneration), nameof(AddEffectRegeneration.OnEventDidTrigger))]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> AddEffectRegeneration_OnEventDidTrigger_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
+        }
+
+        [HarmonyPatch(typeof(AddIncorporealDamageDivisor), nameof(AddIncorporealDamageDivisor.OnEventAboutToTrigger))]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> AddIncorporealDamageDivisor_OnEventAboutToTrigger_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
+        }
+
+        [HarmonyPatch(typeof(GhostCriticalAndPrecisionImmunity), nameof(GhostCriticalAndPrecisionImmunity.OnEventAboutToTrigger))]
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> GhostCriticalAndPrecisionImmunity_OnEventAboutToTrigger_Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
         }
     }
 }
