@@ -2,7 +2,7 @@
 using Kingmaker.UI._ConsoleUI.TurnBasedMode;
 using Kingmaker.Utility;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.KM.UI.ConsoleUI.TurnBasedMode
 {
     [HarmonyPatch]
     static class EventSubscription

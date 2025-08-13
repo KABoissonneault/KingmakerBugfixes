@@ -7,6 +7,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Globalmap.Blueprints;
 using Kingmaker.Kingdom;
@@ -648,6 +649,14 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintCheckConfigurator : BaseBlueprintObjectConfigurator<BlueprintCheck, BlueprintCheckGuid, BlueprintCheckConfigurator>
     {
+        public BlueprintCheckConfigurator SetSkillType(StatType stat)
+        {
+            if (instance != null)
+                instance.Type = stat;
+
+            return this;
+        }
+
         public BlueprintCheckConfigurator EditDCModifierAt(int index, Action<DCModifier> action)
         {
             if (instance != null)
@@ -660,6 +669,19 @@ namespace kmbf.Blueprint.Configurator
                 {
                     Main.Log.Error($"Invalid DCModifier index {index}, length was {instance.DCModifiers.Length}");
                 }
+            }
+
+            return this;
+        }
+    }
+
+    public sealed class BlueprintAnswerConfigurator : BaseBlueprintObjectConfigurator<BlueprintAnswer, BlueprintAnswerGuid, BlueprintAnswerConfigurator>
+    {
+        public BlueprintAnswerConfigurator EditOnSelectActions(Action<ActionList> action)
+        {
+            if(instance != null)
+            {
+                action(instance.OnSelect);
             }
 
             return this;
@@ -700,6 +722,14 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintAbilityAreaEffectConfigurator : BaseBlueprintObjectConfigurator<BlueprintAbilityAreaEffect, BlueprintAbilityAreaEffectGuid, BlueprintAbilityAreaEffectConfigurator>
     {
+        public BlueprintAbilityAreaEffectConfigurator SetAggroEnemies(bool value)
+        {
+            if (instance != null)
+                instance.AggroEnemies = value;
+
+            return this;
+        }
+
         public BlueprintAbilityAreaEffectConfigurator EditRoundActions(Action<ActionList> action)
         {
             if(instance != null)

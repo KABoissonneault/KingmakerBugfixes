@@ -208,11 +208,13 @@ public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
 
     public override string BlueprintTypeName => "Ability Area Effect";
 
-    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMetalBlast = new BlueprintAbilityAreaEffectGuid("38a2979db34ad0f45a449e5eb174729f");
-    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthRareMetalBlast = new BlueprintAbilityAreaEffectGuid("267f19ba174b21e4d9baf30afd589068");
-    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMudBlast = new BlueprintAbilityAreaEffectGuid("0af604484b5fcbb41b328750797e3948");
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMetalBlast = new("38a2979db34ad0f45a449e5eb174729f");
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthRareMetalBlast = new("267f19ba174b21e4d9baf30afd589068");
+    public static readonly BlueprintAbilityAreaEffectGuid DeadlyEarthMudBlast = new("0af604484b5fcbb41b328750797e3948");
 
-    public static readonly BlueprintAbilityAreaEffectGuid BalefulGaze = new BlueprintAbilityAreaEffectGuid("1b6dc09a66357e14ab51b7db86e9a29d");
+    public static readonly BlueprintAbilityAreaEffectGuid BalefulGaze = new("1b6dc09a66357e14ab51b7db86e9a29d");
+
+    public static readonly BlueprintAbilityAreaEffectGuid HeartOfIra = new("3a636a7438e92a14386fc460f466be1b");
 }
 
 public class BlueprintCharacterClassGuid : BlueprintObjectGuid
@@ -248,6 +250,41 @@ public class BlueprintCueGuid : BlueprintObjectGuid
     public static readonly BlueprintCueGuid CandlemereRismelDelayedStartFight = new("f099ec070656d0f45981e29aeac9d190");
 
     public static readonly BlueprintCueGuid Act2KestenTourToThroneRoom_Cue01 = new("61fd0dbd69f5c354995a559f79888c6f");
+}
+
+public class BlueprintCheckGuid : BlueprintObjectGuid
+{
+    public BlueprintCheckGuid() { }
+    public BlueprintCheckGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Check";
+    public bool GetBlueprint(out BlueprintCheck bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new("373d384d88b55a244b74009dc6628b0e");
+    public static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new("e4f4fe6042b99cc4790f0103ae10345e");
+
+    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Diplomacy = new("f0a74d43a46cff44e9cefa07710bb1e6");
+    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Intimidate = new("46b410623d176764fbd57bdc0e5b921d");
+}
+
+public class BlueprintAnswerGuid : BlueprintObjectGuid
+{
+    public BlueprintAnswerGuid() { }
+    public BlueprintAnswerGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Answer";
+    public bool GetBlueprint(out BlueprintAnswer bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintAnswerGuid TestOfStrength_PushSolution_Conclusion = new("4df1f2b4fcc3f6243899d843ea3c14a7"); // Answer_0023 in BookEvent-TestOfStrength-NEW
+    public static readonly BlueprintAnswerGuid TestOfStrength_BreakWallsSolution_Conclusion = new("6fecd8590fb8a214a92e130a5d6013dd"); // Answer_0047 in BookEvent-TestOfStrength-NEW
 }
 
 public class BlueprintKingdomArtisanGuid : BlueprintObjectGuid
@@ -399,25 +436,6 @@ public class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
     public bool GetBlueprint(out BlueprintItemEquipmentUsable bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintItemEquipmentUsableGuid ScrollSummonNaturesAllyVSingle = new BlueprintItemEquipmentUsableGuid("4e9e261a93c7aa144a7b29c9fcfb4986");
-}
-
-public class BlueprintCheckGuid : BlueprintObjectGuid
-{
-    public BlueprintCheckGuid() { }
-    public BlueprintCheckGuid(string guid)
-        : base(guid)
-    {
-
-    }
-
-    public override string BlueprintTypeName => "Check";
-    public bool GetBlueprint(out BlueprintCheck bp) => GetBlueprintAs(out bp);
-
-    public static readonly BlueprintCheckGuid ShrewishGulchLastStageTwoActions = new BlueprintCheckGuid("373d384d88b55a244b74009dc6628b0e");
-    public static readonly BlueprintCheckGuid ShrewishGulchLastStageThreeActions = new BlueprintCheckGuid("e4f4fe6042b99cc4790f0103ae10345e");
-
-    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Diplomacy = new("f0a74d43a46cff44e9cefa07710bb1e6");
-    public static readonly BlueprintCheckGuid Unrest_AngryMob_FirstCheck_Intimidate = new("46b410623d176764fbd57bdc0e5b921d");
 }
 
 public class BlueprintWeaponTypeGuid : BlueprintObjectGuid

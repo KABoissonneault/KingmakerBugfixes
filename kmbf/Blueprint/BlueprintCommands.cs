@@ -175,16 +175,6 @@ namespace kmbf.Blueprint
             }
         }
 
-        public static void ReplaceCheckSkillType(BlueprintCheckGuid checkId, StatType currentStat, StatType newStat)
-        {
-            if (!checkId.GetBlueprint(out BlueprintCheck check)) return;
-
-            if (check.Type == currentStat)
-            {
-                check.Type = newStat;
-            }
-        }
-
         public static void AddWeaponEnchantment(BlueprintItemWeaponGuid weaponId, BlueprintWeaponEnchantmentGuid weaponEnchantmentId)
         {
             if (!weaponId.GetBlueprint(out BlueprintItemWeapon weapon)) return;
