@@ -16,6 +16,7 @@ namespace kmbf.Patch
             FixCandlemere();
             FixUnrestInTheStreets();
             FixTestOfStrength();
+            FixMimThreeWishes();
         }
 
         // Shrewish Gulch Last Stage "Two Actions" and "Three Actions" checks have "Lore (Nature)" instead of "Athletics" as skill check, unlike the One Action variant
@@ -74,6 +75,15 @@ namespace kmbf.Patch
                     // Remove the current open doors and add the ones from the "Break walls" solution
                     actions.Actions = actions.Actions.Where(a => !(a is OpenDoor)).Concat(breakWallsAnswer.OnSelect.Actions.OfType<OpenDoor>()).ToArray();
                 })
+                .Configure();
+        }
+
+        // Should raise Artisan tier by 1 on completion, but fails to do so
+        static void FixMimThreeWishes()
+        {
+            // Obj5_LeadToTalonPeak finishes parent by default, when the quest has a Finish objective already to handle completion, as well as completion effects
+            BlueprintQuestObjectiveConfigurator.From(new BlueprintQuestObjectiveGuid("798ca1c73a57a864fbf127e4cd27bfe5"))
+                .SetFinishParent(false)
                 .Configure();
         }
     }

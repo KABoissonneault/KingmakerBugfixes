@@ -8,6 +8,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
@@ -826,6 +827,19 @@ namespace kmbf.Blueprint.Configurator
                 {
                     c.Descriptor |= descriptor;
                 });
+            }
+
+            return this;
+        }
+    }
+
+    public class BlueprintQuestObjectiveConfigurator : BaseBlueprintFactConfigurator<BlueprintQuestObjective, BlueprintQuestObjectiveGuid, BlueprintQuestObjectiveConfigurator>
+    {
+        public BlueprintQuestObjectiveConfigurator SetFinishParent(bool value)
+        {
+            if (instance != null)
+            {
+                instance.m_FinishParent = value;
             }
 
             return this;
