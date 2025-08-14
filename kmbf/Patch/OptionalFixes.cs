@@ -13,6 +13,7 @@ using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
+using static kmbf.Blueprint.BlueprintCommands;
 using static kmbf.Blueprint.Builder.ElementBuilder;
 
 namespace kmbf.Patch
@@ -26,6 +27,8 @@ namespace kmbf.Patch
             if (!Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses)
                 FixShatterDefenses();
 
+            if (Main.UMMSettings.BalanceSettings.FixBaneLiving)
+                FixBaneOfTheLiving();
             if (Main.UMMSettings.BalanceSettings.FixNauseatedPoisonDescriptor) 
                 FixNauseatedPoisonDescriptor();
             if (Main.UMMSettings.BalanceSettings.FixCandlemereTowerResearch) 
@@ -38,6 +41,12 @@ namespace kmbf.Patch
                 FixControlledFireball();
             if (Main.UMMSettings.EventSettings.FixFreeEzvankiTemple)
                 FixFreeEzvankiTemple();
+        }
+
+        // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
+        static void FixBaneOfTheLiving()
+        {
+            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
         }
 
         // In the base game, Necklace of Double Crosses applies to all sneak attacks, and the "attack against allies" mechanic is not implemented at all

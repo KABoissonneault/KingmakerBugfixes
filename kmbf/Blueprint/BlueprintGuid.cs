@@ -315,6 +315,21 @@ public class BlueprintItemEnchantmentGuid : BlueprintFactGuid
     public override string BlueprintTypeName => "Item Enchantment";
 }
 
+public class BlueprintEquipmentEnchantmentGuid : BlueprintItemEnchantmentGuid
+{
+    public BlueprintEquipmentEnchantmentGuid() { }
+    public BlueprintEquipmentEnchantmentGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Equipment Enchantment";
+    public bool GetBlueprint(out BlueprintEquipmentEnchantment bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintEquipmentEnchantmentGuid Charisma4 = new("4dcb81fcbfb11714db17ece0c152ed8b");
+}
+
 public class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
 {
     public BlueprintWeaponEnchantmentGuid() { }
@@ -391,6 +406,18 @@ public class BlueprintItemEquipmentGuid : BlueprintItemGuid
     public override string BlueprintTypeName => "Item Equipment";
 }
 
+public class BlueprintItemEquipmentSimpleGuid : BlueprintItemEquipmentGuid
+{
+    public BlueprintItemEquipmentSimpleGuid() { }
+    public BlueprintItemEquipmentSimpleGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Item Equipment Simple";
+}
+
 public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
 {
     public BlueprintItemWeaponGuid() { }
@@ -407,7 +434,7 @@ public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
     public static readonly BlueprintItemWeaponGuid ColdIronRapierPlus3 = new BlueprintItemWeaponGuid("925d399524ae74748ac78b49f48785c0");
 }
 
-public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentGuid
+public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentSimpleGuid
 {
     public BlueprintItemEquipmentRingGuid() { }
     public BlueprintItemEquipmentRingGuid(string guid)
@@ -421,6 +448,8 @@ public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentGuid
 
     public static BlueprintItemEquipmentRingGuid AmethystEncrustedRing = new("3cfeae23012c8b9488b5b36d51ee4a8d");
     public static BlueprintItemEquipmentRingGuid GarnetEncrustedRing = new("489a7b81151c40541b8de88b0eaa6a77");
+    
+    public static BlueprintItemEquipmentRingGuid RingOfRecklessCourage = new("06b345774d4a34541b5c91033b3220fb");
 }
 
 public class BlueprintItemEquipmentUsableGuid : BlueprintItemEquipmentGuid
@@ -476,6 +505,7 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintFeatureGuid DwarvenChampionEnchant = new("09de6da5469ab1943924139d5145835f");
     public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
+    public static readonly BlueprintFeatureGuid RingOfRecklessCourage = new("aa9102221a042504c94f0a313c4c40a1");
 
     public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
 

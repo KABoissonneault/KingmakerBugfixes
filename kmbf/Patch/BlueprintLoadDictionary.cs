@@ -37,84 +37,6 @@ namespace kmbf.Patch
             if (loaded) return;
             loaded = true;
 
-            #region Abilities 
-
-            #region Class
-            
-            /// Druid
-
-            // Blight Druid Darkness Domain's Moonfire damage scaling
-            AddAbilityDamageDiceRankClass(BlueprintAbilityGuid.DarknessDomainGreaterAbility, BlueprintCharacterClassGuid.Druid); 
-
-            /// Kineticist
-           
-            // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
-            // Copy the ContextRankConfigs from the Mud version
-            CopySomeComponents(sourceId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast
-                , destinationId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMetalBlast
-                , c => c is ContextRankConfig);
-            CopySomeComponents(sourceId: BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast
-                , destinationId: BlueprintAbilityAreaEffectGuid.DeadlyEarthRareMetalBlast
-                , c => c is ContextRankConfig);
-
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-
-            #endregion
-
-            #region Spell
-
-            // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
-            ChangeAddStatBonusScaledDescriptor(BlueprintBuffGuid.MagicalVestmentShield, ModifierDescriptor.Shield, ModifierDescriptor.ShieldEnhancement);
-
-            #endregion
-
-            #region Buff
-
-            // The "Master" features are accidentally added to Dog by the dialogue. Might as well put the stat bonuses directly on it
-            // Plus the Offensive Master feature was accidentally giving the Defensive buff
-            CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfOffensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfOffensiveMaster);
-            CopyComponents(sourceId: BlueprintFeatureGuid.EkunWolfDefensiveBuff, destinationId: BlueprintFeatureGuid.EkunWolfDefensiveMaster);
-
-            #endregion
-
-            AbilitiesFixes.Apply();
-
-            #endregion
-
-            #region Items
-
-            // Make Darts light weapons (like in tabletop)
-            SetWeaponTypeLight(BlueprintWeaponTypeGuid.Dart, light: true);
-
-            // 'Datura' weapon attack buff
-            ReplaceAttackRollTriggerToWeaponTrigger(BlueprintWeaponEnchantmentGuid.Soporiferous, WaitForAttackResolve: true); // The weapon attack automatically removes the sleep
-            SetContextSetAbilityParamsDC(BlueprintWeaponEnchantmentGuid.Soporiferous, 16); // DC is 11 by default, raise it to 16 like in the description
-            AddWeaponEnchantment(BlueprintItemWeaponGuid.SoporiferousSecond, BlueprintWeaponEnchantmentGuid.Soporiferous);
-
-            // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
-            if (Main.UMMSettings.BalanceSettings.FixBaneLiving)
-            {
-                FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
-            }
-
-            // Nature's Wrath trident "Outsider AND Aberration ..." instead of OR
-            // Fix "Electricity Vulnerability" debuff to apply to target instead of initiator
-            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.NaturesWrath);
-            ReplaceWeaponBuffOnAttackToWeaponTrigger(BlueprintWeaponEnchantmentGuid.NaturesWrath);
-
-            // Scroll of Summon Nature's Ally V (Single) would Summon Monster V (Single) instead
-            ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle, BlueprintAbilityGuid.SummonMonsterVSingle, BlueprintAbilityGuid.SummonNaturesAllyVSingle);
-
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.DwarvenChampionEnchant)
-                .RemoveComponents<AddConditionImmunity>()
-                .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
-                .Configure();
-            
-            #endregion
-
             #region Kingdom
 
             // Irlene "Relations rank 3" tier 3 gift
@@ -269,6 +191,8 @@ namespace kmbf.Patch
             }
             #endregion
 
+            AbilitiesFixes.Apply();
+            ItemFixes.Apply();
             TextFixes.Apply();
             EventFixes.Apply();
             OptionalFixes.ApplyAllEnabledFixes();

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
@@ -8,36 +7,18 @@ using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
-using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.Kingdom.Actions;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
-using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
-using kmbf.Blueprint.Configurator;
 using UnityEngine;
 
 namespace kmbf.Blueprint
 {
     internal class BlueprintCommands
     {
-        public static void AddAbilityDamageDiceRankClass(BlueprintAbilityGuid abilityId, BlueprintCharacterClassGuid characterClassId)
-        {
-            BlueprintAbilityConfigurator.From(abilityId)
-                .EditDamageDiceRankConfig(damageDiceRankConfig =>
-                {
-                    if (!characterClassId.GetBlueprint(out BlueprintCharacterClass characterClass)) return;
-
-                    if (!damageDiceRankConfig.m_Class.Any(c => c.AssetGuid == characterClass.AssetGuid))
-                    {
-                        damageDiceRankConfig.m_Class = damageDiceRankConfig.m_Class.AddItem(characterClass).ToArray();
-                    }
-                })
-                .Configure();            
-        }
-
         public static void ReplaceArtisan(BlueprintCueGuid cueId, BlueprintKingdomArtisanGuid currentArtisan, BlueprintKingdomArtisanGuid newArtisan)
         {
             if (!cueId.GetBlueprint(out BlueprintCue cue)) return;
@@ -196,23 +177,6 @@ namespace kmbf.Blueprint
 
             foreach (var statBonusComponent in bp.Components.OfType<AddStatBonusScaled>().Where(c => c.Descriptor == expectedDescriptor))
                 statBonusComponent.Descriptor = newDescriptor;
-        }
-
-        public static void CopyComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId)
-        {
-            if (!sourceId.GetBlueprint(out BlueprintScriptableObject source)) return;
-            if (!destinationId.GetBlueprint(out BlueprintScriptableObject destination)) return;
-
-            destination.Components = source.Components;
-        }
-
-        public static void CopySomeComponents(BlueprintObjectGuid sourceId, BlueprintObjectGuid destinationId, Predicate<BlueprintComponent> predicate)
-        {
-            if (!sourceId.GetBlueprint(out BlueprintScriptableObject source)) return;
-            if (!destinationId.GetBlueprint(out BlueprintScriptableObject destination)) return;
-
-            destination.Components = destination.Components.Where(c => !predicate(c))
-                .Concat(source.Components.Where(c => predicate(c))).ToArray();
         }
     }
 }

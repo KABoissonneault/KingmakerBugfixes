@@ -1,9 +1,12 @@
-﻿using Kingmaker.Blueprints;
+﻿using HarmonyLib;
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Prerequisites;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
+using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
@@ -266,6 +269,32 @@ namespace kmbf.Blueprint.Configurator
 
             return Self;
         }
+
+        public TBuilder ReplaceAllComponentsWithSource(BlueprintObjectGuid source)
+        {
+            if (instance != null)
+            {
+                if (source.GetBlueprint(out BlueprintScriptableObject sourceInstance))
+                {
+                    instance.Components = sourceInstance.Components;
+                }
+            }
+
+            return Self;
+        }
+
+        public TBuilder ReplaceComponentsWithSource<C>(BlueprintObjectGuid source) where C : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                if(source.GetBlueprint(out BlueprintScriptableObject sourceInstance))
+                {
+                    instance.Components = [.. instance.Components.Where(c => !(c is C)), .. sourceInstance.Components.OfType<C>()];
+                }
+            }
+
+            return Self;
+        }
     }
 
     public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
@@ -430,6 +459,19 @@ namespace kmbf.Blueprint.Configurator
         {
             return EditComponentWhere(c => c.Type == Kingmaker.Enums.AbilityRankType.DamageDice, action);
         }
+
+        public BlueprintAbilityConfigurator AddDamageDiceRankConfigClass(BlueprintCharacterClassGuid characterClassId)
+        {
+            return EditDamageDiceRankConfig(damageDiceRankConfig =>
+            {
+                if (!characterClassId.GetBlueprint(out BlueprintCharacterClass characterClass)) return;
+
+                if (!damageDiceRankConfig.m_Class.Any(c => c.AssetGuid == characterClass.AssetGuid))
+                {
+                    damageDiceRankConfig.m_Class = damageDiceRankConfig.m_Class.AddItem(characterClass).ToArray();
+                }
+            });
+        }
     }
 
     public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
@@ -464,6 +506,38 @@ namespace kmbf.Blueprint.Configurator
     }
 
     public sealed class BlueprintItemConfigurator : BaseBlueprintItemConfigurator<BlueprintItem, BlueprintItemGuid, BlueprintItemConfigurator>
+    {
+
+    }
+
+    public abstract class BaseBlueprintItemEquipmentConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintItemConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintItemEquipment
+        where GuidType : BlueprintItemEquipmentGuid, new()
+        where TBuilder : BaseBlueprintItemEquipmentConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+
+    }
+
+    public abstract class BaseBlueprintItemEquipmentSimpleConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintItemEquipmentConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintItemEquipmentSimple
+        where GuidType : BlueprintItemEquipmentSimpleGuid, new()
+        where TBuilder : BaseBlueprintItemEquipmentSimpleConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+        public TBuilder AddEnchantment(BlueprintEquipmentEnchantmentGuid enchantmentId)
+        {
+            if (instance != null)
+            {
+                if (enchantmentId.GetBlueprint(out BlueprintEquipmentEnchantment enchantment))
+                {
+                    instance.m_Enchantments = [.. instance.m_Enchantments, enchantment];
+                }
+            }
+
+            return Self;
+        }
+    }
+
+    public sealed class BlueprintItemEquipmentSimpleConfigurator : BaseBlueprintItemEquipmentSimpleConfigurator<BlueprintItemEquipmentSimple, BlueprintItemEquipmentSimpleGuid, BlueprintItemEquipmentSimpleConfigurator>
     {
 
     }

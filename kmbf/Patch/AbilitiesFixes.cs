@@ -4,9 +4,11 @@ using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
@@ -26,7 +28,11 @@ namespace kmbf.Patch
     {
         public static void Apply()
         {
+            FixDruid();
+            FixKineticist();
             FixDoubleDebilitatingInjury();
+            FixEkunWolfBuffs();
+            FixMagicalVestmentShield();
             FixRaiseDead();
             FixBreathOfLife();
             FixJoyfulRapture();
@@ -34,6 +40,14 @@ namespace kmbf.Patch
             FixLeopardCompanionUpgrade();
             FixGazeImmunities();
             FixTieflingFoulspawn();
+        }
+
+        static void FixDruid()
+        {
+            // Blight Druid Darkness Domain's Moonfire damage scaling
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DarknessDomainGreaterAbility)
+                .AddDamageDiceRankConfigClass(BlueprintCharacterClassGuid.Druid)
+                .Configure();
         }
 
         // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
@@ -103,6 +117,48 @@ namespace kmbf.Patch
 
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
                 .SetIcon(HamperedActive.Icon)
+                .Configure();
+        }
+
+        static void FixKineticist()
+        {
+            // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
+            // Copy the ContextRankConfigs from the Mud version
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+
+            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthMetalBlast)
+                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
+                .Configure();
+
+            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthRareMetalBlast)
+                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
+                .Configure();
+        }
+
+        static void FixEkunWolfBuffs()
+        {
+            // The "Master" features are accidentally added to Dog by the dialogue. Might as well put the stat bonuses directly on it
+            // Plus the Offensive Master feature was accidentally giving the Defensive buff
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.EkunWolfOffensiveMaster)
+                .ReplaceAllComponentsWithSource(BlueprintFeatureGuid.EkunWolfOffensiveBuff)
+                .Configure();
+
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.EkunWolfDefensiveMaster)
+                .ReplaceAllComponentsWithSource(BlueprintFeatureGuid.EkunWolfDefensiveBuff)
+                .Configure();
+        }
+
+        static void FixMagicalVestmentShield()
+        {
+            // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.MagicalVestmentShield)
+                .EditComponent<AddStatBonusScaled>(c =>
+                {
+                    c.Descriptor = ModifierDescriptor.ShieldEnhancement;
+                })
                 .Configure();
         }
 
