@@ -1,4 +1,6 @@
-﻿using Kingmaker.EntitySystem.Stats;
+﻿using Kingmaker.Blueprints.Items.Ecnchantments;
+using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.FactLogic;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -17,7 +19,8 @@ namespace kmbf.Patch
             FixNaturesWrath();
             FixSummonNaturesAllyVSingle();
             FixDwarvenChampion();
-            FixRingOfRecklessCourageStatBonus();                        
+            FixRingOfRecklessCourageStatBonus();
+            FixQuivers();
         }
 
         static void ChangeDartsWeaponType()
@@ -73,6 +76,25 @@ namespace kmbf.Patch
 
             BlueprintItemEquipmentSimpleConfigurator.From(BlueprintItemEquipmentRingGuid.RingOfRecklessCourage)
                 .AddEnchantment(BlueprintEquipmentEnchantmentGuid.Charisma4)
+                .Configure();
+        }
+
+        static void FixQuivers()
+        {
+            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LightningArrows)
+                .AddComponent<WeaponExtraAttack>(c =>
+                {
+                    c.Number = 1;
+                    c.Haste = true;
+                })
+                .Configure();
+
+            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LoversArrows)
+                .AddComponent<WeaponExtraAttack>(c =>
+                {
+                    c.Number = 1;
+                    c.Haste = true;
+                })
                 .Configure();
         }
     }

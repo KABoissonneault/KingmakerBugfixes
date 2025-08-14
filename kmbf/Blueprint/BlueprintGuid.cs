@@ -345,6 +345,9 @@ public class BlueprintWeaponEnchantmentGuid : BlueprintItemEnchantmentGuid
     public static readonly BlueprintWeaponEnchantmentGuid Soporiferous = new BlueprintWeaponEnchantmentGuid("da0a0c76266c96b45aacc34dc6635b28");
     public static readonly BlueprintWeaponEnchantmentGuid BaneLiving = new BlueprintWeaponEnchantmentGuid("e1d6f5e3cd3855b43a0cb42f6c747e1c");
     public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new BlueprintWeaponEnchantmentGuid("afa5d47f05724ac43a4dc19e5ecbd150");
+
+    public static readonly BlueprintWeaponEnchantmentGuid LightningArrows = new BlueprintWeaponEnchantmentGuid("d0cab2c642c912245a5c35821db45d0e");
+    public static readonly BlueprintWeaponEnchantmentGuid LoversArrows = new BlueprintWeaponEnchantmentGuid("c5301596b1e29a846a92e27344d1844a");
 }
 
 public class BlueprintBuffGuid : BlueprintUnitFactGuid
