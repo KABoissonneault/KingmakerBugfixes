@@ -29,7 +29,6 @@ namespace kmbf.Patch
             SetWeaponTypeLight(BlueprintWeaponTypeGuid.Dart, light: true);
         }
 
-
         // 'Datura' automatically removes its own sleep on attack, since the damage applies after the buff
         // Fix this by using another component that allows waiting for the attack to resolve
         // Also, add a ContextSetAbilityParams component to allow the DC to be properly 16
@@ -79,6 +78,7 @@ namespace kmbf.Patch
                 .Configure();
         }
 
+        // Both Quiver of Lightning Arrows and Quiver of Lovers Arrows mention shooting "speed arrows", but are actually missing the extra attack that the other quivers have
         static void FixQuivers()
         {
             BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LightningArrows)

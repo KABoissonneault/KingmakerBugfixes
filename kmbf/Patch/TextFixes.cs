@@ -28,6 +28,7 @@ namespace kmbf.Patch
                 .Configure();
         }
         
+        // Enemy attacks Hero with . Miss!
         static void FixUnnamedEnemyAbilities()
         {
             BlueprintUnitFactConfigurator.From(BlueprintAbilityGuid.MimicOozeSpit)
@@ -38,6 +39,21 @@ namespace kmbf.Patch
             BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.GiantSlugTongue)
                 .SetTypeName(KMBFLocalizedStrings.Tongue)
                 .SetDefaultName(KMBFLocalizedStrings.Tongue)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.ShockerLizardTouch)
+                .SetTypeName(KMLocalizedStrings.TouchTypeName)
+                .SetDefaultName(KMLocalizedStrings.TouchDefaultName)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.BuletteBite)
+                .SetTypeName(KMLocalizedStrings.BiteTypeName)
+                .SetDefaultName(KMLocalizedStrings.BiteDefaultName)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.MiteStoneThrow)
+                .SetTypeName(KMLocalizedStrings.RockTypeName)
+                .SetDefaultName(KMLocalizedStrings.RockDefaultName)
                 .Configure();
         }
     }

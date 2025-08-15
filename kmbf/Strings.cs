@@ -87,6 +87,12 @@ namespace kmbf
     static class KMLocalizedStrings
     {
         public static LocalizedString Spit = new LocalizedString() { m_Key = "7063a6bf-494d-4c74-9e62-e35aa0a78215" };
+        public static LocalizedString BiteTypeName = new LocalizedString() { m_Key = "9d57a71c-033d-4879-b6bf-d5eee7a6a7b5" };
+        public static LocalizedString BiteDefaultName = new LocalizedString() { m_Key = "3f2e2ab3-c69d-4fb7-afa5-7d2f3c02b238" };
+        public static LocalizedString TouchTypeName = new LocalizedString() { m_Key = "c58950db-269e-4aa9-b984-f05e1ef31302" };
+        public static LocalizedString TouchDefaultName = new LocalizedString() { m_Key = "c7e2893d-dcb5-4c8c-8415-a908b048b329" };
+        public static LocalizedString RockTypeName = new LocalizedString() { m_Key = "cd8f12e9-36db-498c-b3a3-f52a7f4b5f52" };
+        public static LocalizedString RockDefaultName = new LocalizedString() { m_Key = "b685d2aa-a2b3-4ba1-81de-7867fa10434d" };
         public static LocalizedString AmethystRing = new LocalizedString() { m_Key = "09c2b1ec-ffb5-4e26-91a0-3840221676bf" };
         public static LocalizedString GarnetRing = new LocalizedString() { m_Key = "3fa6ae88-bc24-44d5-ac74-109d250df757" };
     }
