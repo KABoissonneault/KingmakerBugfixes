@@ -518,6 +518,8 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public static readonly BlueprintFeatureGuid AnimalCompanionUpgradeLeopard = new("b8c98af302ee334499d30a926306327d");
 
     public static readonly BlueprintFeatureGuid TieflingHeritageFoulspawn = new("a53d760a364cd90429e16aa1e7048d0a");
+    
+    public static readonly BlueprintFeatureGuid ExplosionRing = new("9583bd98ef0b65a448ac79c5ec273db8");
 }
 
 public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid

@@ -18,6 +18,7 @@ using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
+using kmbf.Component;
 using UnityEngine;
 
 using static kmbf.Blueprint.Builder.ElementBuilder;
@@ -40,6 +41,7 @@ namespace kmbf.Patch
             FixLeopardCompanionUpgrade();
             FixGazeImmunities();
             FixTieflingFoulspawn();
+            FixExplosionRing();
         }
 
         static void FixDruid()
@@ -335,12 +337,28 @@ namespace kmbf.Patch
                 .Configure();
         }
 
+        // Foulspawn tieflings are supposed to have a bonus against Cleric, Paladins, and Inquisitors
+        // It checks if the target has all three classes instead of any
         static void FixTieflingFoulspawn()
         {
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.TieflingHeritageFoulspawn)
                 .EditComponent<AttackBonusConditional>(c =>
                 {
                     c.Conditions.Operation = Operation.Or;
+                })
+                .Configure();
+        }
+        
+        // The +12 damage only applies to Bomb weapons
+        // Since Bombs are virtually always abilities, we need a special component
+        static void FixExplosionRing()
+        {
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ExplosionRing)
+                .AddComponent<AdditionalBonusOnDamage>(c =>
+                {
+                    c.BonusOnDamage = 12;
+                    c.CheckSpellDescriptor = true;
+                    c.SpellDescriptorsList = SpellDescriptor.Bomb;
                 })
                 .Configure();
         }
