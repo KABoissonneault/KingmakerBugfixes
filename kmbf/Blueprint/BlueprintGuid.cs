@@ -193,6 +193,8 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintAbilityGuid SummonMonsterVSingle = new("0964bf88b582bed41b74e79596c4f6d9");
     public static readonly BlueprintAbilityGuid SummonNaturesAllyVSingle = new("28ea1b2e0c4a9094da208b4c186f5e4f");
+    public static readonly BlueprintAbilityGuid AlchemistFire = new("28ea1b2e0c4a9094da208b4c186f5e4f");
+    public static readonly BlueprintAbilityGuid AcidFlask = new("28ea1b2e0c4a9094da208b4c186f5e4f");
 
     public static readonly BlueprintAbilityGuid MimicOozeSpit = new("3ea0add618aab444bb5a4e2701a3ee4b");
 }

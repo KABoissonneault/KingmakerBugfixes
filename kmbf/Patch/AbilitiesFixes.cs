@@ -351,6 +351,7 @@ namespace kmbf.Patch
         
         // The +12 damage only applies to Bomb weapons
         // Since Bombs are virtually always abilities, we need a special component
+        // The +12 damage relies on the Bomb descriptor on the ability, so we also add it to abilities that are missing it (cross-referencing WotR to make sure the descriptor is intended)
         static void FixExplosionRing()
         {
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ExplosionRing)
@@ -360,6 +361,14 @@ namespace kmbf.Patch
                     c.CheckSpellDescriptor = true;
                     c.SpellDescriptorsList = SpellDescriptor.Bomb;
                 })
+                .Configure();
+
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.AlchemistFire)
+                .AddSpellDescriptor(SpellDescriptor.Bomb)
+                .Configure();
+
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.AcidFlask)
+                .AddSpellDescriptor(SpellDescriptor.Bomb)
                 .Configure();
         }
     }
