@@ -487,7 +487,7 @@ public class BlueprintWeaponTypeGuid : BlueprintObjectGuid
     public static readonly BlueprintWeaponTypeGuid GiantSlugTongue = new BlueprintWeaponTypeGuid("4957290cee0b59542808c65c77bfbee3");
     public static readonly BlueprintWeaponTypeGuid BuletteBite = new BlueprintWeaponTypeGuid("ebb1e708e46d32c4888207913f76e555");
     public static readonly BlueprintWeaponTypeGuid ShockerLizardTouch = new BlueprintWeaponTypeGuid("25bcf03956c51b14682c68d6fc21cc79");
-    public static readonly BlueprintWeaponTypeGuid MiteStoneThrow = new BlueprintWeaponTypeGuid("733aaf11fb7b50e4eb49fc2194621270");
+    public static readonly BlueprintWeaponTypeGuid MiteStoneThrow = new BlueprintWeaponTypeGuid("983f63decbbec424c8ed071e725b7717");
 }
 
 public class BlueprintFeatureGuid : BlueprintUnitFactGuid
