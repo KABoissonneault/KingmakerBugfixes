@@ -8,6 +8,16 @@ using System.Reflection.Emit;
 
 namespace kmbf.Patch.KM.Items
 {
+    // These patches fix many issues with how the Body of each unit handles the "polymorph" weapon set,
+    // such as when a unit shapeshifts into a wolf. In KM, these are not properly saved along with the rest
+    // of the character, and features like applied enchantments (ex: Greater Magic Fang) would not be restored
+    // on load.
+    // This also fixes the same issues with added limbs, such as the ones from dragon prestige, but I don't
+    // know if those can ever have any enchantments.
+    // At the bottom is also a patch for "Empty Hand Override", like the Alchemist's Feral Mutagen. This component
+    // creates a new feral weapon from scratch each time the buff is applied, and loses enchantments (like Greater Magic Fang)
+    // While this fix is not complete, and enchantments are still lost on load, this patch prevents the loss from saving
+
     [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter)]
     static class UnitBody_CurrentHandsEquipmentSet_Patch
     {

@@ -18,6 +18,7 @@ namespace kmbf
         public bool FixArcaneTricksterAlignmentRequirement = true;
         public bool FixCraneWingRequirements = true;
         public bool FixControlledFireball = true;
+        public bool FixWeaponEnhancementDamageReduction = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]

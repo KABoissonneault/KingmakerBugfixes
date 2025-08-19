@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 
 namespace kmbf.Patch.KM.UI
 {
+    // Fix a null reference access when entering the Main Menu
     [HarmonyPatch(typeof(BugReportCanvas), nameof(BugReportCanvas.OnEnable))]
     static class BugReportCanvas_OnEnable_Transpiler
     {
@@ -18,6 +19,7 @@ namespace kmbf.Patch.KM.UI
 
             foreach(CodeInstruction instruction in instructions)
             {
+                // Add a null check before loading the BugReportButton field
                 if (instruction.opcode == OpCodes.Ldfld && instruction.operand.Equals(bugReportButtonGet))
                 {
                     var jumpTarget = new CodeInstruction(OpCodes.Nop, null);

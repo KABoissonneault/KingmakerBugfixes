@@ -15,6 +15,12 @@ namespace kmbf.Patch.KM.UnitLogic.Abilities.Components
     [HarmonyPatch(typeof(AbilityCustomMeleeAttack), nameof(AbilityCustomMeleeAttack.Deliver), MethodType.Enumerator)]
     static class AbilityCustomMeleeAttack_Deliver_Patch
     {
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return !Main.RunsCallOfTheWild;
+        }
+
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Deliver_Transpiler(IEnumerable<CodeInstruction> instructions)
         {

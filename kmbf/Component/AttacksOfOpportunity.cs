@@ -4,6 +4,7 @@ using Kingmaker.Blueprints.Facts;
 using Kingmaker.Controllers.Combat;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.UnitLogic;
+using System.Reflection;
 
 namespace kmbf.Component
 {
@@ -29,12 +30,18 @@ namespace kmbf.Component
     [HarmonyPatch(typeof(UnitCombatEngagementController), nameof(UnitCombatEngagementController.TickUnit))]
     static class UnitCombatEngagementController_TickUnit_Prefix
     {
+        // Maybe we shouldn't strip out the patch in any case,
+        // but so far we only use this patch for the Necklace of Double Crosses fix,
+        // which does get disabled when the user runs Call of the Wild
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return !Main.RunsCallOfTheWild;
+        }
+
         [HarmonyPrefix]
         static void OnTickUnit(UnitCombatEngagementController __instance, UnitEntityData unit)
         {
-            if (Main.RunsCallOfTheWild)
-                return;
-
             if (unit.Get<UnitPartAooAgainstAllies>() != null)
             {
                 foreach (UnitGroupMemory.UnitInfo otherUnit in unit.Memory.UnitsList)
@@ -51,11 +58,15 @@ namespace kmbf.Component
     [HarmonyPatch(typeof(UnitCombatState), nameof(UnitCombatState.EngagedBy), MethodType.Getter)]
     static class UnitCombatState_EngagedBy_Prefix
     {
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return !Main.RunsCallOfTheWild;
+        }
+
         [HarmonyPrefix]
         static bool Get_EngagedBy(UnitCombatState __instance, Dictionary<UnitEntityData, TimeSpan> ___m_EngagedBy, ref Dictionary<UnitEntityData, TimeSpan>.KeyCollection __result)
         {
-            if (Main.RunsCallOfTheWild) return true;
-
             __result = ___m_EngagedBy.Where(kv => !kv.Key.IsAlly(__instance.Unit)).ToDictionary(kv =>kv.Key, kv => kv.Value).Keys;
             return false;
         }

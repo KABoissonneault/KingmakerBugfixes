@@ -4,6 +4,7 @@ using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Parts;
 using kmbf.Blueprint;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.RuleSystem.Rules
 {
@@ -14,12 +15,15 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
     [HarmonyPatch(typeof(RuleCheckTargetFlatFooted), nameof(RuleCheckTargetFlatFooted.OnTrigger))]
     static class RuleCheckFlatFooted_OnTrigger_Prefix
     {
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return !Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses;
+        }
+
         [HarmonyPrefix]
         static bool OnTrigger(RuleCheckTargetFlatFooted __instance)
         {
-            if(Main.RunsCallOfTheWild || !Main.UMMSettings.BalanceSettings.FixShatterDefenses)
-                return true;
-
             __instance.IsFlatFooted =
                 __instance.ForceFlatFooted
                 || (!__instance.Target.CombatState.CanActInCombat && !__instance.IgnoreVisibility)

@@ -29,16 +29,22 @@ namespace kmbf.Patch.KM.UnitLogic.FactLogic
             return i;
         }
 
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return Main.UMMSettings.BalanceSettings.FixWeaponEnhancementDamageReduction;
+        }
+
         [HarmonyPatch(typeof(AddDamageResistancePhysical), nameof(AddDamageResistancePhysical.Bypassed))]
         [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> Bypassed_Transpiler(IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> AddDamageResistancePhysical_Bypassed_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
         }
 
         [HarmonyPatch(typeof(AddDamageResistancePhysical), nameof(AddDamageResistancePhysical.CheckBypassedByAlignment))]
         [HarmonyTranspiler]
-        static IEnumerable<CodeInstruction> CheckBypassedByAlignment_Transpiler(IEnumerable<CodeInstruction> instructions)
+        static IEnumerable<CodeInstruction> AddDamageResistancePhysical_CheckBypassedByAlignment_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             return instructions.Select(i => i.Calls(EnchantmentTotal) ? PatchOperand(i) : i);
         }

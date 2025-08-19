@@ -13,7 +13,7 @@ public static class Main
     internal static UnityModManager.ModEntry.ModLogger Log;
     internal static UMMSettings UMMSettings;
     internal static UnityModManager.ModEntry ModEntry;
-
+    
     static bool runsCallOfTheWild = false;
     internal static bool RunsCallOfTheWild { get => runsCallOfTheWild; }
 
@@ -39,6 +39,7 @@ public static class Main
             throw;
         }
         HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+
         return true;
     }
 

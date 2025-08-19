@@ -6,6 +6,7 @@ using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.Utility;
 using Kingmaker.View.MapObjects;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.EntitySystem.Entities
 {
@@ -20,11 +21,16 @@ namespace kmbf.Patch.KM.EntitySystem.Entities
         })]
     static class AreaOfEffectsTick_Round_Patch
     {
+        [HarmonyPrepare]
+        static bool Prepare(MethodBase original)
+        {
+            return Main.UMMSettings.BalanceSettings.FixAreaOfEffectDoubleTrigger;
+        }
+
         // Prevents Area of Effect spells with both a UnitEnter event and a round event from triggering twice
         [HarmonyPostfix]
-        public static void Postfix(AreaEffectEntityData __instance)
+        static void Postfix(AreaEffectEntityData __instance)
         {
-            if (!Main.UMMSettings.BalanceSettings.FixAreaOfEffectDoubleTrigger) { return; }
             if (__instance.Blueprint.GetComponent<AbilityAreaEffectRunAction>()?.UnitEnter?.HasActions ?? false)
             {
                 __instance.m_TimeToNextRound = 6f;
