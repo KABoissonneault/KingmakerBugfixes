@@ -27,10 +27,17 @@ namespace kmbf
         public bool FixFreeEzvankiTemple = true;
     }
 
+    [DrawFields(DrawFieldMask.Public)]
+    public class QualityOfLifeSettings
+    {
+        public bool BypassSpellResistanceForOutOfCombatbuffs = true;
+    }
+
     public class UMMSettings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Balance")] public BalanceSettings BalanceSettings = new();
         [Draw("Event")] public EventSettings EventSettings = new();
+        [Draw("Quality of Life")] public QualityOfLifeSettings QualityOfLifeSettings = new();
 
         bool fixesDirty = false;
         public bool FixesDirty { get => fixesDirty; }
