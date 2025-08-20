@@ -21,6 +21,9 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed peaceful or quest-related world map encounters not being possible to trigger on upgraded regions, making some quests impossible to complete in those conditions
 - Polymorphed characters now preserve their natural weapon enchantments (ex: Magic Fang) through save and load
 - Feral Mutagen characters now preserve their natural weapon enchantments (ex: Magic Fang) through save. Unfortunately, they still lose it on load
+- Fixed issue where a sneak attack damage could fail to bypass Damage Reduction when the weapon you're using should bypass it
+- [Opt-out] Fixed issue where all enchantments counted as an extra "+1" for the purpose of bypassing Damage Reduction, including traits like Composite or Thrown. Now, if a DR requires +3 to bypass, it really requires +3. Also applies to Regeneration and Incorporeal magical weapon checks
+
 
 ### Ability fix
 
@@ -36,12 +39,18 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Raise Dead not draining 2 levels on difficulty Core and above (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
 - Fixed Breath of Life not giving 1 temporary negative level when resurrected (turn Enemy Stats Adjustment down to to Normal or less to disable, like in Wrath)
 - Fixed Joyful Rapture to properly affect all negative emotion effects
+- Fixed Protection from Arrows protecting against magical weapons instead of the mundane weapons as intended. Fixed the Communal version checking Spell Resistance
+- Fixed Leopard animal companion level 4 upgrade getting "+4 str / -2 dex / +4 con" instead of "+2 dex / +2 con" as described
+- Fixed Baleful Gaze working on targets immune to gaze attacks or sight-based attacks
+- [Opt-out] Fixed Controlled Fireball not applying minimal damage to allies as intended
 
 #### Feat & Traits
 
 - [Opt-out, !CotW] Fixed Shatter Defenses to only apply after landing a hit, like in Wrath of the Righteous and tabletop. Unlike the CotW fix, this bonus still applies if you hit a Shaken/Frightened enemy and it no longer is next turn, matching the description
 - [!CotW] Fixed Vital Strike not working on ranged weapons
 - Fixed Ekundayo's Dog "Loyal Companion" and "Enraged Companion" not giving stats
+- [Opt-out] Fixed Crane Wing to check for shield in offhand. Still allows 2h weapons, since KM has no 1h option
+- Fixed Foulspawn Tiefling bonus against Clerics, Paladins, and Inquisitors only working against characters that had all three classes instead of any
 
 #### Item
 
@@ -51,7 +60,9 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Nature's Wrath (trident) not being a bane of aberrations, constructs, humanoids, outsiders and undead. Also, the "Electricity Vulnerability" debuff now applies to the struck target rather than the wielder, as described
 - Scroll of Summon Nature's Ally V (Single) now properly summons a Manticore
 - "Solid Strategy" now gives Immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
-- Fixed "Amethyst Ring" and "Garnet Ring" to have the proper intended name (the base game has two rings named Topaz Ring, and none named Amethyst Ring)
+- Fixed Ring of Reckless Courage not applying on Kingdom Advisor stat
+- Fixed Quiver of Lightning Arrows and Quiver of Lover's Arrows not having the extra haste attack despite mentioning "speed" in the description
+- Fixed Explosion Ring not giving +12 damage to bomb abilities
 
 #### Misc
 
@@ -64,6 +75,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed "Unrest in the Streets" angry mob first check having wrong DCs with unrest modifiers at -2, -3, or -4. The DC is now 13, 8, and 3, instead of 23, 23, -22
 - Irlene's "Relations rank 3" tier 3 gift (when A Simple Favor or Coronation but not both are complete) properly uses Irlene items rather than Kimo Tavon's
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
+- Fixed Armag Tomb's Test of Strength not opening all doors when solving the problem "the intended way" (with the 25 Athletics checks after passing the 18 Intelligence check)
+- Fixed Mim's "Three Wishes" quest not raising artisan tier on completion (not backward compatible)
 
 ### Kingdom
 
@@ -80,13 +93,16 @@ Many of these are buffs to the player, since they make more abilities work, but 
 ### Text and UI
 
 - Saving Throw "overtips" show "Roll vs Needed Roll" instead of "Roll vs DC" in Turn-Based mode, like attack rolls
-- Added missing Name and Description for Mimic Ooze "Spit" ability
+- Added missing Name and Description for Mimic Ooze "Spit" ability, Giant Slug "Tongue" attack, Bulette attack, Mite rock throw, and Shocker Lizard "Touch" attack
+- Fixed "Amethyst Ring" and "Garnet Ring" to have the proper intended name (the base game has two rings named Topaz Ring, and none named Amethyst Ring)
+- Fixed "Cold Iron Rapier +3" displaying as "Cold Iron Rapier +1" in text logs
 
 ### Changes
 
 Not quite "fixes", but should be a universal improvement for everyone
 
 - Darts are now Light (Thrown) weapons, like in tabletop
+- [Opt-out] Spell resistance is ignored when casting spells on allies outside of combat
 
 ### Stability
 
@@ -106,6 +122,23 @@ These are issues that have been investigated and have been determined to be too 
 
 - Feral Mutagen will lose weapon enchantments (ex: Magic Fang) when reloading a save that previously had such enchantments
 - All items with "conditional" buffs to stats (ex: Bracers of Archery buffing attack and damage if you're using a bow) do not track "descriptors" like "Competence bonus"
+
+## Settings
+
+List of settings:
+- Fix Area of Effect Double Trigger: Without this fix, all lasting area of effects will trigger twice when a unit enters it (or when it's cast on top of them). For example, Stinking Cloud will require two saving throws
+- Fix Nauseated Poison Descriptor: Without this fix, poison immunity makes you immune to the Nauseated condition. With this fix, you can use Cacophonous Call on poison immune enemies, but swarms can also apply Nauseated through your Delay Poison
+- Fix Bane Living: Without this fix, Bane of the Living (and the Penalty scythe) is a bane of everything. Now, it is not a bane of undead or constructs
+- Fix Candlemere Tower Research: Without this fix, Candlemere Tower Research applies the buff to all six regions, and applies globally (6 times +3). Without this fix, the buff only applies to the South Narlmarches region, and applies to it and adjacent regions (1 time +3). If you already have the six buffs on your save, you need to "Modify Current Save" to fix it
+- Fix Kingdom Building Access: Without this fix, it is possible to build a Black Market without having a Thieves Guild or the correct alignment. With this fix, only non-Lawful, non-Good baronies can build one (after building a Thieves Guild)
+- Fix Embassy Row Grand Diplomat Bonus: Without this fix, Embassy Row's Grand Diplomat bonus applies globally. With it, it only applies in the region where the Embassy Row is built
+- Fix Necklace of Double Crosses: Without this fix, the Necklace gives +2d6 sneak attack to all weapon attacks, including ranged, and the ally attack mechanic is not implemented. With it, the bonus only applies to melee attacks, and the wielder will attempt attacks of opportunity on allies that leave its threatening range
+- Fix Shatter Defenses: Without this fix, Shatter Defenses always applies on shaken/frightened targets, even if a hit was never landed. With it, a hit on a shaken/frightened will apply a buff on the enemy for 2 turns that makes it flat footed to the attacker (even if it's no longer shaken/frightened next turn). Does not apply when using Call of the Wild.
+- Fix Arcane Trickster Alignment Requirement: With this fix, only non-lawful characters can be an Arcane Trickster, as described in the in-game glossary - Fix Crane Wing Requirements: With this fix, you cannot use Crane Wing with a shield (not even a buckler). Still allows for using a weapon with two-hands, since there's almost no way to wield a weapon in one hand in Kingmaker
+- Fix Controlled Fireball: With this fix, Controlled Fireball applies minimal damage to allies instead of none. Watch out for Arcane Trickster sneak attacks
+- Fix Weapon Enhancement Damage Reduction: Without this fix, any "trait" on a weapon makes it magical for the purpose of bypassing Damage Reduction (ex: 10/magic), including Composite or Thrown (but not masterwork). With this fix, only the proper "+1" (or more) enchantment makes a weapon bypass DR, as described in the rules
+- Fix Free Ezvanki Temple: Without this fix, you always get a free temple from Ezvanki when starting out your barony, even if you've never talked to him. With this fix, you need to pass the Diplomacy check, as intended
+- Bypass Spell Resistance for Out of Combat Buffs: In tabletop, a unit can always choose to remove its spell resistance by using a standard action, which removes it for a turn. This feature is not implemented in Kingmaker, but this setting allows units to ignore spell resistance when casting spells on allies while out of combat, as a shorthand.
 
 ## Contributors
 
