@@ -30,7 +30,7 @@ namespace kmbf
     [DrawFields(DrawFieldMask.Public)]
     public class QualityOfLifeSettings
     {
-        public bool BypassSpellResistanceForOutOfCombatbuffs = true;
+        public bool BypassSpellResistanceForOutOfCombatBuffs = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable

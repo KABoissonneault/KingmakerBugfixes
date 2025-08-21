@@ -15,7 +15,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return Main.UMMSettings.QualityOfLifeSettings.BypassSpellResistanceForOutOfCombatbuffs;
+            return Main.UMMSettings.QualityOfLifeSettings.BypassSpellResistanceForOutOfCombatBuffs;
         }
 
         [HarmonyPostfix]
