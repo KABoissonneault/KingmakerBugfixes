@@ -24,11 +24,6 @@ namespace kmbf.Patch.KM.UnitLogic.Abilities.Components
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Deliver_Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if(Main.RunsCallOfTheWild)
-            {
-                return instructions;
-            }
-
             MethodInfo UnitEngagementExtension_GetThreatHand = AccessTools.Method(typeof(UnitEngagementExtension), nameof(UnitEngagementExtension.GetThreatHand));
             MethodInfo Patch_GetWeaponSlot = AccessTools.Method(typeof(AbilityCustomMeleeAttack_Deliver_Patch), nameof(GetWeaponSlot));
 

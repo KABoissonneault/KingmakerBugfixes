@@ -709,13 +709,23 @@ namespace kmbf.Blueprint.Configurator
         public BlueprintCueConfigurator EditOnStopActionWhere<ActionType>(Predicate<ActionType> pred, Action<ActionType> editAction)
             where ActionType : GameAction
         {
-            if(instance != null)
+            if (instance != null)
             {
                 var action = instance.OnStop.Actions.OfType<ActionType>().FirstOrDefault(a => pred(a));
                 if (action != null)
                     editAction(action);
                 else
                     Main.Log.Error($"Could not find a component of type \"{(typeof(ActionType).Name)}\" with condition on {GetDebugName()}");
+            }
+
+            return this;
+        }
+
+        public BlueprintCueConfigurator EditConditions(Action<ConditionsChecker> action)
+        {
+            if (instance != null)
+            {
+                action(instance.Conditions);
             }
 
             return this;

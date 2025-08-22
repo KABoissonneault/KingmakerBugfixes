@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.DialogSystem.Blueprints;
+using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -17,6 +18,7 @@ namespace kmbf.Patch
             FixUnrestInTheStreets();
             FixTestOfStrength();
             FixMimThreeWishes();
+            FixAmiriReforgingBladeDialogueTrigger();
         }
 
         // Shrewish Gulch Last Stage "Two Actions" and "Three Actions" checks have "Lore (Nature)" instead of "Athletics" as skill check, unlike the One Action variant
@@ -84,6 +86,26 @@ namespace kmbf.Patch
             // Obj5_LeadToTalonPeak finishes parent by default, when the quest has a Finish objective already to handle completion, as well as completion effects
             BlueprintQuestObjectiveConfigurator.From(new BlueprintQuestObjectiveGuid("798ca1c73a57a864fbf127e4cd27bfe5"))
                 .SetFinishParent(false)
+                .Configure();
+        }
+
+        // When talking to Nilak after sacrificing Akaia, the conversation with Amiri expects a transition from either 
+        // having chosen to sacrifice Akaia, or having Amiri sacrifice herself. But it's also possible to talk to Nilak
+        // by choosing to sacrifice Nilak while Akaia is alive: Amiri simply refuses and proceeds to kill Akaia
+        // Here we simply add the "Sacrifice Nilak" answer to the possible conditions - if Nilak got sacrificed, then
+        // we won't be able to trigger this conversation. If not, then Akaia got sacrificed, and it should be equivalent
+        // to choosing Akaia
+        static void FixAmiriReforgingBladeDialogueTrigger()
+        {
+            var cue006 = new BlueprintCueGuid("acb5f27727023ec41923a2fcddbfc5e5");
+            var sacrificeNilakAnswer = new BlueprintAnswerGuid("ad7699b6e0802324681e266f3d86ea3f"); // This is the "This is for the best" confirmation line, not "Sacrifice Nilak"
+
+            BlueprintCueConfigurator.From(cue006)
+                .EditConditions(c =>
+                {
+                    c.Operation = Operation.Or;
+                    c.Conditions = [.. c.Conditions, MakeConditionAnswerSelected(sacrificeNilakAnswer)];
+                })
                 .Configure();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
+using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
@@ -22,6 +23,12 @@ namespace kmbf.Blueprint.Builder
             return instance;
         }
 
+        public static ConditionT Not<ConditionT>(ConditionT c) where ConditionT : Condition
+        {
+            c.Not = true;
+            return c;
+        }
+
         public static FlagUnlocked MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid flagId, params int[] values)
         {
             if (!flagId.GetBlueprint(out BlueprintUnlockableFlag flag)) return null;
@@ -29,6 +36,16 @@ namespace kmbf.Blueprint.Builder
             FlagUnlocked instance = CreateInstance<FlagUnlocked>();
             instance.ConditionFlag = flag;
             instance.SpecifiedValues = values;
+            return instance;
+        }
+
+        public static AnswerSelected MakeConditionAnswerSelected(BlueprintAnswerGuid answerId, bool currentDialog = false)
+        {
+            if (!answerId.GetBlueprint(out BlueprintAnswer answer)) return null;
+
+            AnswerSelected instance = CreateInstance<AnswerSelected>();
+            instance.Answer = answer;
+            instance.CurrentDialog = currentDialog;
             return instance;
         }
 
