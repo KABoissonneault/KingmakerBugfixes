@@ -196,6 +196,9 @@ namespace kmbf.Patch
             TextFixes.Apply();
             EventFixes.Apply();
             OptionalFixes.ApplyAllEnabledFixes();
+
+            // Harmony patches applied manually after Blueprints are loaded
+            PostBlueprintPatches.Apply();
         }
     }
 }
