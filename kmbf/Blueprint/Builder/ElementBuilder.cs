@@ -117,6 +117,18 @@ namespace kmbf.Blueprint.Builder
             return instance;
         }
 
+        public static ContextActionApplyBuff MakeContextActionApplyBuffSeconds(BlueprintBuffGuid buffId, float durationSeconds, bool canBeDispeled = true)
+        {
+            if (!buffId.GetBlueprint(out BlueprintBuff buff)) return null;
+
+            var instance = CreateInstance<ContextActionApplyBuff>();
+            instance.Buff = buff;
+            instance.UseDurationSeconds = true;
+            instance.DurationSeconds = durationSeconds;
+            instance.IsNotDispelable = !canBeDispeled;
+            return instance;
+        }
+
         public static ContextActionApplyBuff MakeContextActionApplyUndispelableBuff(BlueprintBuffGuid buffId, ContextDurationValue duration)
         {
             return MakeContextActionApplyBuff(buffId, duration, canBeDispeled: false);

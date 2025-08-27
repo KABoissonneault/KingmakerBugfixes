@@ -24,6 +24,7 @@ using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
 using System;
@@ -296,6 +297,34 @@ namespace kmbf.Blueprint.Configurator
 
             return Self;
         }
+
+        public TBuilder ReplaceComponents<CurrentType, NewType>(Action<CurrentType, NewType> action) 
+            where CurrentType : BlueprintComponent
+            where NewType : BlueprintComponent
+        {
+            if (instance != null)
+            {
+                List<BlueprintComponent> newComponents = new List<BlueprintComponent>();
+                foreach(var c in instance.Components)
+                {
+                    if(c is CurrentType cc)
+                    {
+                        NewType nc = ScriptableObject.CreateInstance<NewType>();
+                        UnityEngine.Object.DontDestroyOnLoad(nc);
+                        action(cc, nc);
+                        newComponents.Add(nc);
+                    }
+                    else
+                    {
+                        newComponents.Add(c);
+                    }
+                }
+
+                instance.Components = newComponents.ToArray();
+            }
+
+            return Self;
+        }
     }
 
     public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
@@ -419,6 +448,19 @@ namespace kmbf.Blueprint.Configurator
 
             return this;
         }
+
+        public BlueprintBuffConfigurator SetCasterLevel(ContextValue value)
+        {
+            if(instance != null)
+            {
+                EditOrAddComponent<ContextSetAbilityParams>(c =>
+                {
+                    c.CasterLevel = value;
+                });
+            }
+
+            return this;
+        }
     }
 
     public sealed class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
@@ -516,6 +558,22 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintItemEquipmentGuid, new()
         where TBuilder : BaseBlueprintItemEquipmentConfigurator<BPType, GuidType, TBuilder>, new()
     {
+        public TBuilder SetAbility(BlueprintAbilityGuid abilityId)
+        {
+            if (instance != null)
+            {
+                if (abilityId.GetBlueprint(out BlueprintAbility ability))
+                {
+                    instance.Ability = ability;
+                }
+            }
+
+            return Self;
+        }
+    }
+
+    public sealed class BlueprintItemEquipmentConfigurator : BaseBlueprintItemEquipmentConfigurator<BlueprintItemEquipment, BlueprintItemEquipmentGuid, BlueprintItemEquipmentConfigurator>
+    {
 
     }
 
@@ -541,6 +599,70 @@ namespace kmbf.Blueprint.Configurator
     public sealed class BlueprintItemEquipmentSimpleConfigurator : BaseBlueprintItemEquipmentSimpleConfigurator<BlueprintItemEquipmentSimple, BlueprintItemEquipmentSimpleGuid, BlueprintItemEquipmentSimpleConfigurator>
     {
 
+    }
+
+    public sealed class BlueprintItemWeaponConfigurator : BaseBlueprintItemEquipmentConfigurator<BlueprintItemWeapon, BlueprintItemWeaponGuid,  BlueprintItemWeaponConfigurator>
+    {
+        public BlueprintItemWeaponConfigurator AddEnchantment(BlueprintWeaponEnchantmentGuid enchantmentId)
+        {
+            if (instance != null)
+            {
+                if (enchantmentId.GetBlueprint(out BlueprintWeaponEnchantment enchantment))
+                {
+                    instance.m_Enchantments = [.. instance.m_Enchantments, enchantment];
+                }
+            }
+
+            return this;
+        }
+    }
+
+    public abstract class BaseBlueprintItemEnchantmentConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintItemEnchantment
+        where GuidType : BlueprintItemEnchantmentGuid, new()
+        where TBuilder : BaseBlueprintItemEnchantmentConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+
+    }
+
+    public sealed class BlueprintWeaponEnchantmentConfigurator : BaseBlueprintItemEnchantmentConfigurator<BlueprintWeaponEnchantment, BlueprintWeaponEnchantmentGuid, BlueprintWeaponEnchantmentConfigurator>
+    {
+        public BlueprintWeaponEnchantmentConfigurator SetDC(ContextValue value, bool add10ToDC)
+        {
+            if(instance != null)
+            {
+                EditOrAddComponent<ContextSetAbilityParams>(c =>
+                {
+                    c.Add10ToDC = add10ToDC;
+                    c.DC = value;
+                });
+            }
+
+            return this;
+        }
+
+        // AddInitiatorAttackRollTrigger is missing some features that AddInitiatorAttackWithWeaponTrigger has, such as Wait for Resolve
+        // For some weapon enchantments, we want to replace with the equivalent Weapon Trigger
+        public BlueprintWeaponEnchantmentConfigurator ReplaceAttackRollTriggerWithWeaponTrigger(Action<AddInitiatorAttackWithWeaponTrigger> action)
+        {
+            if(instance != null)
+            {
+                ReplaceComponents<AddInitiatorAttackRollTrigger, AddInitiatorAttackWithWeaponTrigger>((attackRollTrigger, weaponTrigger) =>
+                {
+                    weaponTrigger.name = attackRollTrigger.name;
+                    weaponTrigger.OnlyHit = attackRollTrigger.OnlyHit;
+                    weaponTrigger.CriticalHit = attackRollTrigger.CriticalHit;
+                    weaponTrigger.OnlySneakAttack = attackRollTrigger.SneakAttack;
+                    weaponTrigger.CheckWeaponCategory = attackRollTrigger.CheckWeapon;
+                    weaponTrigger.Category = attackRollTrigger.WeaponCategory;
+                    weaponTrigger.Action = attackRollTrigger.Action;
+
+                    action(weaponTrigger);
+                });
+            }
+
+            return this;
+        }
     }
 
     public abstract class BaseBlueprintKingdomProjectConfigurator<BPType, GuidType,TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
@@ -696,6 +818,31 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintCueConfigurator : BaseBlueprintObjectConfigurator<BlueprintCue, BlueprintCueGuid, BlueprintCueConfigurator>
     {
+        public BlueprintCueConfigurator AddOnShowAction(GameAction action)
+        {
+            if (instance != null)
+            {
+                instance.OnShow = ActionListFactory.Add(instance.OnShow, action);
+            }
+
+            return this;
+        }
+
+        public BlueprintCueConfigurator EditOnShowActionRecursive<ActionType>(string actionName, Action<ActionType> editAction)
+            where ActionType : GameAction
+        {
+            if (instance != null)
+            {
+                var action = instance.OnShow.GetGameActionsRecursive().OfType<ActionType>().FirstOrDefault(a => a.name == actionName);
+                if (action != null)
+                    editAction(action);
+                else
+                    Main.Log.Error($"Could not find a component of type \"{(typeof(ActionType).Name)}\" with name '{actionName}' on {GetDebugName()}");
+            }
+
+            return this;
+        }
+
         public BlueprintCueConfigurator AddOnStopAction(GameAction action)
         {
             if (instance != null)
@@ -793,7 +940,7 @@ namespace kmbf.Blueprint.Configurator
             if (instance != null)
                 instance.m_TypeNameText = typeName;
 
-            return Self;
+            return this;
         }
 
         public BlueprintWeaponTypeConfigurator SetDefaultName(LocalizedString defaultName)
@@ -801,7 +948,15 @@ namespace kmbf.Blueprint.Configurator
             if (instance != null)
                 instance.m_DefaultNameText = defaultName;
 
-            return Self;
+            return this;
+        }
+
+        public BlueprintWeaponTypeConfigurator SetIsLight(bool value)
+        {
+            if (instance != null)
+                instance.m_IsLight = value;
+
+            return this;
         }
     }
 

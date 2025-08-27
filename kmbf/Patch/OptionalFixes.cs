@@ -13,7 +13,6 @@ using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
-using static kmbf.Blueprint.BlueprintCommands;
 using static kmbf.Blueprint.Builder.ElementBuilder;
 
 namespace kmbf.Patch
@@ -46,7 +45,12 @@ namespace kmbf.Patch
         // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
         static void FixBaneOfTheLiving()
         {
-            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.BaneLiving);
+            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.BaneLiving)
+                .EditComponent<WeaponConditionalEnhancementBonus>(c =>
+                {
+                    c.Conditions.Operation = Operation.And;
+                })
+                .Configure();
         }
 
         // In the base game, Necklace of Double Crosses applies to all sneak attacks, and the "attack against allies" mechanic is not implemented at all

@@ -1,11 +1,12 @@
-﻿using Kingmaker.Blueprints.Items.Ecnchantments;
-using Kingmaker.Designers.Mechanics.Facts;
+﻿using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 
-using static kmbf.Blueprint.BlueprintCommands;
+using static kmbf.Blueprint.Builder.ElementBuilder;
 
 namespace kmbf.Patch
 {
@@ -21,12 +22,15 @@ namespace kmbf.Patch
             FixDwarvenChampion();
             FixRingOfRecklessCourageStatBonus();
             FixQuivers();
+            FixCursedItemCasterLevels();
         }
 
+        // Make Darts light weapons (like in tabletop)
         static void ChangeDartsWeaponType()
         {
-            // Make Darts light weapons (like in tabletop)
-            SetWeaponTypeLight(BlueprintWeaponTypeGuid.Dart, light: true);
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Dart)
+                .SetIsLight(true)
+                .Configure();
         }
 
         // 'Datura' automatically removes its own sleep on attack, since the damage applies after the buff
@@ -35,23 +39,44 @@ namespace kmbf.Patch
         // Finally, add the enchantment to the second head
         static void FixDatura()
         {
-            ReplaceAttackRollTriggerToWeaponTrigger(BlueprintWeaponEnchantmentGuid.Soporiferous, WaitForAttackResolve: true);
-            SetContextSetAbilityParamsDC(BlueprintWeaponEnchantmentGuid.Soporiferous, 16);
-            AddWeaponEnchantment(BlueprintItemWeaponGuid.SoporiferousSecond, BlueprintWeaponEnchantmentGuid.Soporiferous);
+            BlueprintWeaponEnchantmentConfigurator.From(BlueprintWeaponEnchantmentGuid.Soporiferous)
+                .ReplaceAttackRollTriggerWithWeaponTrigger(c =>
+                {
+                    c.WaitForAttackResolve = true;
+                })
+                .SetDC(16, add10ToDC: false)
+                .Configure();
+                        
+            BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.SoporiferousSecond)
+                .AddEnchantment(BlueprintWeaponEnchantmentGuid.Soporiferous)
+                .Configure();
         }
 
-        // Nature's Wrath trident "Outsider AND Aberration ..." instead of OR
+        // Nature's Wrath trident accidentally checks "Outsider AND Aberration ..." instead of OR
         // Fix "Electricity Vulnerability" debuff to apply to target instead of initiator
         static void FixNaturesWrath()
-        {            
-            FlipWeaponConditionAndOr(BlueprintWeaponEnchantmentGuid.NaturesWrath);
-            ReplaceWeaponBuffOnAttackToWeaponTrigger(BlueprintWeaponEnchantmentGuid.NaturesWrath);
+        {   
+            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.NaturesWrath)
+                .EditComponent<WeaponConditionalDamageDice>(c =>
+                {
+                    c.Conditions.Operation = Operation.Or;
+                })
+                .ReplaceComponents<WeaponBuffOnAttack, AddInitiatorAttackWithWeaponTrigger>((buffOnAttack, weaponTrigger) =>
+                {
+                    weaponTrigger.Action = ActionListFactory.Single(
+                        MakeContextActionApplyBuffSeconds(new BlueprintBuffGuid(buffOnAttack.Buff.AssetGuid), (float)buffOnAttack.Duration.Seconds.TotalSeconds)
+                    );
+                    weaponTrigger.OnlyHit = true;
+                })
+                .Configure();
         }
 
         // Scroll of Summon Nature's Ally V (Single) would Summon Monster V (Single) instead
         static void FixSummonNaturesAllyVSingle()
         {
-            ReplaceUsableAbility(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle, BlueprintAbilityGuid.SummonMonsterVSingle, BlueprintAbilityGuid.SummonNaturesAllyVSingle);
+            BlueprintItemEquipmentConfigurator.From(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle)
+                .SetAbility(BlueprintAbilityGuid.SummonNaturesAllyVSingle)
+                .Configure();
         }
 
         // Give it immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
@@ -95,6 +120,36 @@ namespace kmbf.Patch
                     c.Number = 1;
                     c.Haste = true;
                 })
+                .Configure();
+        }
+
+        // There are three cursed magic items in KM: Cloak of Sold Souls, Gentle Persuasion, and The Narrow Path
+        // All three of them have a fixed DC in their description (ex: DC 25).
+        // When using Remove Curse, this claim is correct, as the Dispel Magic action targets the specified DC of those curses
+        // When using Break Enchantments, the Dispel Magic targets the caster level instead, which gives a DC of 11 + Caster Level
+        // Cloak of Sold Souls sets a caster level of 25, giving DC 36 (instead of 25)
+        // Gentle Persuasion sets a caster level of 0, giving DC 11 (instead of 33)
+        // The Narrow Path sets a caster level of 15, giving DC 26 (instead of 25)
+        // According to the tabletop description, Break Enchantment should be able to remove the curse from magic items (as it does in KM), but it should
+        // use the DC of the curse.
+        // Since this is one specific case hitting only three curses, instead of changing Break Enchantment to use the DC on cursed magic items,
+        // we'll adjust the caster level of the three curses to match DC - 11
+        static void FixCursedItemCasterLevels()
+        {
+            var cloakOfSoldSoulsCurseBuff = new BlueprintBuffGuid("40f948d8e5ee2534eb3d701f256f96b5");
+            var gentlePersuasionCurseBuff = new BlueprintBuffGuid("846c41744b0995848a614a86d8cb4272");
+            var narrowPathCurseBuff = new BlueprintBuffGuid("12fa3abf3176f6f409c34f5d46bf4754");
+
+            BlueprintBuffConfigurator.From(cloakOfSoldSoulsCurseBuff)
+                .SetCasterLevel(ContextValueFactory.Simple(14))
+                .Configure();
+
+            BlueprintBuffConfigurator.From(gentlePersuasionCurseBuff)
+                .SetCasterLevel(ContextValueFactory.Simple(22))
+                .Configure();
+
+            BlueprintBuffConfigurator.From(narrowPathCurseBuff)
+                .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
         }
     }
