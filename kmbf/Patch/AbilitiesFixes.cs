@@ -42,6 +42,7 @@ namespace kmbf.Patch
             FixGazeImmunities();
             FixTieflingFoulspawn();
             FixExplosionRing();
+            FixBreakEnchantment();
         }
 
         static void FixDruid()
@@ -369,6 +370,30 @@ namespace kmbf.Patch
 
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.AcidFlask)
                 .AddSpellDescriptor(SpellDescriptor.Bomb)
+                .Configure();
+        }
+
+        // Break Enchantment should remove effects "that can be dispelled by 'stone to flesh'" in tabletop
+        // The in-game description agrees that it should remove transmutations
+        // So I'm bringing the "remove petrify effects" from WotR
+        static void FixBreakEnchantment()
+        {
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreakEnchantment)
+                .AddAbilityEffectRunAction(
+                    MakeGameActionConditional(
+                        ConditionsCheckerFactory.Single(MakeContextConditionHasBuffWithDescriptor(SpellDescriptor.Petrified)),
+                        ifTrue: ActionListFactory.Single(
+                            ContextActionDispelMagicConfigurator.New(ContextActionDispelMagic.BuffType.All)
+                                .SetDescriptor(SpellDescriptor.Petrified)
+                                .AddOnSuccessAction(MakeContextActionResurrect(0.0f))
+                                .Configure()
+                        )
+                    )
+                )
+                .EditComponent<AbilityTargetsAround>(c =>
+                {
+                    c.m_IncludeDead = true;
+                })
                 .Configure();
         }
     }

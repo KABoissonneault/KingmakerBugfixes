@@ -21,13 +21,13 @@ using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.Kingdom.Tasks;
 using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
-using System;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
@@ -465,6 +465,16 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
     {
+        public BlueprintAbilityConfigurator AddAbilityEffectRunAction(GameAction action)
+        {
+            EditOrAddComponent<AbilityEffectRunAction>(c =>
+            {
+                c.Actions = ActionListFactory.Add(c.Actions, action);
+            });
+
+            return this;
+        }
+
         public BlueprintAbilityConfigurator SetSpellResistance(bool value)
         {
             if (instance != null)

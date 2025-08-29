@@ -1,4 +1,5 @@
 ﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.EventConditionActionSystem.Conditions;
 using Kingmaker.DialogSystem.Blueprints;
@@ -81,7 +82,13 @@ namespace kmbf.Blueprint.Builder
 
         public static ContextConditionHasSpellImmunityToContextDescriptors MakeContextConditionHasSpellImmunityToContextDescriptors()
         {
-            ContextConditionHasSpellImmunityToContextDescriptors instance = CreateInstance<ContextConditionHasSpellImmunityToContextDescriptors>();
+            return CreateInstance<ContextConditionHasSpellImmunityToContextDescriptors>();
+        }
+
+        public static ContextConditionHasBuffWithDescriptor MakeContextConditionHasBuffWithDescriptor(SpellDescriptorWrapper descriptor)
+        {
+            var instance = CreateInstance<ContextConditionHasBuffWithDescriptor>();
+            instance.SpellDescriptor = descriptor;
             return instance;
         }
 
@@ -91,18 +98,32 @@ namespace kmbf.Blueprint.Builder
             instance.RoundNumber = roundNumber;
             return instance;
         }
-
-        public static ContextActionRemoveSelf MakeContextActionRemoveSelf()
-        {
-            return CreateInstance<ContextActionRemoveSelf>();
-        }
-
+        
         public static Conditional MakeGameActionConditional(ConditionsChecker conditionsChecker, ActionList ifTrue = null, ActionList ifFalse = null)
         {
             var instance = CreateInstance<Conditional>();
             instance.ConditionsChecker = conditionsChecker;
             instance.IfTrue = ifTrue ?? Constants.Empty.Actions;
             instance.IfFalse = ifFalse ?? Constants.Empty.Actions;
+            return instance;
+        }
+        public static ContextActionRemoveSelf MakeContextActionRemoveSelf()
+        {
+            return CreateInstance<ContextActionRemoveSelf>();
+        }
+
+        public static ContextActionResurrect MakeContextActionResurrectFull()
+        {
+            var instance = CreateInstance<ContextActionResurrect>();
+            instance.FullRestore = true;
+            return instance;
+        }
+
+        public static ContextActionResurrect MakeContextActionResurrect(float resultHealth)
+        {
+            var instance = CreateInstance<ContextActionResurrect>();
+            instance.FullRestore = false;
+            instance.ResultHealth = resultHealth;
             return instance;
         }
 

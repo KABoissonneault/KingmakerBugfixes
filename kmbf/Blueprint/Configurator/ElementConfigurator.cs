@@ -1,4 +1,5 @@
 ﻿using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.GameDifficulties;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
@@ -140,6 +141,50 @@ namespace kmbf.Blueprint.Configurator
         public ContextActionDealDamageConfigurator SetValue(ContextDiceValue Value)
         {
             instance.Value = Value;
+            return this;
+        }
+    }
+
+    public class ContextActionDispelMagicConfigurator : BaseContextActionConfigurator<ContextActionDispelMagic,  ContextActionDispelMagicConfigurator>
+    {
+        public static ContextActionDispelMagicConfigurator New(ContextActionDispelMagic.BuffType type)
+        {
+            ContextActionDispelMagic instance = CreateInstance();
+            instance.m_BuffType = type;
+            instance.m_MaxSpellLevel = ContextValueFactory.Simple(0);
+            instance.m_MaxCasterLevel = ContextValueFactory.Simple(0);
+            instance.OnSuccess = new ActionList();
+            instance.OnFail = new ActionList();
+            return From(instance);
+        }
+
+        public ContextActionDispelMagicConfigurator SetDescriptor(SpellDescriptorWrapper descriptor)
+        {
+            if (instance != null)
+            {
+                instance.Descriptor = descriptor;
+            }
+
+            return this;
+        }
+
+        public ContextActionDispelMagicConfigurator EditOnSuccess(Action<ActionList> action)
+        {
+            if (instance != null)
+            {
+                action(instance.OnSuccess);
+            }
+
+            return this;
+        }
+
+        public ContextActionDispelMagicConfigurator AddOnSuccessAction(GameAction action)
+        {
+            if (instance != null)
+            {
+                instance.OnSuccess = ActionListFactory.Add(instance.OnSuccess, action);
+            }
+
             return this;
         }
     }
