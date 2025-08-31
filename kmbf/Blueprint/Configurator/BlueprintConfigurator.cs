@@ -36,10 +36,23 @@ namespace kmbf.Blueprint.Configurator
         where T : ScriptableObject 
         where TBuilder : BaseObjectConfigurator<T, TBuilder>, new()
     {
-        protected T instance;
+        private bool configured = false;
+        private List<Action<T>> onConfigureOperations = new();
+
+        private T instance;
         protected TBuilder Self => (TBuilder)this;
 
         public T Instance { get => instance; }
+
+        protected void SetInstance(T i) { instance = i; }
+
+        ~BaseObjectConfigurator()
+        {
+            if(!configured)
+            {
+                Main.Log.Error($"Configurator for object {GetSafeName()} was not configured");
+            }
+        }
 
         public static TBuilder From(T instance)
         {
@@ -47,18 +60,54 @@ namespace kmbf.Blueprint.Configurator
             builder.instance = instance;
             return builder;
         }
-
-        public T Configure()
-        {
-            return instance;
-        }
-
+                
         protected static T CreateInstance()
         {
             var instance = ScriptableObject.CreateInstance<T>();
             UnityEngine.Object.DontDestroyOnLoad(instance);
             return instance;
         }
+
+        protected TBuilder AddOperation(Action<T> op)
+        {
+            onConfigureOperations.Add(op);
+            return Self;
+        }
+
+        public T Configure()
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+
+            if(configured)
+            {
+                Main.Log.Error($"Object '{GetDebugName()}' was already configured");
+                return instance;
+            }
+
+            configured = true;
+            foreach(Action<T> action in onConfigureOperations)
+            {
+                action(instance);
+            }
+            OnConfigure();
+            return instance;
+        }
+
+        protected virtual void OnConfigure() { }
+        public virtual string GetDebugName()
+        {
+            if (instance != null)
+            {
+                return instance.name;
+            }
+
+            return "<Invalid instance>";
+        }
+
+        public virtual string GetSafeName() { return "<Unknown instance>"; }
     }
 
     public abstract class BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder> : BaseObjectConfigurator<BPType, TBuilder>
@@ -66,6 +115,9 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintObjectGuid, new()
         where TBuilder : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>, new()
     {
+        private List<BlueprintComponent> addedComponents = new();
+        private List<BlueprintComponent> componentsToRemove = new();
+        
         protected static BPType CreateInstance(GuidType id, string objectName)
         {
             BPType bp = CreateInstance();
@@ -74,7 +126,7 @@ namespace kmbf.Blueprint.Configurator
             bp.Components = [];
 
             id.AssignNewInstance(bp);
-
+            
             return bp;
         }
 
@@ -85,24 +137,24 @@ namespace kmbf.Blueprint.Configurator
                 Main.Log.Error($"Blueprint with GUID '{id.guid}' did not have expected type {id.BlueprintTypeName}");
 
             TBuilder builder = new();
-            builder.instance = bp as BPType;
+            builder.SetInstance(bp as BPType);
             return builder;
         }
 
         public GuidType GetId()
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 var id = new GuidType();
-                id.guid = instance.AssetGuid.ToString();
-                id.AssignNewInstance(instance);
+                id.guid = Instance.AssetGuid.ToString();
+                id.AssignNewInstance(Instance);
                 return id;
             }
 
             return null;
         }
 
-        public string GetDebugName()
+        public override string GetDebugName()
         {
             GuidType id = GetId();
             if(id != null)
@@ -113,25 +165,34 @@ namespace kmbf.Blueprint.Configurator
             return "<Invalid Instance>";
         }
 
+        public override string GetSafeName()
+        {
+            if(Instance)
+            {
+                return Instance.AssetGuid;
+            }
+            else
+            {
+                return "<Invalid instance>";
+            }
+        }
+
         public TBuilder AddComponent<C>(C c) where C : BlueprintComponent
         {
-            if (instance != null)
-            {
-                instance.Components = [.. instance.Components, c];
-            }
-
+            addedComponents.Add(c);
             return Self;
         }
 
         public TBuilder AddComponent<C>(Action<C> init = null) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 C c = ScriptableObject.CreateInstance<C>();
                 UnityEngine.Object.DontDestroyOnLoad(c);
+                c.name = $"${typeof(C).Name}";
                 if (init != null)
                     init(c);
-                instance.Components = [.. instance.Components, c];
+                addedComponents.Add(c);
             }
 
             return Self;
@@ -139,9 +200,9 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder RemoveComponents<C>() where C : BlueprintComponent
         {
-            if(instance != null)
+            if(Instance != null)
             {
-                instance.Components = instance.Components.Where(c => !(c is C)).ToArray();
+                componentsToRemove.AddRange(Instance.Components.OfType<C>());
             }
 
             return Self;
@@ -149,14 +210,9 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder RemoveComponentsWhere<C>(Predicate<C> pred) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                instance.Components = instance.Components.Where(c =>
-                {
-                    var dc = c as C;
-                    if (!dc) return true;
-                    return !pred(dc);
-                }).ToArray();
+                componentsToRemove.AddRange(Instance.Components.OfType<C>().Where(c => pred(c)));
             }
 
             return Self;
@@ -164,11 +220,11 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder EditComponent<C>(Action<C> action) where C : BlueprintComponent
         {
-            if(instance != null)
+            if(Instance != null)
             {
-                C c = instance.GetComponent<C>();
+                C c = Instance.GetComponent<C>();
                 if (c != null)
-                    action(c);
+                    AddOperation(_ => action(c));
                 else
                     Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" in \"{GetDebugName()}\"");
             }
@@ -178,11 +234,11 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder EditComponentWhere<C>(Predicate<C> pred, Action<C> action) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                C c = instance.GetComponentWhere<C>(pred);
+                C c = Instance.GetComponentWhere<C>(pred);
                 if (c != null)
-                    action(c);
+                    AddOperation(_ => action(c));
                 else
                     Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" with condition in \"{GetDebugName()}\"");
             }
@@ -192,13 +248,28 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder EditOrAddComponent<C>(Action<C> action) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                C c = instance.GetComponent<C>();
+                C c = Instance.GetComponent<C>();
                 if (c != null)
-                    action(c);
+                    AddOperation(_ => action(c));
                 else
-                    AddComponent<C>(action);
+                    AddComponent(action);
+            }
+
+            return Self;
+        }
+
+        // Make sure that "action" initializes the component in such as way to make that predicate true
+        public TBuilder EditOrAddComponentWhere<C>(Predicate<C> pred, Action<C> action) where C : BlueprintComponent
+        {
+            if (Instance != null)
+            {
+                C c = Instance.GetComponentWhere<C>(pred);
+                if (c != null)
+                    AddOperation(_ => action(c));
+                else
+                    AddComponent(action);
             }
 
             return Self;
@@ -208,14 +279,14 @@ namespace kmbf.Blueprint.Configurator
             where C : BlueprintComponent
             where A : GameAction
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                var components = instance.Components.OfType<C>();
+                var components = Instance.Components.OfType<C>();
                 if(components.Empty())
                     Main.Log.Error($"Could not find a a component of type \"{typeof(C).Name}\" in {GetDebugName()}");
 
                 bool foundAny = false;
-                foreach (var c in instance.Components.OfType<C>())
+                foreach (var c in Instance.Components.OfType<C>())
                 {
                     A foundAction = c.GetGameActionsRecursive()
                         .OfType<A>()
@@ -223,7 +294,7 @@ namespace kmbf.Blueprint.Configurator
 
                     if (foundAction != null)
                     {
-                        action(foundAction);
+                        AddOperation(_ => action(foundAction));
                         foundAny = true;
                         break;
                     }
@@ -238,17 +309,17 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder EditFirstGameActionWhere<A>(Predicate<A> pred, Action<A> action) where A : GameAction
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 bool foundAny = false;
-                foreach(var c in instance.Components)
+                foreach(var c in Instance.Components)
                 {
                     A foundAction = c.GetGameActionsRecursive()
                         .OfType<A>()
                         .FirstOrDefault(a => pred(a));
                     if (foundAction != null)
                     {
-                        action(foundAction);
+                        AddOperation(_ => action(foundAction));
                         foundAny = true;
                         break;
                     }
@@ -263,10 +334,17 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder EditAllComponents<C>(Action<C> action) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                foreach(C c in instance.GetComponents<C>())
-                    action(c);
+                var components = Instance.GetComponents<C>().ToList();
+                if (!components.Empty())
+                {
+                    AddOperation(_ =>
+                    {
+                        foreach (C c in components)
+                            action(c);
+                    });
+                }
             }
 
             return Self;
@@ -274,11 +352,12 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder ReplaceAllComponentsWithSource(BlueprintObjectGuid source)
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 if (source.GetBlueprint(out BlueprintScriptableObject sourceInstance))
                 {
-                    instance.Components = sourceInstance.Components;
+                    componentsToRemove.AddRange(Instance.Components);
+                    addedComponents.AddRange(sourceInstance.Components);
                 }
             }
 
@@ -287,11 +366,12 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder ReplaceComponentsWithSource<C>(BlueprintObjectGuid source) where C : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 if(source.GetBlueprint(out BlueprintScriptableObject sourceInstance))
                 {
-                    instance.Components = [.. instance.Components.Where(c => !(c is C)), .. sourceInstance.Components.OfType<C>()];
+                    componentsToRemove.AddRange(Instance.Components.OfType<C>());
+                    addedComponents.AddRange(sourceInstance.Components.OfType<C>());
                 }
             }
 
@@ -302,29 +382,28 @@ namespace kmbf.Blueprint.Configurator
             where CurrentType : BlueprintComponent
             where NewType : BlueprintComponent
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                List<BlueprintComponent> newComponents = new List<BlueprintComponent>();
-                foreach(var c in instance.Components)
+                foreach(var cc in Instance.Components.OfType<CurrentType>())
                 {
-                    if(c is CurrentType cc)
-                    {
-                        NewType nc = ScriptableObject.CreateInstance<NewType>();
-                        UnityEngine.Object.DontDestroyOnLoad(nc);
-                        action(cc, nc);
-                        newComponents.Add(nc);
-                    }
-                    else
-                    {
-                        newComponents.Add(c);
-                    }
+                    NewType nc = ScriptableObject.CreateInstance<NewType>();
+                    UnityEngine.Object.DontDestroyOnLoad(nc);
+                    action(cc, nc);
+                    addedComponents.Add(nc);
+                    componentsToRemove.Add(cc);
                 }
-
-                instance.Components = newComponents.ToArray();
             }
 
             return Self;
         }
+        
+        protected override void OnConfigure()
+        {
+            // At this stage, WotR's BPCore would ensure all the components have a unique name, for serialization purposes
+            // KM doesn't have Component serialization, so not needed here
+            Instance.Components = Instance.Components.Except(componentsToRemove).Concat(addedComponents).ToArray();
+        }
+
     }
 
     public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
@@ -337,26 +416,13 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintFactGuid, new()
         where TBuilder : BaseBlueprintFactConfigurator<BPType, GuidType,TBuilder>, new()
     {
-        public TBuilder AddOrEditDefaultContextRankConfig(Action<ContextRankConfig> action)
+        public TBuilder EditOrAddDefaultContextRankConfig(Action<ContextRankConfig> action)
         {
-            if (instance != null)
+            return EditOrAddComponentWhere<ContextRankConfig>(c => c.m_Type == AbilityRankType.Default, c =>
             {
-                ContextRankConfig rankConfig = instance.GetComponentWhere<ContextRankConfig>(c => c.m_Type == AbilityRankType.Default);
-                if (rankConfig != null)
-                {
-                    action(rankConfig);
-                }
-                else
-                {
-                    AddComponent<ContextRankConfig>(c =>
-                    {
-                        c.m_Type = AbilityRankType.Default;
-                        action(c);
-                    });
-                }
-            }
-
-            return Self;
+                c.m_Type = AbilityRankType.Default;
+                action(c);
+            });
         }
     }
 
@@ -376,23 +442,26 @@ namespace kmbf.Blueprint.Configurator
 
         public TBuilder SetDisplayName(LocalizedString text)
         {
-            if (instance != null)
-                instance.m_DisplayName = text;
-            return Self;
+            return AddOperation(i =>
+            {
+                i.m_DisplayName = text;
+            });
         }
 
         public TBuilder SetDescription(LocalizedString text)
         {
-            if (instance != null)
-                instance.m_Description = text;
-            return Self;
+            return AddOperation(i =>
+            {
+                i.m_Description = text;
+            });
         }
 
         public TBuilder SetIcon(Sprite icon)
         {
-            if(instance != null)
-                instance.m_Icon = icon;
-            return Self;
+            return AddOperation(i =>
+            {
+                i.m_Icon = icon;
+            });
         }
     }
 
@@ -418,48 +487,34 @@ namespace kmbf.Blueprint.Configurator
 
         public BlueprintBuffConfigurator AddFlag(BlueprintBuff.Flags flag)
         {
-            if(instance != null)
+            return AddOperation(i =>
             {
-                instance.m_Flags |= flag;
-            }
-
-            return this;
+                i.m_Flags |= flag;
+            });
         }
 
         public BlueprintBuffConfigurator RemoveSpellDescriptor(SpellDescriptor descriptor)
         {
-            if(instance != null)
+            return EditComponent<SpellDescriptorComponent>(c =>
             {
-                EditComponent<SpellDescriptorComponent>(c =>
-                {
-                    c.Descriptor &= ~descriptor;
-                });
-            }
-
-            return this;
+                c.Descriptor &= ~descriptor;
+            });
         }
 
         public BlueprintBuffConfigurator SetStacking(StackingType stackingType)
         {
-            if(instance != null)
+            return AddOperation(i =>
             {
-                instance.Stacking = stackingType;
-            }
-
-            return this;
+                i.Stacking = stackingType;
+            });
         }
 
         public BlueprintBuffConfigurator SetCasterLevel(ContextValue value)
         {
-            if(instance != null)
+            return EditOrAddComponent<ContextSetAbilityParams>(c =>
             {
-                EditOrAddComponent<ContextSetAbilityParams>(c =>
-                {
-                    c.CasterLevel = value;
-                });
-            }
-
-            return this;
+                c.CasterLevel = value;
+            });
         }
     }
 
@@ -467,45 +522,34 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintAbilityConfigurator AddAbilityEffectRunAction(GameAction action)
         {
-            EditOrAddComponent<AbilityEffectRunAction>(c =>
+            return EditOrAddComponent<AbilityEffectRunAction>(c =>
             {
                 c.Actions = ActionListFactory.Add(c.Actions, action);
             });
-
-            return this;
         }
 
         public BlueprintAbilityConfigurator SetSpellResistance(bool value)
         {
-            if (instance != null)
-                instance.SpellResistance = value;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.SpellResistance = value;
+            });
         }
 
         public BlueprintAbilityConfigurator SetFullRoundAction(bool fullRoundAction)
         {
-            if(instance)
-                instance.m_IsFullRoundAction = fullRoundAction;
-            return this;
+            return AddOperation(i =>
+            {
+                i.m_IsFullRoundAction = fullRoundAction;
+            });
         }
 
         public BlueprintAbilityConfigurator AddSpellDescriptor(SpellDescriptor descriptor)
         {
-            if(instance != null)
+            return EditOrAddComponent<SpellDescriptorComponent>(c =>
             {
-                SpellDescriptorComponent spellDescriptorComponent = instance.GetComponent<SpellDescriptorComponent>();
-                if(spellDescriptorComponent != null)
-                {
-                    spellDescriptorComponent.Descriptor.m_IntValue |= (long)descriptor;
-                }
-                else
-                {
-                    AddComponent<SpellDescriptorComponent>(c => c.Descriptor = descriptor);
-                }
-            }
-
-            return this;
+                c.Descriptor.m_IntValue |= (long)descriptor;
+            });
         }
 
         public BlueprintAbilityConfigurator EditDamageDiceRankConfig(Action<ContextRankConfig> action)
@@ -539,22 +583,18 @@ namespace kmbf.Blueprint.Configurator
     {
         public TBuilder SetDisplayName(LocalizedString name)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.m_DisplayNameText = name;
-            }
-
-            return Self;
+                i.m_DisplayNameText = name;
+            });
         }
 
         public TBuilder SetFlavorText(LocalizedString text)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.m_FlavorText = text;
-            }
-
-            return Self;
+                i.m_FlavorText = text;
+            });
         }
     }
 
@@ -570,15 +610,13 @@ namespace kmbf.Blueprint.Configurator
     {
         public TBuilder SetAbility(BlueprintAbilityGuid abilityId)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
                 if (abilityId.GetBlueprint(out BlueprintAbility ability))
                 {
-                    instance.Ability = ability;
+                    i.Ability = ability;
                 }
-            }
-
-            return Self;
+            });
         }
     }
 
@@ -594,15 +632,13 @@ namespace kmbf.Blueprint.Configurator
     {
         public TBuilder AddEnchantment(BlueprintEquipmentEnchantmentGuid enchantmentId)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
                 if (enchantmentId.GetBlueprint(out BlueprintEquipmentEnchantment enchantment))
                 {
-                    instance.m_Enchantments = [.. instance.m_Enchantments, enchantment];
+                    i.m_Enchantments = [.. i.m_Enchantments, enchantment];
                 }
-            }
-
-            return Self;
+            });
         }
     }
 
@@ -615,15 +651,13 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintItemWeaponConfigurator AddEnchantment(BlueprintWeaponEnchantmentGuid enchantmentId)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
                 if (enchantmentId.GetBlueprint(out BlueprintWeaponEnchantment enchantment))
                 {
-                    instance.m_Enchantments = [.. instance.m_Enchantments, enchantment];
+                    i.m_Enchantments = [.. i.m_Enchantments, enchantment];
                 }
-            }
-
-            return this;
+            });
         }
     }
 
@@ -639,39 +673,29 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintWeaponEnchantmentConfigurator SetDC(ContextValue value, bool add10ToDC)
         {
-            if(instance != null)
+            return EditOrAddComponent<ContextSetAbilityParams>(c =>
             {
-                EditOrAddComponent<ContextSetAbilityParams>(c =>
-                {
-                    c.Add10ToDC = add10ToDC;
-                    c.DC = value;
-                });
-            }
-
-            return this;
+                c.Add10ToDC = add10ToDC;
+                c.DC = value;
+            });
         }
 
         // AddInitiatorAttackRollTrigger is missing some features that AddInitiatorAttackWithWeaponTrigger has, such as Wait for Resolve
         // For some weapon enchantments, we want to replace with the equivalent Weapon Trigger
         public BlueprintWeaponEnchantmentConfigurator ReplaceAttackRollTriggerWithWeaponTrigger(Action<AddInitiatorAttackWithWeaponTrigger> action)
         {
-            if(instance != null)
+            return ReplaceComponents<AddInitiatorAttackRollTrigger, AddInitiatorAttackWithWeaponTrigger>((attackRollTrigger, weaponTrigger) =>
             {
-                ReplaceComponents<AddInitiatorAttackRollTrigger, AddInitiatorAttackWithWeaponTrigger>((attackRollTrigger, weaponTrigger) =>
-                {
-                    weaponTrigger.name = attackRollTrigger.name;
-                    weaponTrigger.OnlyHit = attackRollTrigger.OnlyHit;
-                    weaponTrigger.CriticalHit = attackRollTrigger.CriticalHit;
-                    weaponTrigger.OnlySneakAttack = attackRollTrigger.SneakAttack;
-                    weaponTrigger.CheckWeaponCategory = attackRollTrigger.CheckWeapon;
-                    weaponTrigger.Category = attackRollTrigger.WeaponCategory;
-                    weaponTrigger.Action = attackRollTrigger.Action;
+                weaponTrigger.name = attackRollTrigger.name;
+                weaponTrigger.OnlyHit = attackRollTrigger.OnlyHit;
+                weaponTrigger.CriticalHit = attackRollTrigger.CriticalHit;
+                weaponTrigger.OnlySneakAttack = attackRollTrigger.SneakAttack;
+                weaponTrigger.CheckWeaponCategory = attackRollTrigger.CheckWeapon;
+                weaponTrigger.Category = attackRollTrigger.WeaponCategory;
+                weaponTrigger.Action = attackRollTrigger.Action;
 
-                    action(weaponTrigger);
-                });
-            }
-
-            return this;
+                action(weaponTrigger);
+            });
         }
     }
 
@@ -711,78 +735,54 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintKingdomBuffConfigurator AddBuildingCostModifierBuilding(BlueprintSettlementBuildingGuid buildingId)
         {
-            if(instance != null)
+            return EditComponent<BuildingCostModifier>(costModifier =>
             {
-                var costModifier = instance.GetComponent<BuildingCostModifier>();
-                if(costModifier != null)
+                if (buildingId.GetBlueprint(out BlueprintSettlementBuilding building) && !costModifier.Buildings.Contains(building))
                 {
-                    if(buildingId.GetBlueprint(out BlueprintSettlementBuilding building) && !costModifier.Buildings.Contains(building))
-                    {
-                        costModifier.Buildings = [.. costModifier.Buildings, building];
-                    }
+                    costModifier.Buildings = [.. costModifier.Buildings, building];
                 }
-                else
-                {
-                    Main.Log.Error($"Could not find Building Cost Modifier component in Blueprint {GetDebugName()}");
-                }
-            }
-
-            return this;
+            });
         }
     }
 
-    public class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingGuid, BlueprintSettlementBuildingConfigurator>
+    public sealed class BlueprintSettlementBuildingConfigurator : BaseBlueprintFactConfigurator<BlueprintSettlementBuilding, BlueprintSettlementBuildingGuid, BlueprintSettlementBuildingConfigurator>
     {
         public BlueprintSettlementBuildingConfigurator SetAlignmentRestriction(AlignmentMaskType alignment)
         {
-            if(instance != null)
-            {
-                RemoveComponents<AlignmentRestriction>(); // Some BPs have multiple, which is just invalid
-                AddComponent<AlignmentRestriction>(c => c.Allowed = alignment);
-            }
-
+            RemoveComponents<AlignmentRestriction>(); // Some BPs have multiple, which is just invalid
+            AddComponent<AlignmentRestriction>(c => c.Allowed = alignment);
             return this;
         }
 
         public BlueprintSettlementBuildingConfigurator SetOtherBuildRestriction(IEnumerable<BlueprintSettlementBuildingGuid> buildings, bool requireAll=false, bool inverted=false)
         {
-            if(instance != null)
+            return EditOrAddComponent<OtherBuildingRestriction>(c =>
             {
-                EditOrAddComponent<OtherBuildingRestriction>(c =>
+                c.Buildings = new List<BlueprintSettlementBuilding>();
+                foreach(var buildingId in buildings)
                 {
-                    c.Buildings = new List<BlueprintSettlementBuilding>();
-                    foreach(var buildingId in buildings)
+                    if(buildingId.GetBlueprint(out BlueprintSettlementBuilding building))
                     {
-                        if(buildingId.GetBlueprint(out BlueprintSettlementBuilding building))
-                        {
-                            c.Buildings.Add(building);
-                        }
+                        c.Buildings.Add(building);
                     }
-                    c.RequireAll = requireAll;
-                    c.Invert = inverted;
-                });
-            }
-
-            return this;
+                }
+                c.RequireAll = requireAll;
+                c.Invert = inverted;
+            });
         }
 
         public BlueprintSettlementBuildingConfigurator AddAdjacencyBonusBuildings(KingdomStats.Type type, params BlueprintSettlementBuildingGuid[] buildingIds)
         {
-            if(instance != null)
+            return EditComponentWhere<BuildingAdjacencyBonus>(c => c.Stats[type] > 0, c =>
             {
-                EditComponentWhere<BuildingAdjacencyBonus>(c => c.Stats[type] > 0, c =>
+                foreach(var buildingId in buildingIds)
                 {
-                    foreach(var buildingId in buildingIds)
+                    if (buildingId.GetBlueprint(out BlueprintSettlementBuilding bp) && !c.Buildings.Contains(bp))
                     {
-                        if (buildingId.GetBlueprint(out BlueprintSettlementBuilding bp) && !c.Buildings.Contains(bp))
-                        {
-                            c.Buildings.Add(bp);
-                        }
+                        c.Buildings.Add(bp);
                     }
-                });
-            }
-
-            return this;
+                }
+            });
         }
     }
 
@@ -790,11 +790,11 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintKingdomEventConfigurator EditPossibleSolution(LeaderType leaderType, Action<PossibleEventSolution> action)
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                PossibleEventSolution solution = instance.Solutions.Entries.FirstOrDefault(e => e.Leader == leaderType);
+                PossibleEventSolution solution = Instance.Solutions.Entries.FirstOrDefault(e => e.Leader == leaderType);
                 if (solution != null)
-                    action(solution);
+                    AddOperation(_ => action(solution));
                 else
                     Main.Log.Error($"Could not find a solution with leader \"{leaderType}\" in \"{GetDebugName()}\"");
             }
@@ -804,12 +804,10 @@ namespace kmbf.Blueprint.Configurator
 
         public BlueprintKingdomEventConfigurator SetAutoResolve(EventResult.MarginType margin)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.AutoResolveResult = margin;
-            }
-
-            return this;
+                i.AutoResolveResult = margin;
+            });
         }
     }
 
@@ -817,12 +815,10 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintRandomEncounterConfigurator SetPool(EncounterPool pool)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.Pool = pool;
-            }
-
-            return this;
+                i.Pool = pool;
+            });
         }
     }
 
@@ -830,24 +826,22 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintCueConfigurator AddOnShowAction(GameAction action)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.OnShow = ActionListFactory.Add(instance.OnShow, action);
-            }
-
-            return this;
+                i.OnShow = ActionListFactory.Add(i.OnShow, action);
+            });
         }
 
         public BlueprintCueConfigurator EditOnShowActionRecursive<ActionType>(string actionName, Action<ActionType> editAction)
             where ActionType : GameAction
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                var action = instance.OnShow.GetGameActionsRecursive().OfType<ActionType>().FirstOrDefault(a => a.name == actionName);
+                var action = Instance.OnShow.GetGameActionsRecursive().OfType<ActionType>().FirstOrDefault(a => a.name == actionName);
                 if (action != null)
-                    editAction(action);
+                    AddOperation(_ => editAction(action));
                 else
-                    Main.Log.Error($"Could not find a component of type \"{(typeof(ActionType).Name)}\" with name '{actionName}' on {GetDebugName()}");
+                    Main.Log.Error($"Could not find an action of type \"{(typeof(ActionType).Name)}\" with name '{actionName}' on {GetDebugName()}");
             }
 
             return this;
@@ -855,24 +849,22 @@ namespace kmbf.Blueprint.Configurator
 
         public BlueprintCueConfigurator AddOnStopAction(GameAction action)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.OnStop = ActionListFactory.Add(instance.OnStop, action);
-            }
-
-            return this;
+                i.OnStop = ActionListFactory.Add(i.OnStop, action);
+            });
         }
 
         public BlueprintCueConfigurator EditOnStopActionWhere<ActionType>(Predicate<ActionType> pred, Action<ActionType> editAction)
             where ActionType : GameAction
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                var action = instance.OnStop.Actions.OfType<ActionType>().FirstOrDefault(a => pred(a));
+                var action = Instance.OnStop.Actions.OfType<ActionType>().FirstOrDefault(a => pred(a));
                 if (action != null)
-                    editAction(action);
+                    AddOperation(_ => editAction(action));
                 else
-                    Main.Log.Error($"Could not find a component of type \"{(typeof(ActionType).Name)}\" with condition on {GetDebugName()}");
+                    Main.Log.Error($"Could not find an action of type \"{(typeof(ActionType).Name)}\" with condition on {GetDebugName()}");
             }
 
             return this;
@@ -880,12 +872,10 @@ namespace kmbf.Blueprint.Configurator
 
         public BlueprintCueConfigurator EditConditions(Action<ConditionsChecker> action)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                action(instance.Conditions);
-            }
-
-            return this;
+                action(i.Conditions);
+            });
         }
     }
 
@@ -893,23 +883,24 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintCheckConfigurator SetSkillType(StatType stat)
         {
-            if (instance != null)
-                instance.Type = stat;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.Type = stat;
+            });
         }
 
         public BlueprintCheckConfigurator EditDCModifierAt(int index, Action<DCModifier> action)
         {
-            if (instance != null)
+            if (Instance != null)
             {
-                if (index > 0 && index < instance.DCModifiers.Length)
+                if (index > 0 && index < Instance.DCModifiers.Length)
                 {
-                    action(instance.DCModifiers[index]);
+                    var modifier = Instance.DCModifiers[index];
+                    AddOperation(_ => action(modifier));
                 }
                 else
                 {
-                    Main.Log.Error($"Invalid DCModifier index {index}, length was {instance.DCModifiers.Length}");
+                    Main.Log.Error($"Invalid DCModifier index {index}, length was {Instance.DCModifiers.Length}");
                 }
             }
 
@@ -921,12 +912,10 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintAnswerConfigurator EditOnSelectActions(Action<ActionList> action)
         {
-            if(instance != null)
+            return AddOperation(i =>
             {
-                action(instance.OnSelect);
-            }
-
-            return this;
+                action(i.OnSelect);
+            });
         }
     }
 
@@ -934,12 +923,10 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintCharacterClassConfigurator SetAlignmentRestriction(AlignmentMaskType alignmentMask)
         {
-            if (instance != null)
+            return EditOrAddComponent<PrerequisiteAlignment>(c =>
             {
-                EditOrAddComponent<PrerequisiteAlignment>(c => c.Alignment = alignmentMask);
-            }
-
-            return Self;
+                c.Alignment = alignmentMask; 
+            });
         }
     }
 
@@ -947,26 +934,26 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintWeaponTypeConfigurator SetTypeName(LocalizedString typeName)
         {
-            if (instance != null)
-                instance.m_TypeNameText = typeName;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.m_TypeNameText = typeName;
+            });
         }
 
         public BlueprintWeaponTypeConfigurator SetDefaultName(LocalizedString defaultName)
         {
-            if (instance != null)
-                instance.m_DefaultNameText = defaultName;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.m_DefaultNameText = defaultName;
+            });
         }
 
         public BlueprintWeaponTypeConfigurator SetIsLight(bool value)
         {
-            if (instance != null)
-                instance.m_IsLight = value;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.m_IsLight = value;
+            });
         }
     }
 
@@ -974,37 +961,26 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintAbilityAreaEffectConfigurator SetAggroEnemies(bool value)
         {
-            if (instance != null)
-                instance.AggroEnemies = value;
-
-            return this;
+            return AddOperation(i =>
+            {
+                i.AggroEnemies = value;
+            });
         }
 
         public BlueprintAbilityAreaEffectConfigurator EditRoundActions(Action<ActionList> action)
         {
-            if(instance != null)
+            return EditComponent<AbilityAreaEffectRunAction>(c =>
             {
-                var c = instance.GetComponent<AbilityAreaEffectRunAction>();
-                if (c != null)
-                    action(c.Round);
-                else
-                    Main.Log.Error($"Could not find component of type AbilityAreaEffectRunAction in {GetDebugName()}");
-            }
-
-            return this;
+                action(c.Round);
+            });
         }
 
         public BlueprintAbilityAreaEffectConfigurator AddSpellDescriptor(SpellDescriptor descriptor)
         {
-            if (instance != null)
+            return EditOrAddComponent<SpellDescriptorComponent>(c =>
             {
-                EditOrAddComponent<SpellDescriptorComponent>(c =>
-                {
-                    c.Descriptor |= descriptor;
-                });
-            }
-
-            return this;
+                c.Descriptor |= descriptor;
+            });
         }
     }
 
@@ -1012,12 +988,10 @@ namespace kmbf.Blueprint.Configurator
     {
         public BlueprintQuestObjectiveConfigurator SetFinishParent(bool value)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.m_FinishParent = value;
-            }
-
-            return this;
+                i.m_FinishParent = value;
+            });
         }
     }
 }

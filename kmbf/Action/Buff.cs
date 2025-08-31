@@ -67,20 +67,26 @@ namespace kmbf.Action
     {
         public ContextConditionHasBuffsFromCasterConfigurator SetCaptionName(string captionName)
         {
-            instance.CaptionName = captionName;
-            return this;
+            return AddOperation(i =>
+            {
+                i.CaptionName = captionName;
+            });
         }
 
         public ContextConditionHasBuffsFromCasterConfigurator SetBuffs(BlueprintBuff[] buffs)
         {
-            instance.Buffs = buffs;
-            return this;
+            return AddOperation(i =>
+            {
+                i.Buffs = buffs;
+            });
         }
 
         public ContextConditionHasBuffsFromCasterConfigurator SetCount(int count)
         {
-            instance.Count = count;
-            return this;
+            return AddOperation(i =>
+            {
+                i.Count = count;
+            });
         }
     }
 

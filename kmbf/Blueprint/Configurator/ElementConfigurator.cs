@@ -27,9 +27,7 @@ namespace kmbf.Blueprint.Configurator
     {
         public TBuilder SetNot(bool Not)
         {
-            if (instance != null)
-                instance.Not = Not;
-            return Self;
+            return AddOperation(i => { i.Not = Not; });
         }
     }
 
@@ -65,14 +63,18 @@ namespace kmbf.Blueprint.Configurator
 
         public ContextConditionDifficultyHigherThanConfigurator SetCheckedDifficulty(BlueprintGameDifficulty difficulty)
         {
-            instance.CheckedDifficulty = difficulty;
-            return this;
+            return AddOperation(i => 
+            { 
+                i.CheckedDifficulty = difficulty; 
+            });
         }
 
         public ContextConditionDifficultyHigherThanConfigurator SetCheckOnlyForMonsterCaster(bool checkOnlyForMonsterCaster)
         {
-            instance.CheckOnlyForMonsterCaster = checkOnlyForMonsterCaster;
-            return this;
+            return AddOperation(i =>
+            {
+                i.CheckOnlyForMonsterCaster = checkOnlyForMonsterCaster;
+            });;
         }
     }
 
@@ -80,20 +82,26 @@ namespace kmbf.Blueprint.Configurator
     {
         public ConditionalConfigurator SetConditionsChecker(ConditionsChecker conditionsChecker)
         {
-            instance.ConditionsChecker = conditionsChecker;
-            return this;
+            return AddOperation(i =>
+            {
+                i.ConditionsChecker = conditionsChecker;
+            });
         }
 
         public ConditionalConfigurator SetIfTrue(ActionList ifTrue)
         {
-            instance.IfTrue = ifTrue;
-            return this;
+            return AddOperation(i =>
+            {
+                i.IfTrue = ifTrue;
+            });
         }
 
         public ConditionalConfigurator SetIfFalse(ActionList ifFalse)
         {
-            instance.IfFalse = ifFalse;
-            return this;
+            return AddOperation(i =>
+            {
+                i.IfFalse = ifFalse;
+            });
         }
     }
 
@@ -128,20 +136,26 @@ namespace kmbf.Blueprint.Configurator
 
         public ContextActionDealDamageConfigurator SetType(ContextActionDealDamage.Type Type)
         {
-            instance.m_Type = Type;
-            return this;
+            return AddOperation(i =>
+            {
+                i.m_Type = Type;
+            });
         }
 
         public ContextActionDealDamageConfigurator SetEnergyDrainType(EnergyDrainType drainType)
         {
-            instance.EnergyDrainType = drainType;
-            return this;
+            return AddOperation(i =>
+            {
+                i.EnergyDrainType = drainType;
+            });
         }
 
         public ContextActionDealDamageConfigurator SetValue(ContextDiceValue Value)
         {
-            instance.Value = Value;
-            return this;
+            return AddOperation(i =>
+            {
+                i.Value = Value;
+            });
         }
     }
 
@@ -160,32 +174,23 @@ namespace kmbf.Blueprint.Configurator
 
         public ContextActionDispelMagicConfigurator SetDescriptor(SpellDescriptorWrapper descriptor)
         {
-            if (instance != null)
-            {
-                instance.Descriptor = descriptor;
-            }
-
-            return this;
+            return AddOperation(i => { i.Descriptor = descriptor; });
         }
 
         public ContextActionDispelMagicConfigurator EditOnSuccess(Action<ActionList> action)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                action(instance.OnSuccess);
-            }
-
-            return this;
+                action(i.OnSuccess);
+            });
         }
 
         public ContextActionDispelMagicConfigurator AddOnSuccessAction(GameAction action)
         {
-            if (instance != null)
+            return AddOperation(i =>
             {
-                instance.OnSuccess = ActionListFactory.Add(instance.OnSuccess, action);
-            }
-
-            return this;
+                i.OnSuccess = ActionListFactory.Add(i.OnSuccess, action);
+            });
         }
     }
 

@@ -116,7 +116,8 @@ namespace kmbf.Patch
                     a.LawfulGood.Action = ActionListFactory.Enumerable(a.LawfulGood.Action.Actions
                         .AddItem(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut).Configure())
                         );
-                });
+                })
+                .Configure();
 
             BlueprintRandomEncounterConfigurator.From(BlueprintRandomEncounterGuid.HonorAndDuty)
                 .SetPool(EncounterPool.Mixed) // Putting it in the Combat pool makes it harder to get than other special encounters. Plus you don't necessarily fight

@@ -266,7 +266,7 @@ namespace kmbf.Patch
                     c.UsePool = true;
                     c.Pool = ContextValueFactory.Rank();
                 })
-                .AddOrEditDefaultContextRankConfig(c =>
+                .EditOrAddDefaultContextRankConfig(c =>
                 {
                     c.m_BaseValueType = ContextRankBaseValueType.CasterLevel;
                     c.SetMultiplyByModifier(step: 10, max: 100);
@@ -284,7 +284,7 @@ namespace kmbf.Patch
                     c.UsePool = true;
                     c.Pool = ContextValueFactory.Rank();
                 })
-                .AddOrEditDefaultContextRankConfig(c =>
+                .EditOrAddDefaultContextRankConfig(c =>
                 {
                     c.m_BaseValueType = ContextRankBaseValueType.CasterLevel;
                     c.SetMultiplyByModifier(step: 10, max: 100);

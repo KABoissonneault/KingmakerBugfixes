@@ -18,28 +18,6 @@ namespace kmbf.Blueprint
             return bp != null && bp.AssetGuid.Equals(id.guid);
         }
 
-        public static bool GetDamageDiceRankConfig(this BlueprintAbilityGuid abilityId, out ContextRankConfig damageRankConfig)
-        {
-            if (!abilityId.GetBlueprint(out BlueprintAbility ability))
-            {
-                damageRankConfig = null;
-                return false;
-            }
-
-            damageRankConfig = ability.ComponentsArray
-                .Select(c => c as ContextRankConfig)
-                .Where(c => c != null && c.Type == Kingmaker.Enums.AbilityRankType.DamageDice)
-                .First();
-
-            if (damageRankConfig == null)
-            {
-                Main.Log.Error($"Could not find damage dice rank config in ability blueprint '{abilityId.GetDebugName()}'");
-                return false;
-            }
-
-            return true;
-        }
-
         public static C GetComponentWhere<C>(this BlueprintScriptableObject bp, Predicate<C> pred)
         {
             return bp.Components.OfType<C>().FirstOrDefault(c => pred(c));
