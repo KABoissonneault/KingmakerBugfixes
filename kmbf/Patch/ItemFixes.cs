@@ -23,6 +23,7 @@ namespace kmbf.Patch
             FixRingOfRecklessCourageStatBonus();
             FixQuivers();
             FixCursedItemCasterLevels();
+            FixTormentor();
         }
 
         // Make Darts light weapons (like in tabletop)
@@ -136,20 +137,24 @@ namespace kmbf.Patch
         // we'll adjust the caster level of the three curses to match DC - 11
         static void FixCursedItemCasterLevels()
         {
-            var cloakOfSoldSoulsCurseBuff = new BlueprintBuffGuid("40f948d8e5ee2534eb3d701f256f96b5");
-            var gentlePersuasionCurseBuff = new BlueprintBuffGuid("846c41744b0995848a614a86d8cb4272");
-            var narrowPathCurseBuff = new BlueprintBuffGuid("12fa3abf3176f6f409c34f5d46bf4754");
-
-            BlueprintBuffConfigurator.From(cloakOfSoldSoulsCurseBuff)
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.CloakOfSoldSoulsCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
 
-            BlueprintBuffConfigurator.From(gentlePersuasionCurseBuff)
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.GentlePersuasionCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(22))
                 .Configure();
 
-            BlueprintBuffConfigurator.From(narrowPathCurseBuff)
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.NarrowPathCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(14))
+                .Configure();
+        }
+
+        static void FixTormentor()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Tormentor)
+                .SetDisplayName(KMLocalizedStrings.TormentorDisplayName)
+                .SetDescription(KMLocalizedStrings.TormentorDescription)
                 .Configure();
         }
     }

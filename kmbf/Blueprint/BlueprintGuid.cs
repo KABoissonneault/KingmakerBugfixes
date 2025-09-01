@@ -383,6 +383,11 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
 
     public static readonly BlueprintBuffGuid CraneStyleWingBuff = new("f78a249bacba9924b9595e52495cb02f");
 
+    public static readonly BlueprintBuffGuid CloakOfSoldSoulsCurse = new("40f948d8e5ee2534eb3d701f256f96b5");
+    public static readonly BlueprintBuffGuid GentlePersuasionCurse = new("846c41744b0995848a614a86d8cb4272");
+    public static readonly BlueprintBuffGuid NarrowPathCurse = new("12fa3abf3176f6f409c34f5d46bf4754");
+    public static readonly BlueprintBuffGuid Tormentor = new("cdfc8d816234c5a47bfa0a4377375e59");
+
     // GUIDs taken from CotW. Should not run together
     public static readonly BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
     public static readonly BlueprintBuffGuid KMBF_ShatterDefensesAppliedThisRound = new("cf3e721e93044a21b87692526b3c45e3");
