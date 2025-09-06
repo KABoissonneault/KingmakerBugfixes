@@ -618,6 +618,14 @@ namespace kmbf.Blueprint.Configurator
                 }
             });
         }
+
+        public TBuilder SetDC(int dc)
+        {
+            return AddOperation(i =>
+            {
+                i.DC = dc;
+            });
+        }
     }
 
     public sealed class BlueprintItemEquipmentConfigurator : BaseBlueprintItemEquipmentConfigurator<BlueprintItemEquipment, BlueprintItemEquipmentGuid, BlueprintItemEquipmentConfigurator>
@@ -804,15 +812,13 @@ namespace kmbf.Blueprint.Configurator
 
         public BlueprintKingdomEventConfigurator CopyPossibleSolutionResolutions(LeaderType fromLeader, LeaderType toLeader)
         {
-            AddOperation(_ =>
+            return AddOperation(_ =>
             {
                 PossibleEventSolution fromSolution = Instance.Solutions.Entries.FirstOrDefault(e => e.Leader == fromLeader);
                 PossibleEventSolution toSolution = Instance.Solutions.Entries.FirstOrDefault(e => e.Leader == toLeader);
 
                 toSolution.Resolutions = fromSolution.Resolutions;
             });
-
-            return this;
         }
 
         public BlueprintKingdomEventConfigurator SetAutoResolve(EventResult.MarginType margin)

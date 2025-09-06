@@ -9,6 +9,7 @@ namespace kmbf.Patch
         {
             FixItemNames();
             FixUnnamedEnemyAbilities();
+            FixTormentor();
         }
         
         static void FixItemNames()
@@ -54,6 +55,15 @@ namespace kmbf.Patch
             BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.MiteStoneThrow)
                 .SetTypeName(KMLocalizedStrings.RockTypeName)
                 .SetDefaultName(KMLocalizedStrings.RockDefaultName)
+                .Configure();
+        }
+
+        // Tormentor shows Comforter as the debuff
+        static void FixTormentor()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Tormentor)
+                .SetDisplayName(KMLocalizedStrings.TormentorDisplayName)
+                .SetDescription(KMLocalizedStrings.TormentorDescription)
                 .Configure();
         }
     }

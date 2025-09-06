@@ -443,6 +443,7 @@ public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
 
     public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
     public static readonly BlueprintItemWeaponGuid ColdIronRapierPlus3 = new BlueprintItemWeaponGuid("925d399524ae74748ac78b49f48785c0");
+    public static readonly BlueprintItemWeaponGuid BladeOfTheMerciful = new BlueprintItemWeaponGuid("58a5d7af98c250944acf5f54ab88a924");
 }
 
 public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentSimpleGuid

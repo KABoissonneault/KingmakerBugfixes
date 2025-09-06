@@ -23,7 +23,7 @@ namespace kmbf.Patch
             FixRingOfRecklessCourageStatBonus();
             FixQuivers();
             FixCursedItemCasterLevels();
-            FixTormentor();
+            FixBladeOfTheMerciful();
         }
 
         // Make Darts light weapons (like in tabletop)
@@ -149,12 +149,14 @@ namespace kmbf.Patch
                 .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
         }
-
-        static void FixTormentor()
+        
+        // Blade of the Merciful is a scimitar that can be bought in HatEoT, which has the ability to cast Mass Heal
+        // Since HatEoT notably has a bunch of ghosts that are vulnerable to offensive use of Heal, the DC of this item
+        // is relevant. However, it is set to 0
+        static void FixBladeOfTheMerciful()
         {
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Tormentor)
-                .SetDisplayName(KMLocalizedStrings.TormentorDisplayName)
-                .SetDescription(KMLocalizedStrings.TormentorDescription)
+            BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.BladeOfTheMerciful)
+                .SetDC(23) // 10 + spell level + "modifier from minimum ability to cast spell" = 10 + 9 + 4 (19 wisdom)
                 .Configure();
         }
     }
