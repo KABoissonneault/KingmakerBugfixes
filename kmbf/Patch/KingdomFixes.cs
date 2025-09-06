@@ -32,6 +32,7 @@ namespace kmbf.Patch
             FixStatRankUpgrades();
 
             FixHonorAndDuty();
+            FixLureOfTheFirstWorld();
         }
 
         // Irlene "Relations rank 3" tier 3 gift
@@ -214,6 +215,35 @@ namespace kmbf.Patch
                     kingdomRoot.Buildings = [.. kingdomRoot.Buildings, templeOfAbadar];
                 }
             }
+        }
+
+        static void FixLureOfTheFirstWorld()
+        {
+            BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.LureOfTheFirstWorld)
+                .CopyPossibleSolutionResolutions(fromLeader: LeaderType.Regent, toLeader: LeaderType.Counsilor)
+                .EditPossibleSolution(LeaderType.Regent, s =>
+                {
+                    s.CanBeSolved = false;
+                    s.Resolutions = [];
+                })
+                .EditPossibleSolution(LeaderType.Counsilor, s =>
+                {
+                    s.CanBeSolved = true;
+                })
+                .Configure();
+
+            BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.LureOfTheFirstWorldSimple)
+                .CopyPossibleSolutionResolutions(fromLeader: LeaderType.Regent, toLeader: LeaderType.Counsilor)
+                .EditPossibleSolution(LeaderType.Regent, s =>
+                {
+                    s.CanBeSolved = false;
+                    s.Resolutions = [];
+                })
+                .EditPossibleSolution(LeaderType.Counsilor, s =>
+                {
+                    s.CanBeSolved = true;
+                })
+                .Configure();
         }
     }    
 }

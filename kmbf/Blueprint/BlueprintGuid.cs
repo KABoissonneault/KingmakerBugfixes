@@ -631,6 +631,9 @@ public class BlueprintKingdomEventGuid : BlueprintObjectGuid
     public bool GetBlueprint(out BlueprintKingdomEvent bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintKingdomEventGuid HonorAndDuty = new("acd37baba5a0d4343b7b184780bd68cf");
+
+    public static readonly BlueprintKingdomEventGuid LureOfTheFirstWorld = new("b29f6fc145f0ac84fa4fa617d6f3a463");
+    public static readonly BlueprintKingdomEventGuid LureOfTheFirstWorldSimple = new("e90811a551263844687b86034bafc18b");
 }
 
 public class BlueprintQuestObjectiveGuid : BlueprintFactGuid

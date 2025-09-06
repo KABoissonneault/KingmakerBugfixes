@@ -802,6 +802,19 @@ namespace kmbf.Blueprint.Configurator
             return this;
         }
 
+        public BlueprintKingdomEventConfigurator CopyPossibleSolutionResolutions(LeaderType fromLeader, LeaderType toLeader)
+        {
+            AddOperation(_ =>
+            {
+                PossibleEventSolution fromSolution = Instance.Solutions.Entries.FirstOrDefault(e => e.Leader == fromLeader);
+                PossibleEventSolution toSolution = Instance.Solutions.Entries.FirstOrDefault(e => e.Leader == toLeader);
+
+                toSolution.Resolutions = fromSolution.Resolutions;
+            });
+
+            return this;
+        }
+
         public BlueprintKingdomEventConfigurator SetAutoResolve(EventResult.MarginType margin)
         {
             return AddOperation(i =>
