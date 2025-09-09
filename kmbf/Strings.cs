@@ -1,9 +1,12 @@
-﻿using HarmonyLib;
+﻿//  Copyright 2025 Kévin Alexandre Boissonneault. Distributed under the Boost
+//  Software License, Version 1.0. (See accompanying file
+//  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+using HarmonyLib;
 using Kingmaker.EntitySystem.Persistence.JsonUtility;
 using Kingmaker.Localization;
 using Kingmaker.Localization.Shared;
 using Newtonsoft.Json;
-using System.IO;
 
 namespace kmbf
 {     
