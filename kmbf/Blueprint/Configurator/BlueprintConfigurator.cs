@@ -497,6 +497,14 @@ namespace kmbf.Blueprint.Configurator
             });
         }
 
+        public BlueprintBuffConfigurator RemoveFlag(BlueprintBuff.Flags flag)
+        {
+            return AddOperation(i =>
+            {
+                i.m_Flags &= ~flag;
+            });
+        }
+
         public BlueprintBuffConfigurator RemoveSpellDescriptor(SpellDescriptor descriptor)
         {
             return EditComponent<SpellDescriptorComponent>(c =>

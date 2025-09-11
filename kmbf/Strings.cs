@@ -101,6 +101,8 @@ namespace kmbf
         public static LocalizedString GarnetRing = new LocalizedString() { m_Key = "3fa6ae88-bc24-44d5-ac74-109d250df757" };
         public static LocalizedString TormentorDisplayName = new LocalizedString() { m_Key = "8ea2ec9c-970f-4960-ae92-ffda5fd5b414" };
         public static LocalizedString TormentorDescription = new LocalizedString() { m_Key = "c1c88d7c-35d1-4456-8f0a-0b5e71a951ef" };
+        public static LocalizedString GameKeeperOfTheFirstWorldName = new LocalizedString() { m_Key = "92d1a8a9-e259-4957-b89a-b90836939755" };
+        public static LocalizedString GameKeeperOfTheFirstWorldDescription = new LocalizedString() { m_Key = "2188c76f-2c99-49aa-806a-5e06f64e2b7a" };
 
     }
 

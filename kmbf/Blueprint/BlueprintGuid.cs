@@ -391,6 +391,7 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
     public static readonly BlueprintBuffGuid GentlePersuasionCurse = new("846c41744b0995848a614a86d8cb4272");
     public static readonly BlueprintBuffGuid NarrowPathCurse = new("12fa3abf3176f6f409c34f5d46bf4754");
     public static readonly BlueprintBuffGuid Tormentor = new("cdfc8d816234c5a47bfa0a4377375e59");
+    public static readonly BlueprintBuffGuid GameKeeperOfTheFirstWorld = new("3e106161933ea694380f560f967825dc");
 
     // GUIDs taken from CotW. Should not run together
     public static readonly BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
@@ -448,6 +449,7 @@ public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
     public static readonly BlueprintItemWeaponGuid SoporiferousSecond = new BlueprintItemWeaponGuid("af87d71820e93364c81b1aff840344ed");
     public static readonly BlueprintItemWeaponGuid ColdIronRapierPlus3 = new BlueprintItemWeaponGuid("925d399524ae74748ac78b49f48785c0");
     public static readonly BlueprintItemWeaponGuid BladeOfTheMerciful = new BlueprintItemWeaponGuid("58a5d7af98c250944acf5f54ab88a924");
+    public static readonly BlueprintItemWeaponGuid GameKeeperOfTheFirstWorld = new BlueprintItemWeaponGuid("717369864d0ef1f43a291b7b8f3ce4c9");
 }
 
 public class BlueprintItemEquipmentRingGuid : BlueprintItemEquipmentSimpleGuid

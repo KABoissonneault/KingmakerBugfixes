@@ -1,7 +1,9 @@
 ﻿using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -24,6 +26,7 @@ namespace kmbf.Patch
             FixQuivers();
             FixCursedItemCasterLevels();
             FixBladeOfTheMerciful();
+            FixGamekeeperOfTheFirstWorld();
         }
 
         // Make Darts light weapons (like in tabletop)
@@ -157,6 +160,23 @@ namespace kmbf.Patch
         {
             BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.BladeOfTheMerciful)
                 .SetDC(23) // 10 + spell level + "modifier from minimum ability to cast spell" = 10 + 9 + 4 (19 wisdom)
+                .Configure();
+        }
+
+        // Game Keeper of the First World applies a "Glitterdust like" debuff on hit
+        // What's not mentioned in the description is that it also tries to apply Glitterdust Blindness,
+        // but the Saving Throw on application is of Unknown type (untyped), and the DC is 11
+        // On each round, the saving throw to remove the blindness is properly Will
+        // However, the duration of the Blindness is 0 rounds, so it is a useless log spam of saving throws
+        // Just remove this effect
+        // Show the main buff on enemies Inspect as a convenience, to track this effect more easily
+        static void FixGamekeeperOfTheFirstWorld()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.GameKeeperOfTheFirstWorld)
+                .RemoveComponents<AddFactContextActions>()
+                .SetDisplayName(KMLocalizedStrings.GameKeeperOfTheFirstWorldName)
+                .SetDescription(KMLocalizedStrings.GameKeeperOfTheFirstWorldDescription)
+                .RemoveFlag(BlueprintBuff.Flags.HiddenInUi)
                 .Configure();
         }
     }
