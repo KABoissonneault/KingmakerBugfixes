@@ -77,6 +77,9 @@ namespace kmbf.Blueprint
                 case ContextActionRandomize randomizeAction:
                     return randomizeAction.m_Actions.Select(w => w.Action);
 
+                case PartyUnits partyUnits:
+                    return [partyUnits.Actions];
+
                 default:
                     return Enumerable.Empty<ActionList>();
             }

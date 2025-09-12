@@ -532,6 +532,20 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintAbility, BlueprintAbilityGuid, BlueprintAbilityConfigurator>
     {
+        public static BlueprintAbilityConfigurator New(BlueprintAbilityGuid guid, string objectName)
+        {
+            var instance = CreateInstance(guid, objectName);
+            return From(instance);
+        }
+
+        public BlueprintAbilityConfigurator SetSpellSchool(SpellSchool school)
+        {
+            return EditOrAddComponent<SpellComponent>(c =>
+            {
+                c.School = school;
+            });
+        }
+
         public BlueprintAbilityConfigurator AddAbilityEffectRunAction(GameAction action)
         {
             return EditOrAddComponent<AbilityEffectRunAction>(c =>
@@ -891,7 +905,22 @@ namespace kmbf.Blueprint.Configurator
         {
             if (Instance != null)
             {
-                var action = Instance.OnStop.Actions.OfType<ActionType>().FirstOrDefault(a => pred(a));
+                var action = Instance.OnStop.Actions.OfType<ActionType>().FirstOrDefault(a => pred == null || pred(a));
+                if (action != null)
+                    AddOperation(_ => editAction(action));
+                else
+                    Main.Log.Error($"Could not find an action of type \"{(typeof(ActionType).Name)}\" with condition on {GetDebugName()}");
+            }
+
+            return this;
+        }
+
+        public BlueprintCueConfigurator EditOnStopActionRecursiveWhere<ActionType>(Predicate<ActionType> pred, Action<ActionType> editAction)
+            where ActionType : GameAction
+        {
+            if (Instance != null)
+            {
+                var action = Instance.OnStop.GetGameActionsRecursive().OfType<ActionType>().FirstOrDefault(a => pred == null || pred(a));
                 if (action != null)
                     AddOperation(_ => editAction(action));
                 else

@@ -9,7 +9,10 @@ using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Abilities.Components.Base;
+using Kingmaker.UnitLogic.Abilities.Components.TargetCheckers;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -167,34 +170,48 @@ namespace kmbf.Patch
 
         // Raise Dead does not actually give two negative levels
         // Like in Wrath of the Righteous, we add a condition on whether Enemy Stats Adjustment is Normal or above
+        // Don't use this in cutscenes though, it affects the final fight
         static void FixRaiseDead()
         {
-            if (!BlueprintAbilityGuid.RaiseDead.GetBlueprint(out BlueprintScriptableObject raiseDead)) return;
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.RaiseDead)
+                .EditComponent<AbilityEffectRunAction>(runAction =>
+                {
+                    var difficultyCheck = ContextConditionDifficultyHigherThanConfigurator
+                        .New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
+                        .SetCheckOnlyForMonsterCaster(false)
+                        .Configure();
 
-            AbilityEffectRunAction runAction = raiseDead.GetComponent<AbilityEffectRunAction>();
-            if (runAction == null)
-            {
-                Main.Log.Error($"Could not find Ability Effect Run Action in Blueprint {BlueprintAbilityGuid.RaiseDead.GetDebugName()}");
-                return;
-            }
+                    var dealDamageAction = ContextActionDealDamageConfigurator
+                        .NewPermanentEnergyDrain(ContextDiceFactory.BonusConstant(2))
+                        .Configure();
 
-            var difficultyCheck = ContextConditionDifficultyHigherThanConfigurator
-                .New(BlueprintRoot.Instance.DifficultyList.CoreDifficulty)
-                .SetCheckOnlyForMonsterCaster(false)
+                    Conditional difficultyConditional = MakeGameActionConditional
+                    (
+                        new ConditionsChecker() { Conditions = [difficultyCheck] }
+                        , ifTrue: new ActionList() { Actions = [dealDamageAction] }
+                     );
+
+                    // Put the drain first, resurrection makes the unit untargetable
+                    runAction.Actions.Actions = [difficultyConditional, .. runAction.Actions.Actions];
+                })
                 .Configure();
 
-            var dealDamageAction = ContextActionDealDamageConfigurator
-                .NewPermanentEnergyDrain(ContextDiceFactory.BonusConstant(2))
+            if (!BlueprintAbilityGuid.RaiseDead.GetBlueprint(out BlueprintAbility raiseDead)) return;
+
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.RaiseDead_Cutscene)
+                .SetDisplayName(raiseDead.m_DisplayName)
+                .SetDescription(raiseDead.m_Description)
+                .SetIcon(raiseDead.m_Icon)
                 .Configure();
 
-            Conditional difficultyConditional = MakeGameActionConditional
-            (
-                new ConditionsChecker() { Conditions = [difficultyCheck] }
-                , ifTrue: new ActionList() { Actions = [dealDamageAction] }
-             );
+            BlueprintCueConfigurator.From(BlueprintCueGuid.LKBattle_Phase5_Cue_0065)
+                .EditOnStopActionRecursiveWhere<EvaluatedTrapCastSpell>(pred: null, editAction: a =>
+                {
+                    if (!BlueprintAbilityGuid.RaiseDead_Cutscene.GetBlueprint(out BlueprintAbility raiseDead_Cutscene)) return;
 
-            // Put the drain first, resurrection makes the unit untargetable
-            runAction.Actions.Actions = [difficultyConditional, .. runAction.Actions.Actions];
+                    a.Spell = raiseDead_Cutscene;
+                })
+                .Configure();
         }
 
         // Breath of Life does not actually give one negative level when used to resurrect

@@ -186,6 +186,7 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public static readonly BlueprintAbilityGuid ProtectionFromArrowsCommunal = new("96c9d98b6a9a7c249b6c4572e4977157");
     public static readonly BlueprintAbilityGuid ControlledFireball = new("f72f8f03bf0136c4180cd1d70eb773a5");
     public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
+    public static readonly BlueprintAbilityGuid RaiseDead_Cutscene = new("9e3b861c3ed7e404f896d187e995e0ad");
     public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
     public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");
     public static readonly BlueprintAbilityGuid BreakEnchantment = new("7792da00c85b9e042a0fdfc2b66ec9a8");
@@ -257,6 +258,8 @@ public class BlueprintCueGuid : BlueprintObjectGuid
     public static readonly BlueprintCueGuid CandlemereRismelDelayedStartFight = new("f099ec070656d0f45981e29aeac9d190");
 
     public static readonly BlueprintCueGuid Act2KestenTourToThroneRoom_Cue01 = new("61fd0dbd69f5c354995a559f79888c6f");
+
+    public static readonly BlueprintCueGuid LKBattle_Phase5_Cue_0065 = new("ae9cd8c41b0d9ec46af03bfa1238fd51");
 }
 
 public class BlueprintCheckGuid : BlueprintObjectGuid
