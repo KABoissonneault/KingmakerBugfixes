@@ -43,6 +43,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Leopard animal companion level 4 upgrade getting "+4 str / -2 dex / +4 con" instead of "+2 dex / +2 con" as described
 - Fixed Baleful Gaze working on targets immune to gaze attacks or sight-based attacks
 - [Opt-out] Fixed Controlled Fireball not applying minimal damage to allies as intended
+- Allow Break Enchantment to remove petrification (like in Wrath)
+- Fixed cursed magic item DC for removing via Break Enchantment (25 for Cloak of Sold Souls, 33 for Gentle Persuasion, 25 for Narrow Path)
 
 #### Feat & Traits
 
@@ -63,6 +65,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Ring of Reckless Courage not applying on Kingdom Advisor stat
 - Fixed Quiver of Lightning Arrows and Quiver of Lover's Arrows not having the extra haste attack despite mentioning "speed" in the description
 - Fixed Explosion Ring not giving +12 damage to bomb abilities
+- Fixed Blade of the Merciful's "Mass Heal" DC to 23 instead of 0
 
 #### Misc
 
@@ -77,6 +80,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Shrewish Gulch illustrated book event now uses Athletics instead of Lore (Nature) on the last stage for the first option in all cases
 - Fixed Armag Tomb's Test of Strength not opening all doors when solving the problem "the intended way" (with the 25 Athletics checks after passing the 18 Intelligence check)
 - Fixed Mim's "Three Wishes" quest not raising artisan tier on completion (not backward compatible)
+- Fixed Amiri's "Reforged Blade" quest having a dialogue with improper trigger if trying to sacrifice Nilak while Akaia is alive
 
 ### Kingdom
 
@@ -89,6 +93,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Modify Save] Fixed Embassy Row adjacency bonuses to include School, Aviary, Thieves Guild, and Black Market. Updating the bonus requires Building, Selling, or Upgrading a building in the settlement, or you can use the "Modify Current Save" button while in the settlement
 - The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems
 - Fixed "Improving Cultural Development" not including Theater
+- Fixed "Lure of the First World" event to use Consilor instead of Regent
 
 ### Text and UI
 
@@ -96,7 +101,10 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Added missing Name and Description for Mimic Ooze "Spit" ability, Giant Slug "Tongue" attack, Bulette attack, Mite rock throw, and Shocker Lizard "Touch" attack
 - Fixed "Amethyst Ring" and "Garnet Ring" to have the proper intended name (the base game has two rings named Topaz Ring, and none named Amethyst Ring)
 - Fixed "Cold Iron Rapier +3" displaying as "Cold Iron Rapier +1" in text logs
-
+- Fix unit Inspector's Damage Reduction exceptions line rendering composite conditions ex: "Slashing and Magic" as "Slashingandmagic"
+- Fixed Tormentor showing "Comforter" as the debuff on targets (text change only)
+- Removed useless saving throw on Gamekeeper of the First World. Now showing debuff on affected target
+    
 ### Changes
 
 Not quite "fixes", but should be a universal improvement for everyone
@@ -109,7 +117,8 @@ Not quite "fixes", but should be a universal improvement for everyone
 - Fixed data leak in InitiativeTrackerUnitVM
 - Fixed null reference exception in BugReportCanvas
 - Fixed null reference exception in WeatherSystemBehaviour
-
+- Fixed null reference access in PathVisualizer Update
+  
 ## Known Issues
 
 These are some known issues introduced by the mod. These are generally accepted as better than what the base game had, but worth acknowledging here
