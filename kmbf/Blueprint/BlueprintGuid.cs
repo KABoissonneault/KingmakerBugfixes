@@ -386,6 +386,8 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
     public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedActive = new("cc9a43f5157309646b23a0a690fee84b");
     public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedEffect = new("5bfefc22a68e736488b0c309d9c1c1d4");
 
+    public static readonly BlueprintBuffGuid StrengthSurge = new("94dfcf5f3a72ce8478c8de5db69e752b");
+
     public static readonly BlueprintBuffGuid ItsAMagicalPlace = new("670ab5958ff9ab246966ecb968132f37");
 
     public static readonly BlueprintBuffGuid CraneStyleWingBuff = new("f78a249bacba9924b9595e52495cb02f");
@@ -521,6 +523,8 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public bool GetBlueprint(out BlueprintFeature bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintFeatureGuid DoubleDebilitation = new("dd699394df0ef8847abba26038333f02");
+
+    public static readonly BlueprintFeatureGuid AnimalDomainBaseFeature = new("d577aba79b5727a4ab74627c4c6ba23c");
 
     public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new("64f74b75ed0d1f8478de5245cf061bcc");
     public static readonly BlueprintFeatureGuid EkunWolfDefensiveMaster = new("915616ab61446694dbd73c7d269ea184");

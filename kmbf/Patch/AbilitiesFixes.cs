@@ -46,6 +46,7 @@ namespace kmbf.Patch
             FixTieflingFoulspawn();
             FixExplosionRing();
             FixBreakEnchantment();
+            FixAbilityScoreCheckBonuses();
         }
 
         static void FixDruid()
@@ -410,6 +411,30 @@ namespace kmbf.Patch
                 .EditComponent<AbilityTargetsAround>(c =>
                 {
                     c.m_IncludeDead = true;
+                })
+                .Configure();
+        }
+
+        // 
+        static void FixAbilityScoreCheckBonuses()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.StrengthSurge)
+                .RemoveComponents<AbilityScoreCheckBonus>()
+                .AddComponent<AddContextStatBonus>(b =>
+                {
+                    b.Stat = StatType.SkillAthletics;
+                    b.Descriptor = ModifierDescriptor.Enhancement;
+                    b.Value = ContextValueFactory.Rank();
+                })
+                .Configure();
+
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.AnimalDomainBaseFeature)
+                .RemoveComponents<AbilityScoreCheckBonus>()
+                .AddComponent<AddContextStatBonus>(b =>
+                {
+                    b.Stat = StatType.SkillPerception;
+                    b.Descriptor = ModifierDescriptor.Racial;
+                    b.Value = ContextValueFactory.Rank();
                 })
                 .Configure();
         }
