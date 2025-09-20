@@ -39,6 +39,9 @@
 		<PackageReference Include="MicroUtils.HarmonyAnalyzers" IncludeAssets="runtime; build; native; contentfiles; analyzers" Version="*-*" PrivateAssets="all" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="Localization\DefaultStrings_enGB.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Localization\Strings_enGB.json">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

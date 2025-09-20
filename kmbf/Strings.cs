@@ -31,31 +31,12 @@ namespace kmbf
             if (LocalizationManager.CurrentLocale == lastLoadedLocale)
                 return;
 
-            var currentLocale = LocalizationManager.CurrentLocale.ToString();
-            var fileName = $"{Main.ModEntry.Path}/Localization/Strings_{currentLocale}.json";
-
-            if (!File.Exists(fileName))
-            {
-                Main.Log.Warning($"Localised text for current local \"{currentLocale}\" not found, falling back on enGB.");
-                currentLocale = "enGB";
-                fileName = $"{Main.ModEntry.Path}/Localization/Strings_enGB.json";
-            }
-
+            LoadDefaultStringOverrides();
+            LoadModStrings();
+            
             try
             {
-                ModLocalizedStringData[] allStrings;
-                using (var reader = new StreamReader(fileName))
-                {
-                    using (var textReader = new JsonTextReader(reader))
-                    {
-                        allStrings = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings).Deserialize<ModLocalizedStringData[]>(textReader);
-                    }
-                }
-
-                foreach(ModLocalizedStringData stringData in allStrings)
-                {
-                    LocalizationManager.CurrentPack.Strings[CreateKey(stringData.Key)] = stringData.Value;
-                }
+                
             }
             catch(Exception e)
             {
@@ -66,6 +47,62 @@ namespace kmbf
                 lastLoadedLocale = LocalizationManager.CurrentLocale;
             }
         }
+
+        static void LoadDefaultStringOverrides()
+        {
+            var currentLocale = LocalizationManager.CurrentLocale.ToString();
+            var fileName = Path.Combine($"{Main.ModEntry.Path}", "Localization", $"DefaultStrings_{currentLocale}.json");
+
+            if (!File.Exists(fileName))
+            {
+                return;
+            }
+
+            ModLocalizedStringData[] allStrings;
+            using (var reader = new StreamReader(fileName))
+            {
+                using (var textReader = new JsonTextReader(reader))
+                {
+                    allStrings = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings).Deserialize<ModLocalizedStringData[]>(textReader);
+                }
+            }
+
+            foreach (ModLocalizedStringData stringData in allStrings)
+            {
+                if (LocalizationManager.CurrentPack.Strings.ContainsKey(stringData.Key))
+                    LocalizationManager.CurrentPack.Strings[stringData.Key] = stringData.Value;
+                else
+                    Main.Log.Error($"Could not find string with key '{stringData.Key}' in LocalizationManager");
+            }
+        }
+
+        static void LoadModStrings()
+        {
+            var currentLocale = LocalizationManager.CurrentLocale.ToString();
+            var fileName = Path.Combine($"{Main.ModEntry.Path}", "Localization", $"Strings_{currentLocale}.json");
+
+            if (!File.Exists(fileName))
+            {
+                Main.Log.Warning($"Localised text for current local \"{currentLocale}\" not found, falling back on enGB.");
+                currentLocale = "enGB";
+                fileName = $"{Main.ModEntry.Path}/Localization/Strings_enGB.json";
+            }
+
+            ModLocalizedStringData[] allStrings;
+            using (var reader = new StreamReader(fileName))
+            {
+                using (var textReader = new JsonTextReader(reader))
+                {
+                    allStrings = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings).Deserialize<ModLocalizedStringData[]>(textReader);
+                }
+            }
+
+            foreach (ModLocalizedStringData stringData in allStrings)
+            {
+                LocalizationManager.CurrentPack.Strings[CreateKey(stringData.Key)] = stringData.Value;
+            }
+        }
+
 
         // Hot loading the mod misses locale assignment. Try on mod load if the systems are already on and ready
         public static void TryLoadingStringsOnLoad()
