@@ -7,6 +7,7 @@ using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.Utility;
 using Kingmaker.View.MapObjects;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace kmbf.Patch.KM.EntitySystem.Entities
 {
@@ -35,6 +36,47 @@ namespace kmbf.Patch.KM.EntitySystem.Entities
             {
                 __instance.m_TimeToNextRound = 6f;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(AreaEffectEntityData), nameof(AreaEffectEntityData.ShouldUnitBeInside))]
+    static class AreaOfEffectsTick_ShouldUnitBeInside_Patch
+    {
+        // Prevents Null Reference Exception on null Unit.View
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var get_Shape = AccessTools.PropertyGetter(typeof(AreaEffectView), nameof(AreaEffectView.Shape));
+            var get_View = AccessTools.FirstProperty(typeof(UnitEntityData), p => p.Name == nameof(UnitEntityData.View)).GetGetMethod();
+
+            Label falseLabel = (Label)instructions.First(i => i.opcode == OpCodes.Brfalse).operand;
+            bool insertNext = false;
+            bool done = false;
+            List<CodeInstruction> result = new();
+
+            foreach(CodeInstruction i in instructions)
+            {
+                if(insertNext)
+                {
+                    result.Add(i);
+                    result.Add(new CodeInstruction(OpCodes.Ldarg_1));
+                    result.Add(new CodeInstruction(OpCodes.Callvirt, get_View));
+                    result.AddRange(TranspilerUtility.UnityObjectConsumeNullCheckJump(falseLabel));
+                    insertNext = false;
+                    done = true;
+                }
+                else if(!done && i.opcode == OpCodes.Callvirt && i.operand.Equals(get_Shape))
+                {
+                    result.Add(i);
+                    insertNext = true;
+                }
+                else
+                {
+                    result.Add(i);
+                }
+            }
+
+            return result;
         }
     }
 }
