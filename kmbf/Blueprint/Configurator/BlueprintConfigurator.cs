@@ -202,6 +202,35 @@ namespace kmbf.Blueprint.Configurator
             return Self;
         }
 
+        public TBuilder RemoveComponent<C>() where C : BlueprintComponent
+        {
+            if (Instance != null)
+            {
+                C c = Instance.Components.OfType<C>().FirstOrDefault();
+                if (c != null)
+                    componentsToRemove.Add(c);
+                else
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" in \"{GetDebugName()}\"");
+            }
+
+            return Self;
+        }
+
+        public TBuilder RemoveComponentWhere<C>(Predicate<C> pred) where C : BlueprintComponent
+        {
+            if (Instance != null)
+            {
+                C c = Instance.Components.OfType<C>().Where(c => pred(c)).FirstOrDefault();
+                if (c != null)
+                    componentsToRemove.Add(c);
+                else
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" with condition in \"{GetDebugName()}\"");
+            }
+
+            return Self;
+        }
+
+
         public TBuilder RemoveComponents<C>() where C : BlueprintComponent
         {
             if(Instance != null)

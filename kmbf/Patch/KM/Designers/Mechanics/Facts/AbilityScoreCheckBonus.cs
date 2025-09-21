@@ -19,11 +19,7 @@ namespace kmbf.Patch.KM.Designers.Mechanics.Facts
             RuleSkillCheck ruleSkillCheck = Rulebook.CurrentContext.PreviousEvent as RuleSkillCheck;
             if (ruleSkillCheck?.StatType == __instance.Stat)
             {
-                var stat = ruleSkillCheck.Initiator.Stats.GetStat(__instance.Stat);
-                if (stat != null)
-                {
-                    ruleSkillCheck.AddTemporaryModifier(ruleSkillCheck.Bonus.AddModifier(__instance.Bonus.Calculate(__instance.Context), __instance, __instance.Descriptor));
-                }
+                ruleSkillCheck.AddTemporaryModifier(ruleSkillCheck.Bonus.AddModifier(__instance.Bonus.Calculate(__instance.Context), __instance, __instance.Descriptor));
             }
 
             return false;

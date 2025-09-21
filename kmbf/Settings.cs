@@ -19,6 +19,7 @@ namespace kmbf
         public bool FixCraneWingRequirements = true;
         public bool FixControlledFireball = true;
         public bool FixWeaponEnhancementDamageReduction = true;
+        public bool FixTouchOfGlory = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]

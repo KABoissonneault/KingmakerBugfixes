@@ -387,6 +387,7 @@ public class BlueprintBuffGuid : BlueprintUnitFactGuid
     public static readonly BlueprintBuffGuid DebilitatingInjuryHamperedEffect = new("5bfefc22a68e736488b0c309d9c1c1d4");
 
     public static readonly BlueprintBuffGuid StrengthSurge = new("94dfcf5f3a72ce8478c8de5db69e752b");
+    public static readonly BlueprintBuffGuid TouchOfGlory = new("55edcfff497a1e04a963f72c485da5cb");
 
     public static readonly BlueprintBuffGuid ItsAMagicalPlace = new("670ab5958ff9ab246966ecb968132f37");
 

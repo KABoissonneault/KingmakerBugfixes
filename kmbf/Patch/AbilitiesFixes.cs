@@ -47,6 +47,9 @@ namespace kmbf.Patch
             FixExplosionRing();
             FixBreakEnchantment();
             FixAbilityScoreCheckBonuses();
+
+            if (Main.UMMSettings.BalanceSettings.FixTouchOfGlory)
+                FixTouchOfGlory();
         }
 
         static void FixDruid()
@@ -415,7 +418,10 @@ namespace kmbf.Patch
                 .Configure();
         }
 
-        // 
+        // While AbilityScoreCheckBonus has been fixed by this mod,
+        // it's still not ideal for skill bonuses from a user perspective, because those
+        // bonuses are invisible in the character sheet.
+        // Change to an AddContextStatBonus for similar results
         static void FixAbilityScoreCheckBonuses()
         {
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.StrengthSurge)
@@ -435,6 +441,21 @@ namespace kmbf.Patch
                     b.Stat = StatType.SkillPerception;
                     b.Descriptor = ModifierDescriptor.Racial;
                     b.Value = ContextValueFactory.Rank();
+                })
+                .Configure();
+        }
+
+        // Touch of Glory adds +1-10 Charisma instead of adding +1-10 to Charisma checks
+        // Fortunately, this mod fixed AbilityScoreCheckBonus, so we can use that instead
+        static void FixTouchOfGlory()
+        {
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.TouchOfGlory)
+                .RemoveComponentWhere<AddContextStatBonus>(c => c.Stat == StatType.Charisma)
+                .AddComponent<AbilityScoreCheckBonus>(c =>
+                {
+                    c.Stat = StatType.Charisma;
+                    c.Bonus = ContextValueFactory.Rank(AbilityRankType.DamageBonus); // Not sure why DamageBonus instead of Default, but eh
+                    c.Descriptor = ModifierDescriptor.UntypedStackable;
                 })
                 .Configure();
         }
