@@ -1,10 +1,36 @@
 ﻿[
   {
     "Key": "6c741017-8a3c-4a0d-a4a9-c53ed618ae1c",
-    "Value": "You can gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1). In addition, you treat Lore (Nature) as a class skill.\nAnimal Companion: At 4th level, you gain the service of an animal companion. Your effective druid level for this animal companion is equal to your level in the class that gave you access to this domain – 3. (Druids who take this ability through their nature bond class feature use their druid level – 3 to determine the abilities of their animal companions.)\nDomain Spells: Magic Fang, Hold Animal, Dominate Animal, Summon Nature's Ally IV, Beast Shape III, Summon Nature's Ally VI, Summon Nature's Ally VII, Summon Nature's Ally VIII, Summon Nature's Ally IX."
+	"Target": "You can speak with and befriend animals with ease.",
+	"Replace": "You can gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1)."
   },
   {
     "Key": "ca6d9102-d3ee-4185-9c59-9b8109dbcac4",
     "Value": "This +3 brilliant energy light crossbow is a bane weapon against outsiders."
-  }
+  },
+  {
+    "Key": "b4472eb7-39bb-42fa-bf37-70b2707da69c",
+	"Target": "a ancient wyvern",
+    "Replace": "an ancient wyvern"
+  },
+  {
+    "Key": "5df8144b-2b9e-430c-8bd7-df778101092f",
+    "Target": "A apostate devil",
+    "Replace": "An apostate devil"
+  },
+  {
+    "Key": "1fa15586-b406-413e-953f-f211e695ccee",
+    "Target": "a a ",
+	"Replace": "a "
+  },
+  {
+    "Key": "2e320393-7b0d-4670-89fb-fcb87078e024",
+    "Target": "a a ",
+	"Replace": "a "
+  },
+  {
+    "Key": "f0b6c459-0d2a-4449-950f-5517b24ebf62",
+    "Target": " a enhancement",
+	"Replace": " an enhancement"
+  },
 ]

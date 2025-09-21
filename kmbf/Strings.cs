@@ -9,7 +9,15 @@ using Kingmaker.Localization.Shared;
 using Newtonsoft.Json;
 
 namespace kmbf
-{     
+{
+    public class DefaultLocalizedStringData
+    {
+        [JsonProperty] public string Key;
+        [JsonProperty] public string Value;
+        [JsonProperty] public string Target;
+        [JsonProperty] public string Replace;
+    }
+
     public class ModLocalizedStringData
     {
         [JsonProperty] public string Key;
@@ -58,21 +66,36 @@ namespace kmbf
                 return;
             }
 
-            ModLocalizedStringData[] allStrings;
+            DefaultLocalizedStringData[] allStrings;
             using (var reader = new StreamReader(fileName))
             {
                 using (var textReader = new JsonTextReader(reader))
                 {
-                    allStrings = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings).Deserialize<ModLocalizedStringData[]>(textReader);
+                    allStrings = JsonSerializer.Create(DefaultJsonSettings.DefaultSettings).Deserialize<DefaultLocalizedStringData[]>(textReader);
                 }
             }
 
-            foreach (ModLocalizedStringData stringData in allStrings)
+            foreach (DefaultLocalizedStringData stringData in allStrings)
             {
-                if (LocalizationManager.CurrentPack.Strings.ContainsKey(stringData.Key))
-                    LocalizationManager.CurrentPack.Strings[stringData.Key] = stringData.Value;
+                if (LocalizationManager.CurrentPack.Strings.TryGetValue(stringData.Key, out string currentValue))
+                {
+                    if (!string.IsNullOrEmpty(stringData.Value))
+                    {
+                        LocalizationManager.CurrentPack.Strings[stringData.Key] = stringData.Value;
+                    }
+                    else if(!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Replace))
+                    {
+                        LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Target, stringData.Replace);
+                    }
+                    else
+                    {
+                        Main.Log.Warning($"No operations done on '{stringData.Key}' in LocalizationManager");
+                    }
+                }
                 else
+                {
                     Main.Log.Error($"Could not find string with key '{stringData.Key}' in LocalizationManager");
+                }
             }
         }
 
