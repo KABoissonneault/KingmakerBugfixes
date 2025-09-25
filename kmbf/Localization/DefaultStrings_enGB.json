@@ -49,11 +49,6 @@
     "Replace": "Mace"
   },
   {
-    "Key": "7abb714e-a980-48d1-b14a-b13c454c5f52",
-    "Target": "consective.",
-    "Replace": "consecutive.\nDomain Spells: Faerie Fire, See Invisibility, Searing Light, Shield of Dawn, Flame Strike, Chains of Light, Sunbeam, Sunburst, Elemental Swarm (Fire)."
-  },
-  {
     "Key": "260ec491-c237-4e38-af55-dc3c4ed4c707",
     "Target": "Earthbreaker",
     "Replace": "Obliteration"
