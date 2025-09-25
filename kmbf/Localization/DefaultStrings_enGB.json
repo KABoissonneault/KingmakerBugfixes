@@ -1,8 +1,8 @@
-﻿[
+[
   {
     "Key": "6c741017-8a3c-4a0d-a4a9-c53ed618ae1c",
-	"Target": "You can speak with and befriend animals with ease.",
-	"Replace": "You can gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1)."
+    "Target": "You can speak with and befriend animals with ease.",
+    "Replace": "You can gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1)."
   },
   {
     "Key": "ca6d9102-d3ee-4185-9c59-9b8109dbcac4",
@@ -10,7 +10,7 @@
   },
   {
     "Key": "b4472eb7-39bb-42fa-bf37-70b2707da69c",
-	"Target": "a ancient wyvern",
+    "Target": "a ancient wyvern",
     "Replace": "an ancient wyvern"
   },
   {
@@ -21,16 +21,41 @@
   {
     "Key": "1fa15586-b406-413e-953f-f211e695ccee",
     "Target": "a a ",
-	"Replace": "a "
+    "Replace": "a "
   },
   {
     "Key": "2e320393-7b0d-4670-89fb-fcb87078e024",
     "Target": "a a ",
-	"Replace": "a "
+    "Replace": "a "
   },
   {
     "Key": "f0b6c459-0d2a-4449-950f-5517b24ebf62",
     "Target": " a enhancement",
-	"Replace": " an enhancement"
+    "Replace": " an enhancement"
   },
+  {
+    "Key": "10b19c66-15b9-4b89-8182-a91144b1b184",
+    "Target": "a bane",
+    "Replace": "are a bane"
+  },
+  {
+    "Key": "66a972cf-bd07-43e2-81d1-31a622a9fd56",
+    "Target": "mace",
+    "Replace": "Mace"
+  },
+  {
+    "Key": "f6936d35-9470-4521-a91d-9092c8694e17",
+    "Target": "mace",
+    "Replace": "Mace"
+  },
+  {
+    "Key": "260ec491-c237-4e38-af55-dc3c4ed4c707",
+    "Target": "Earthbreaker",
+    "Replace": "Obliteration"
+  },
+  {
+    "Key": "81cced08-3e94-45df-8535-8350b5669935",
+    "Target": "Earthbreaker",
+    "Replace": "Obliteration"
+  }
 ]
