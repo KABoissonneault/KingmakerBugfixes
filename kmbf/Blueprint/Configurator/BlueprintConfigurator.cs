@@ -27,6 +27,7 @@ using Kingmaker.Localization;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
@@ -622,6 +623,17 @@ namespace kmbf.Blueprint.Configurator
                 {
                     damageDiceRankConfig.m_Class = damageDiceRankConfig.m_Class.AddItem(characterClass).ToArray();
                 }
+            });
+        }
+    }
+
+    public sealed class BlueprintActivatableAbilityConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintActivatableAbility, BlueprintActivatableAbilityGuid, BlueprintActivatableAbilityConfigurator>
+    {
+        public BlueprintActivatableAbilityConfigurator SetIsOnByDefault(bool onByDefault)
+        {
+            return AddOperation(a =>
+            {
+                a.IsOnByDefault = onByDefault;
             });
         }
     }

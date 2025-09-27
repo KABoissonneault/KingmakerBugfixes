@@ -15,6 +15,7 @@ using Kingmaker.Kingdom.Artisans;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Settlements;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 
 namespace kmbf.Blueprint;
@@ -205,7 +206,22 @@ public class BlueprintAbilityGuid : BlueprintUnitFactGuid
     public static readonly BlueprintAbilityGuid MimicOozeSpit = new("3ea0add618aab444bb5a4e2701a3ee4b");
 }
 
-public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
+public class BlueprintActivatableAbilityGuid : BlueprintUnitFactGuid
+{
+    public BlueprintActivatableAbilityGuid() { }
+    public BlueprintActivatableAbilityGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Activatable Ability";
+    public bool GetBlueprint(out BlueprintActivatableAbility bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintActivatableAbilityGuid CombatExpertise = new("a75f33b4ff41fc846acbac75d1a88442");
+}
+
+    public class BlueprintAbilityAreaEffectGuid : BlueprintObjectGuid
 {
     public BlueprintAbilityAreaEffectGuid() { }
     public BlueprintAbilityAreaEffectGuid(string guid)

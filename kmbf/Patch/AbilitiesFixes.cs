@@ -11,8 +11,7 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.UnitLogic.Abilities.Components.Base;
-using Kingmaker.UnitLogic.Abilities.Components.TargetCheckers;
+using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
@@ -50,6 +49,9 @@ namespace kmbf.Patch
 
             if (Main.UMMSettings.BalanceSettings.FixTouchOfGlory)
                 FixTouchOfGlory();
+
+            if (Main.UMMSettings.QualityOfLifeSettings.CombatExpertiseOffByDefault)
+                TweakCombatExpertise();
         }
 
         static void FixDruid()
@@ -457,6 +459,15 @@ namespace kmbf.Patch
                     c.Bonus = ContextValueFactory.Rank(AbilityRankType.DamageBonus); // Not sure why DamageBonus instead of Default, but eh
                     c.Descriptor = ModifierDescriptor.UntypedStackable;
                 })
+                .Configure();
+        }
+
+        // Combat Expertise has the annoying tendency to turn itself back on whenever you do something that refreshes the character, like saving or loading
+        // It's niche enough that it's probably better for it to be off by default, whenever the feature gets readded
+        static void TweakCombatExpertise()
+        {
+            BlueprintActivatableAbilityConfigurator.From(BlueprintActivatableAbilityGuid.CombatExpertise)
+                .SetIsOnByDefault(false)
                 .Configure();
         }
     }

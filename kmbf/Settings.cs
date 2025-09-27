@@ -32,6 +32,7 @@ namespace kmbf
     public class QualityOfLifeSettings
     {
         public bool BypassSpellResistanceForOutOfCombatBuffs = true;
+        public bool CombatExpertiseOffByDefault = true;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable
