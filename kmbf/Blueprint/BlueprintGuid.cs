@@ -561,6 +561,21 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public static readonly BlueprintFeatureGuid ExplosionRing = new("9583bd98ef0b65a448ac79c5ec273db8");
 }
 
+public class BlueprintProgressionGuid : BlueprintFeatureGuid
+{
+    public BlueprintProgressionGuid() { }
+    public BlueprintProgressionGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Progression";
+    public bool GetBlueprint(out BlueprintProgression bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintProgressionGuid SylvanSorcererAnimalCompanionProgression = new("09c91f959fb737f4289d121e595c657c");
+}
+
 public class BlueprintKingdomUpgradeGuid : BlueprintObjectGuid
 {
     public BlueprintKingdomUpgradeGuid() { }

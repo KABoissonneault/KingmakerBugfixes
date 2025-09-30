@@ -638,9 +638,28 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
-    public class BlueprintFeatureConfigurator : BaseBlueprintUnitFactConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
+    public abstract class BaseBlueprintFeatureConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintFeature
+        where GuidType : BlueprintFeatureGuid, new()
+        where TBuilder : BaseBlueprintFeatureConfigurator<BPType, GuidType, TBuilder>, new()
     {
 
+    }
+
+    public class BlueprintFeatureConfigurator : BaseBlueprintFeatureConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
+    {
+
+    }
+
+    public class BlueprintProgressionConfigurator : BaseBlueprintFeatureConfigurator<BlueprintProgression, BlueprintProgressionGuid, BlueprintProgressionConfigurator>
+    {
+        public BlueprintProgressionConfigurator EditLevelEntries(Func<LevelEntry[], LevelEntry[]> func)
+        {
+            return AddOperation(p =>
+            {
+                p.LevelEntries = func(p.LevelEntries);
+            });
+        }
     }
 
     public abstract class BaseBlueprintItemConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
