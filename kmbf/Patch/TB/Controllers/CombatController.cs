@@ -1,14 +1,7 @@
 ﻿using HarmonyLib;
-using Kingmaker;
-using Kingmaker.Controllers;
-using Kingmaker.EntitySystem.Entities;
-using Kingmaker.RuleSystem.Rules;
-using Kingmaker.UnitLogic.Abilities;
-using Kingmaker.Utility;
 using System.Reflection;
 using System.Reflection.Emit;
 using TurnBased.Controllers;
-using TurnBased.Utility;
 
 namespace kmbf.Patch.TB.Controllers
 {
@@ -17,6 +10,12 @@ namespace kmbf.Patch.TB.Controllers
     {
         static readonly MethodInfo timeSpanSeconds = AccessTools.PropertyGetter(typeof(TimeSpan), nameof(TimeSpan.Seconds));
         static readonly MethodInfo timeSpanTotalSeconds = AccessTools.PropertyGetter(typeof(TimeSpan), nameof(TimeSpan.TotalSeconds));
+
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Turn-based Surprise Round", logOnce: true);
+        }
 
         // The code checks if the timespan between now and the last surprise action is less than 6 seconds ago
         // If the current time is 560.12:49:03 and the protagonist's last surprise action is 00:00:00 (never this run),

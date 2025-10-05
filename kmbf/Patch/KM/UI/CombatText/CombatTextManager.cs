@@ -12,6 +12,12 @@ namespace kmbf.Patch.KM.UI.CombatText
         static readonly MethodInfo RuleSavingThrow_SuccessBonus = AccessTools.PropertyGetter(typeof(RuleSavingThrow), "SuccessBonus");
         static readonly MethodInfo RuleSavingThrow_StatValue = AccessTools.PropertyGetter(typeof(RuleSavingThrow), "StatValue");
 
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Saving Throw Display", logOnce: true);
+        }
+
         // When showing a Saving Throw as an "overtip" (on-field widget), the game shows "Roll vs DC" by default
         // If an enemy rolls 9 on a Reflex Saving Throw with +3 Reflex against a DC of 12, the game will show "Saving Throw Success (9 vs 12)"
         // With this patch, we subtract the modifier from the target, showing "9 vs 9" instead, since that's the actual roll the target

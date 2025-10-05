@@ -15,6 +15,12 @@ namespace kmbf.Patch.KM.Controllers.GlobalMap
     [HarmonyPatch]
     static class RegionalBuffController_MultiRegionBuffs_Prefix
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Region Upgrade Multi Buff", logOnce: true);
+        }
+
         [HarmonyPatch(typeof(RegionalBuffController), nameof(RegionalBuffController.CheckBuffs))]
         [HarmonyPrefix]
         public static bool CheckBuffs(RegionId region)

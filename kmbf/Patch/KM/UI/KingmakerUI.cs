@@ -9,6 +9,12 @@ namespace kmbf.Patch.KM.UI
     [HarmonyPatch(typeof(BugReportCanvas), nameof(BugReportCanvas.OnEnable))]
     static class BugReportCanvas_OnEnable_Transpiler
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("BugReportCanvas Null Reference", logOnce: true);
+        }
+
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> OnEnable_Transpile(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {

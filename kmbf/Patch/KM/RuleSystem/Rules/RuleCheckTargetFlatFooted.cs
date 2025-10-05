@@ -18,7 +18,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return !Main.RunsCallOfTheWild && Main.UMMSettings.BalanceSettings.FixShatterDefenses;
+            return PatchUtility.StartBalancePatch("Shatter Defenses Trigger", nameof(BalanceSettings.FixShatterDefenses), PatchUtility.ModExclusionFlags.CallOfTheWild, logOnce: true);
         }
 
         [HarmonyPrefix]

@@ -8,6 +8,12 @@ namespace kmbf.Patch.KM.Designers.EventConditionActionSystem.Action
     [HarmonyPatch(typeof(SellCollectibleItems), nameof(SellCollectibleItems.RunAction))]
     static class SellCollectibleItems_RunAction_Prefix
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Storyteller Stacked Artifacts", logOnce: true);
+        }
+
         [HarmonyPrefix]
         static bool RunAction(SellCollectibleItems __instance)
         {

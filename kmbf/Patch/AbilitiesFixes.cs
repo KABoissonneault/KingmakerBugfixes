@@ -1,6 +1,4 @@
-﻿using HarmonyLib;
-using Kingmaker.Blueprints;
-using Kingmaker.Blueprints.Classes;
+﻿using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
@@ -9,21 +7,20 @@ using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
-using Kingmaker.UnitLogic.ActivatableAbilities;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
-using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
-using UnityEngine;
 
 using static kmbf.Blueprint.Builder.ElementBuilder;
+using static kmbf.Patch.PatchUtility;
 
 namespace kmbf.Patch
 {
@@ -31,9 +28,8 @@ namespace kmbf.Patch
     {
         public static void Apply()
         {
-            FixDruid();
-            FixKineticist();
-            FixDoubleDebilitatingInjury();
+            Main.Log.Log("Starting Ability patches");
+
             FixEkunWolfBuffs();
             FixMagicalVestmentShield();
             FixRaiseDead();
@@ -47,111 +43,19 @@ namespace kmbf.Patch
             FixBreakEnchantment();
             FixAbilityScoreCheckBonuses();
 
-            if (Main.UMMSettings.BalanceSettings.FixTouchOfGlory)
-                FixTouchOfGlory();
-
-            if (Main.UMMSettings.QualityOfLifeSettings.CombatExpertiseOffByDefault)
-                TweakCombatExpertise();
-        }
-
-        static void FixDruid()
-        {
-            // Blight Druid Darkness Domain's Moonfire damage scaling
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DarknessDomainGreaterAbility)
-                .AddDamageDiceRankConfigClass(BlueprintCharacterClassGuid.Druid)
-                .Configure();
-        }
-
-        // Debilitating Injuries simply do not account for Double Debilitation, and will remove all existing injuries upon applying a new one
-        // This fix adds a Condition on the Double Debilitation feature, which if true, will check whether the target has *two* existing buffs
-        // before removing them
-        static void FixDoubleDebilitatingInjury()
-        {
-            if (!BlueprintFeatureGuid.DoubleDebilitation.GetBlueprint(out BlueprintFeature DoubleDebilitation)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryBewilderedActive.GetBlueprint(out BlueprintBuff BewilderedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedActive.GetBlueprint(out BlueprintBuff DisorientedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryHamperedActive.GetBlueprint(out BlueprintBuff HamperedActive)) return;
-
-            Conditional MakeConditional(BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs, Conditional[] normalConditionals)
-            {
-                var featureCondition = ScriptableObject.CreateInstance<ContextConditionCasterHasFact>();
-                featureCondition.Fact = DoubleDebilitation;
-
-                // If the target has at least two of the "other injuries" from the caster, remove all the existing ones
-                var doubleDebilitationAction = MakeGameActionConditional
-                (
-                    ConditionsCheckerFactory.Single(MakeContextConditionHasBuffsFromCaster("Debilitating Injury", otherBuffs, 2)),
-                    ifTrue: ActionListFactory.From
-                    (
-                        MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[0], activeId: otherActives[0])
-                        , MakeContextActionRemoveTargetBuffIfInitiatorNotActive(buffId: otherBuffs[1], activeId: otherActives[1])
-                    )
-                );
-
-                // If user has Double Debilitation, use the new "Remove if two buffs". Else, use the current "Remove if any buff"
-                return MakeGameActionConditional
-                (
-                    ConditionsCheckerFactory.Single(featureCondition)
-                    , ifTrue: ActionListFactory.From(doubleDebilitationAction)
-                    , ifFalse: ActionListFactory.From(normalConditionals)
-                );
-            }
-
-            void Fixup(BlueprintBuff active, BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs)
-            {
-                var triggerComponent = active.GetComponent<AddInitiatorAttackRollTrigger>();
-                ActionList triggerActions = triggerComponent.Action;
-                Conditional[] conditionals = triggerActions.Actions.OfType<Conditional>().ToArray();
-
-                triggerActions.Actions = triggerActions.Actions.Where(a => !(a is Conditional))
-                    .AddItem(MakeConditional(otherActives, otherBuffs, conditionals))
-                    .ToArray();
-            }
-
-            Fixup
-            (
-                BewilderedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryHamperedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryHamperedEffect]
-            );
-            Fixup
-            (
-                DisorientedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
-            );
-            Fixup
-            (
-                HamperedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
-            );
-
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
-                .SetIcon(HamperedActive.Icon)
-                .Configure();
-        }
-
-        static void FixKineticist()
-        {
-            // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
-            // Copy the ContextRankConfigs from the Mud version
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-
-            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
-                .Configure();
-
-            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthRareMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
-                .Configure();
+            // Optional
+            FixTouchOfGlory();
+            TweakCombatExpertise();
+            FixNauseatedPoisonDescriptor();
+            FixShatterDefenses();
+            FixCraneWingHandCheck();
+            FixControlledFireball();
         }
 
         static void FixEkunWolfBuffs()
         {
+            if (!StartPatch("Ekun Wolf Buffs")) return;
+
             // The "Master" features are accidentally added to Dog by the dialogue. Might as well put the stat bonuses directly on it
             // Plus the Offensive Master feature was accidentally giving the Defensive buff
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.EkunWolfOffensiveMaster)
@@ -165,6 +69,8 @@ namespace kmbf.Patch
 
         static void FixMagicalVestmentShield()
         {
+            if (!StartPatch("Magical Vestment Shield", ModExclusionFlags.CallOfTheWild)) return;
+
             // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.MagicalVestmentShield)
                 .EditComponent<AddStatBonusScaled>(c =>
@@ -179,6 +85,8 @@ namespace kmbf.Patch
         // Don't use this in cutscenes though, it affects the final fight
         static void FixRaiseDead()
         {
+            if (!StartPatch("Raise Dead")) return;
+
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.RaiseDead)
                 .EditComponent<AbilityEffectRunAction>(runAction =>
                 {
@@ -224,6 +132,8 @@ namespace kmbf.Patch
         // Like in Wrath of the Righteous, we add a condition on whether Enemy Stats Adjustment is Normal or above
         static void FixBreathOfLife()
         {
+            if (!StartPatch("Breath of Life")) return;
+
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreathOfLifeTouch)
                 .SetFullRoundAction(false)
                 .EditComponent<AbilityEffectRunAction>(c =>
@@ -263,6 +173,8 @@ namespace kmbf.Patch
         // negative emotion
         static void FixJoyfulRapture()
         {
+            if (!StartPatch("Joyful Rapture")) return;
+
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.JoyfulRapture)
                 .EditComponentGameAction<AbilityEffectRunAction, ContextActionDispelMagic>("$ContextActionDispelBuffs$b4781573-55ad-4e71-9dd9-75a0c38652e0", a =>
                 {
@@ -272,8 +184,13 @@ namespace kmbf.Patch
         }
 
         // Protection From Arrows Communal should not have spell resistance, like Protection from Arrows, and like other communal buffs
+        // Protection from Arrows generally fails to protect from mundane arrows. This patch replaces the poorly made DRAgainstRangedWithPool
+        // component with the general AddDamageResistancePhysical, with a bypass by any magic or melee weapons
+        // Note that without FixWeaponEnhancementDamageReduction, Composite bows and Thrown weapons are treated as Magic for this check
         static void FixProtectionFromArrows()
         {
+            if (!StartPatch("Protection from Arrows")) return;
+
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ProtectionFromArrowsCommunal)
                 .SetSpellResistance(false)
                 .Configure();
@@ -318,6 +235,8 @@ namespace kmbf.Patch
         // Description says +2 Dex, +2 Con, but the game applies +4 str, -2 dex, and +4 con
         static void FixLeopardCompanionUpgrade()
         {
+            if (!StartPatch("Leopard Companion")) return;
+
             BlueprintObjectConfigurator.From(BlueprintFeatureGuid.AnimalCompanionUpgradeLeopard)
                 .RemoveComponentsWhere<AddStatBonus>(b => b.Stat == StatType.Strength)
                 .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Constitution, b => b.Value = 2)
@@ -330,6 +249,8 @@ namespace kmbf.Patch
         // Still does not cover Saving Throw bonuses and the like, but we'll see if anyone notices
         static void FixGazeImmunities()
         {
+            if (!StartPatch("Gaze Attack Immunity")) return;
+
             BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.BalefulGaze)
                 .EditRoundActions(roundActions =>
                 {
@@ -365,6 +286,8 @@ namespace kmbf.Patch
         // It checks if the target has all three classes instead of any
         static void FixTieflingFoulspawn()
         {
+            if (!StartPatch("Foulspawn Tiefling")) return;
+
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.TieflingHeritageFoulspawn)
                 .EditComponent<AttackBonusConditional>(c =>
                 {
@@ -378,6 +301,8 @@ namespace kmbf.Patch
         // The +12 damage relies on the Bomb descriptor on the ability, so we also add it to abilities that are missing it (cross-referencing WotR to make sure the descriptor is intended)
         static void FixExplosionRing()
         {
+            if (!StartPatch("Explosion Ring")) return;
+
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ExplosionRing)
                 .AddComponent<AdditionalBonusOnDamage>(c =>
                 {
@@ -401,6 +326,8 @@ namespace kmbf.Patch
         // So I'm bringing the "remove petrify effects" from WotR
         static void FixBreakEnchantment()
         {
+            if (!StartPatch("Break Enchantment")) return;
+
             BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreakEnchantment)
                 .AddAbilityEffectRunAction(
                     MakeGameActionConditional(
@@ -426,31 +353,39 @@ namespace kmbf.Patch
         // Change to an AddContextStatBonus for similar results
         static void FixAbilityScoreCheckBonuses()
         {
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.StrengthSurge)
-                .RemoveComponents<AbilityScoreCheckBonus>()
-                .AddComponent<AddContextStatBonus>(b =>
-                {
-                    b.Stat = StatType.SkillAthletics;
-                    b.Descriptor = ModifierDescriptor.Enhancement;
-                    b.Value = ContextValueFactory.Rank();
-                })
-                .Configure();
+            if (StartPatch("Strength Surge"))
+            {
+                BlueprintBuffConfigurator.From(BlueprintBuffGuid.StrengthSurge)
+                    .RemoveComponents<AbilityScoreCheckBonus>()
+                    .AddComponent<AddContextStatBonus>(b =>
+                    {
+                        b.Stat = StatType.SkillAthletics;
+                        b.Descriptor = ModifierDescriptor.Enhancement;
+                        b.Value = ContextValueFactory.Rank();
+                    })
+                    .Configure();
+            }
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.AnimalDomainBaseFeature)
-                .RemoveComponents<AbilityScoreCheckBonus>()
-                .AddComponent<AddContextStatBonus>(b =>
-                {
-                    b.Stat = StatType.SkillPerception;
-                    b.Descriptor = ModifierDescriptor.Racial;
-                    b.Value = ContextValueFactory.Rank();
-                })
-                .Configure();
+            if (StartPatch("Animal Domain Perception Bonus"))
+            {
+                BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.AnimalDomainBaseFeature)
+                    .RemoveComponents<AbilityScoreCheckBonus>()
+                    .AddComponent<AddContextStatBonus>(b =>
+                    {
+                        b.Stat = StatType.SkillPerception;
+                        b.Descriptor = ModifierDescriptor.Racial;
+                        b.Value = ContextValueFactory.Rank();
+                    })
+                    .Configure();
+            }
         }
 
         // Touch of Glory adds +1-10 Charisma instead of adding +1-10 to Charisma checks
         // Fortunately, this mod fixed AbilityScoreCheckBonus, so we can use that instead
         static void FixTouchOfGlory()
         {
+            if (!StartBalancePatch("Touch of Glory", nameof(BalanceSettings.FixTouchOfGlory))) return;
+
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.TouchOfGlory)
                 .RemoveComponentWhere<AddContextStatBonus>(c => c.Stat == StatType.Charisma)
                 .AddComponent<AbilityScoreCheckBonus>(c =>
@@ -466,8 +401,113 @@ namespace kmbf.Patch
         // It's niche enough that it's probably better for it to be off by default, whenever the feature gets readded
         static void TweakCombatExpertise()
         {
+            if (!StartQualityOfLifePatch("Combat Expertise Off By Default", nameof(QualityOfLifeSettings.CombatExpertiseOffByDefault))) return;
+
             BlueprintActivatableAbilityConfigurator.From(BlueprintActivatableAbilityGuid.CombatExpertise)
                 .SetIsOnByDefault(false)
+                .Configure();
+        }
+
+        // Nauseated buff: remove Poison descriptors
+        static void FixNauseatedPoisonDescriptor()
+        {
+            if (!StartBalancePatch("Nauseated Poison Descriptor", nameof(BalanceSettings.FixNauseatedPoisonDescriptor))) return;
+
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Nauseated)
+                .RemoveSpellDescriptor(SpellDescriptor.Poison)
+                .Configure();
+        }
+
+        // Shatter Defenses should, by description, make the target flat-footed until the end of next round if hit while shaken or frightnened
+        // In the base game, it instead makes the target flat footed for the current round if shaken or frightened
+        // The fix applies a debuff on hit while shaken or frightened, and flat-footed only checks for the debuff (not the conditions)
+        // This differs from the CotW fix, which double-checks the conditions for flat-footed
+        // Depends on the RuleCheckTargetFlatFooted patch
+        static void FixShatterDefenses()
+        {
+            if (!StartBalancePatch("Shatter Defenses", nameof(BalanceSettings.FixShatterDefenses), ModExclusionFlags.CallOfTheWild)) return;
+
+            var shatterDefensesFeatureConfig = BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ShatterDefenses);
+            BlueprintFeature shatterDefenses = shatterDefensesFeatureConfig.Instance;
+            if (shatterDefenses == null)
+                return;
+
+            var shatterDefensesHitBuff = BlueprintBuffConfigurator.New
+                (
+                    BlueprintBuffGuid.KMBF_ShatterDefensesHit
+                    , "ShatterDefensesHit"
+                    , shatterDefenses.m_DisplayName
+                    , shatterDefenses.m_Description
+                    , shatterDefenses.m_Icon
+                )
+                .AddComponent<NewRoundTrigger>(n =>
+                {
+                    n.NewRoundActions = ActionListFactory.Single
+                    (
+                        MakeGameActionConditional
+                        (
+                            ConditionsCheckerFactory.Single(MakeBuffConditionCheckRoundNumber(3))
+                            , ifTrue: ActionListFactory.Single(MakeContextActionRemoveSelf())
+                        )
+                    );
+                })
+                .SetStacking(StackingType.Stack)
+                .Configure();
+
+            var shatterDefensesAppliedThisRoundBuff = BlueprintBuffConfigurator
+                .NewHidden(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, "ShatterDefensesAppliedThisRound")
+                .AddComponent<NewRoundTrigger>(n =>
+                {
+                    n.NewRoundActions = ActionListFactory.Single(MakeContextActionRemoveSelf());
+                })
+                .SetStacking(StackingType.Stack)
+                .Configure();
+
+            shatterDefensesFeatureConfig.AddComponent<AddInitiatorAttackWithWeaponTrigger>(t =>
+            {
+                t.Action = ActionListFactory.Single
+                (
+                    MakeGameActionConditional
+                    (
+                        ConditionsCheckerFactory.From
+                        (
+                            Operation.And
+                            , MakeContextConditionHasConditions([UnitCondition.Shaken, UnitCondition.Frightened], any: true)
+                            , MakeContextConditionHasBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, not: true)
+                        )
+                        , ifTrue: ActionListFactory.From
+                        (
+                            MakeContextActionRemoveBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesHit)
+                            , MakeContextActionApplyUndispelableBuff(BlueprintBuffGuid.KMBF_ShatterDefensesHit, ContextDurationFactory.ConstantRounds(2))
+                            , MakeContextActionApplyUndispelableBuff(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, ContextDurationFactory.ConstantRounds(1))
+                        )
+
+                    )
+                );
+                t.WaitForAttackResolve = true;
+            })
+            .Configure();
+        }
+
+        // Crane Wing should require a free hand to give its bonus
+        // This means that 1) nothing should be equipped there 2) it shouldn't be used for any purpose (ex: wielding with two hands)
+        // KM easily supports checking for a shield, but the rest is a bit of a mess without adding a full-on "Wield 1h weapon with Two Hands" toggle to turn off
+        static void FixCraneWingHandCheck()
+        {
+            if (!StartBalancePatch("Crane Wing Free Hand", nameof(BalanceSettings.FixCraneWingRequirements))) return;
+
+            BlueprintBuffConfigurator.From(BlueprintBuffGuid.CraneStyleWingBuff)
+                .EditComponent<ACBonusAgainstAttacks>(c => c.NoShield = true)
+                .Configure();
+        }
+
+        // Controlled Fireball has the default Target Type of "Enemy". This is fixed to "Any" in Wrath
+        static void FixControlledFireball()
+        {
+            if (!StartBalancePatch("Controlled Fireball", nameof(BalanceSettings.FixControlledFireball))) return;
+
+            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ControlledFireball)
+                .EditComponent<AbilityTargetsAround>(c => c.m_TargetType = TargetType.Any)
                 .Configure();
         }
     }

@@ -8,7 +8,13 @@ namespace kmbf.Patch.KM.Designers.Mechanics.Facts
     [HarmonyPatch(typeof(AbilityScoreCheckBonus), nameof(AbilityScoreCheckBonus.OnD20AboutToTrigger))]
     internal class AbilityScoreCheckBonus_OnEventAboutToTrigger_Patch
     {
-        // Ability Score Check Bonus has three issues:
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("AbilityScoreCheckBonus", logOnce: true);
+        }
+
+        // Ability Score Check Bonus has a few issues:
         // 1) Uses Reason to get the RuleSkillCheck, which is not valid if the skill check comes from a fact (ex: Icy Prison - Entanglement)
         // 2) It adds a temporary modifier that is not actually registered to anything
         //

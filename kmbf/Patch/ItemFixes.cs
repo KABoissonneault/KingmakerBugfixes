@@ -3,12 +3,13 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
-using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
+using kmbf.Component;
 
 using static kmbf.Blueprint.Builder.ElementBuilder;
+using static kmbf.Patch.PatchUtility;
 
 namespace kmbf.Patch
 {
@@ -16,6 +17,8 @@ namespace kmbf.Patch
     {
         public static void Apply()
         {
+            Main.Log.Log("Starting Item patches");
+
             ChangeDartsWeaponType();
 
             FixDatura();
@@ -27,11 +30,17 @@ namespace kmbf.Patch
             FixCursedItemCasterLevels();
             FixBladeOfTheMerciful();
             FixGamekeeperOfTheFirstWorld();
+
+            // Optional
+            FixBaneOfTheLiving();
+            FixNecklaceOfDoubleCrosses();
         }
 
         // Make Darts light weapons (like in tabletop)
         static void ChangeDartsWeaponType()
         {
+            if (!StartPatch("Darts Weapon Type")) return;
+
             BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Dart)
                 .SetIsLight(true)
                 .Configure();
@@ -43,6 +52,8 @@ namespace kmbf.Patch
         // Finally, add the enchantment to the second head
         static void FixDatura()
         {
+            if (!StartPatch("Datura")) return;
+
             BlueprintWeaponEnchantmentConfigurator.From(BlueprintWeaponEnchantmentGuid.Soporiferous)
                 .ReplaceAttackRollTriggerWithWeaponTrigger(c =>
                 {
@@ -59,7 +70,9 @@ namespace kmbf.Patch
         // Nature's Wrath trident accidentally checks "Outsider AND Aberration ..." instead of OR
         // Fix "Electricity Vulnerability" debuff to apply to target instead of initiator
         static void FixNaturesWrath()
-        {   
+        {
+            if (!StartPatch("Nature's Wrath (Trident)")) return;
+
             BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.NaturesWrath)
                 .EditComponent<WeaponConditionalDamageDice>(c =>
                 {
@@ -78,6 +91,8 @@ namespace kmbf.Patch
         // Scroll of Summon Nature's Ally V (Single) would Summon Monster V (Single) instead
         static void FixSummonNaturesAllyVSingle()
         {
+            if(!StartPatch("Summon Nature's Ally V (Single)")) return;
+
             BlueprintItemEquipmentConfigurator.From(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle)
                 .SetAbility(BlueprintAbilityGuid.SummonNaturesAllyVSingle)
                 .Configure();
@@ -86,7 +101,9 @@ namespace kmbf.Patch
         // Give it immunity to Attacks of Opportunity, rather than immunity to Immunity to Attacks of Opportunity
         static void FixDwarvenChampion()
         {
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.DwarvenChampionEnchant)
+            if (!StartPatch("Solid Strategy")) return;
+
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.SolidStrategyEnchant)
                 .RemoveComponents<AddConditionImmunity>()
                 .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
                 .Configure();
@@ -95,9 +112,11 @@ namespace kmbf.Patch
         // All of the Ring of Reckless Courage bonuses are put on a Feature added by an AddUnitFeatureEquipment enchantment on the item
         // Its +4 Charisma bonus could only be considered permanent if it was added by a AddStatBonusEquipment component instead of AddStatBonus,
         // but those are only valid on Equipment Enchantments, not Features
-        // Remove the +4 Charisma from the feature, and give the ring a second Charisma4 enchantment instead
+        // Remove the +4 Charisma from the feature, and give the ring a Charisma4 enchantment instead
         static void FixRingOfRecklessCourageStatBonus()
         {
+            if (!StartPatch("Ring of Reckless Courage")) return;
+
             BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.RingOfRecklessCourage)
                 .RemoveComponentsWhere<AddStatBonus>(c => c.Stat == StatType.Charisma)
                 .Configure();
@@ -110,6 +129,8 @@ namespace kmbf.Patch
         // Both Quiver of Lightning Arrows and Quiver of Lovers Arrows mention shooting "speed arrows", but are actually missing the extra attack that the other quivers have
         static void FixQuivers()
         {
+            if (!StartPatch("Quiver Haste")) return;
+
             BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LightningArrows)
                 .AddComponent<WeaponExtraAttack>(c =>
                 {
@@ -140,6 +161,8 @@ namespace kmbf.Patch
         // we'll adjust the caster level of the three curses to match DC - 11
         static void FixCursedItemCasterLevels()
         {
+            if (!StartPatch("Cursed Items Dispel")) return;
+
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.CloakOfSoldSoulsCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
@@ -158,6 +181,8 @@ namespace kmbf.Patch
         // is relevant. However, it is set to 0
         static void FixBladeOfTheMerciful()
         {
+            if (!StartPatch("Blade of the Merciful")) return;
+
             BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.BladeOfTheMerciful)
                 .SetDC(23) // 10 + spell level + "modifier from minimum ability to cast spell" = 10 + 9 + 4 (19 wisdom)
                 .Configure();
@@ -172,11 +197,37 @@ namespace kmbf.Patch
         // Show the main buff on enemies Inspect as a convenience, to track this effect more easily
         static void FixGamekeeperOfTheFirstWorld()
         {
+            if (!StartPatch("Gamekeeper of the First World")) return;
+
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.GameKeeperOfTheFirstWorld)
                 .RemoveComponents<AddFactContextActions>()
                 .SetDisplayName(KMLocalizedStrings.GameKeeperOfTheFirstWorldName)
                 .SetDescription(KMLocalizedStrings.GameKeeperOfTheFirstWorldDescription)
                 .RemoveFlag(BlueprintBuff.Flags.HiddenInUi)
+                .Configure();
+        }
+
+        // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
+        static void FixBaneOfTheLiving()
+        {
+            if (!StartBalancePatch("Bane of the Living", nameof(BalanceSettings.FixBaneLiving))) return;
+            
+            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.BaneLiving)
+                .EditComponent<WeaponConditionalEnhancementBonus>(c =>
+                {
+                    c.Conditions.Operation = Operation.And;
+                })
+                .Configure();
+        }
+
+        // In the base game, Necklace of Double Crosses applies to all sneak attacks, and the "attack against allies" mechanic is not implemented at all
+        private static void FixNecklaceOfDoubleCrosses()
+        {
+            if (!StartBalancePatch("Necklace of Double Crosses", nameof(BalanceSettings.FixNecklaceOfDoubleCrosses))) return;
+
+            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.NecklaceOfDoubleCrosses)
+                .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
+                .AddComponent<AooAgainstAllies>()
                 .Configure();
         }
     }

@@ -32,7 +32,7 @@ namespace kmbf.Patch.KM.UnitLogic.FactLogic
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return Main.UMMSettings.BalanceSettings.FixWeaponEnhancementDamageReduction;
+            return PatchUtility.StartBalancePatch("Weapon Enhancement Damage Resistance", nameof(BalanceSettings.FixWeaponEnhancementDamageReduction), logOnce: true);
         }
 
         [HarmonyPatch(typeof(AddDamageResistancePhysical), nameof(AddDamageResistancePhysical.Bypassed))]

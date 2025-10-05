@@ -14,13 +14,13 @@ namespace kmbf.Patch
         {
             if (loaded) return;
             loaded = true;
-
+                        
             AbilitiesFixes.Apply();
+            ClassFixes.Apply();
             ItemFixes.Apply();
             TextFixes.Apply();
             EventFixes.Apply();
             KingdomFixes.Apply();
-            OptionalFixes.ApplyAllEnabledFixes();
 
             // Harmony patches applied manually after Blueprints are loaded
             PostBlueprintPatches.Apply();

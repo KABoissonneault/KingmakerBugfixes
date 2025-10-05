@@ -22,6 +22,11 @@ public static class Main
 
     public static bool Load(UnityModManager.ModEntry modEntry) 
     {
+#if DEBUG
+        Harmony.DEBUG = true;
+        modEntry.OnUpdate += OnUpdate;
+#endif
+
         ModEntry = modEntry;
         Log = modEntry.Logger;
         UMMSettings = UnityModManager.ModSettings.Load<UMMSettings>(modEntry);
@@ -32,16 +37,32 @@ public static class Main
 
         ModLocalizationManager.TryLoadingStringsOnLoad();
 
-        try {
-            HarmonyInstance = new Harmony(modEntry.Info.Id);
-        } catch {
+        HarmonyInstance = new Harmony(modEntry.Info.Id);
+
+        try
+        {
+            Main.Log.Log("Running code patches");
+            HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
+        }
+        catch 
+        {
             HarmonyInstance.UnpatchAll(HarmonyInstance.Id);
             throw;
         }
-        HarmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
-
+        
         return true;
     }
+
+#if DEBUG
+    static void OnUpdate(UnityModManager.ModEntry modEntry, float z)
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            var rule = new Kingmaker.RuleSystem.Rules.RuleSkillCheck(Game.Instance.Player.MainCharacter.Value, Kingmaker.EntitySystem.Stats.StatType.Charisma, 25);
+            Kingmaker.RuleSystem.Rulebook.Trigger(rule);
+        }
+    }
+#endif
 
     static void OnGUI(UnityModManager.ModEntry modEntry)
     {

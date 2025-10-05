@@ -1,12 +1,16 @@
 ﻿using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 
+using static kmbf.Patch.PatchUtility;
+
 namespace kmbf.Patch
 {
     static class TextFixes
     {
         public static void Apply()
         {
+            Main.Log.Log("Starting Text patches");
+
             FixItemNames();
             FixUnnamedEnemyAbilities();
             FixTormentor();
@@ -14,6 +18,8 @@ namespace kmbf.Patch
         
         static void FixItemNames()
         {
+            if (!StartPatch("Item Names")) return;
+
             // In the base game, AmethystEncrustedRing has the GarnetRing name, and GarnetEncrustedRing has the TopazRing name
             BlueprintItemConfigurator.From(BlueprintItemEquipmentRingGuid.AmethystEncrustedRing)
                 .SetDisplayName(KMLocalizedStrings.AmethystRing)
@@ -32,6 +38,8 @@ namespace kmbf.Patch
         // Enemy attacks Hero with . Miss!
         static void FixUnnamedEnemyAbilities()
         {
+            if (!StartPatch("Empty Enemy Weapons")) return;
+
             BlueprintUnitFactConfigurator.From(BlueprintAbilityGuid.MimicOozeSpit)
                 .SetDisplayName(KMLocalizedStrings.Spit)
                 .SetDescription(KMBFLocalizedStrings.CreateString("ooze-spit-description"))
@@ -61,6 +69,8 @@ namespace kmbf.Patch
         // Tormentor shows Comforter as the debuff
         static void FixTormentor()
         {
+            if (!StartPatch("Tormentor Buff")) return;
+
             BlueprintBuffConfigurator.From(BlueprintBuffGuid.Tormentor)
                 .SetDisplayName(KMLocalizedStrings.TormentorDisplayName)
                 .SetDescription(KMLocalizedStrings.TormentorDescription)

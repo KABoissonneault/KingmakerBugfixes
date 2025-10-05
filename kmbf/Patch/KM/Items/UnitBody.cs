@@ -18,21 +18,23 @@ namespace kmbf.Patch.KM.Items
     // creates a new feral weapon from scratch each time the buff is applied, and loses enchantments (like Greater Magic Fang)
     // While this fix is not complete, and enchantments are still lost on load, this patch prevents the loss from saving
 
-    [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter)]
-    static class UnitBody_CurrentHandsEquipmentSet_Patch
+    [HarmonyPatch]
+    static class PolymorphLimbsFixes
     {
-        [HarmonyPostfix]
-        public static HandsEquipmentSet CurrentHandsEquipmentSet(HandsEquipmentSet normalSet, UnitBody __instance)
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Polymorph and Mutagen Buff", logOnce: true);
+        }
+
+        [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter), HarmonyPostfix]
+        public static HandsEquipmentSet UnitBody_CurrentHandsEquipmentSet(HandsEquipmentSet normalSet, UnitBody __instance)
         {
             return __instance.m_PolymoprphHandsEquipmentSet ?? normalSet;
         }
-    }
 
-    [HarmonyPatch(typeof(UnitBody), "GetHandsEquipmentSet")]
-    static class UnitBody_GetHandsEquipmentSet_Patch
-    {
-        [HarmonyPrefix]
-        public static bool GetHandsEquipmentSet(UnitBody __instance, HandSlot slot, ref HandsEquipmentSet __result)
+        [HarmonyPatch(typeof(UnitBody), "GetHandsEquipmentSet"), HarmonyPrefix]
+        public static bool UnitBody_GetHandsEquipmentSet(UnitBody __instance, HandSlot slot, ref HandsEquipmentSet __result)
         {
             if (__instance.IsPolymorphed && (__instance.m_PolymoprphHandsEquipmentSet.PrimaryHand == slot || __instance.m_PolymoprphHandsEquipmentSet.SecondaryHand == slot))
             {
@@ -50,13 +52,9 @@ namespace kmbf.Patch.KM.Items
             }
             return false;
         }
-    }
 
-    [HarmonyPatch(typeof(UnitBody), "PreSave")]
-    static class UnitBody_PreSave_Patch
-    {
-        [HarmonyPostfix]
-        public static void PreSave(UnitBody __instance)
+        [HarmonyPatch(typeof(UnitBody), "PreSave"), HarmonyPostfix]
+        public static void UnitBody_PreSave(UnitBody __instance)
         {
             if (__instance.m_PolymoprphHandsEquipmentSet != null)
             {
@@ -70,13 +68,9 @@ namespace kmbf.Patch.KM.Items
                     slot.PreSave();
             }
         }
-    }
 
-    [HarmonyPatch(typeof(UnitBody), "PostLoad")]
-    static class UnitBody_PostLoad_Patch
-    {
-        [HarmonyPostfix]
-        public static void PostLoad(UnitBody __instance)
+        [HarmonyPatch(typeof(UnitBody), "PostLoad"), HarmonyPostfix]
+        public static void UnitBody_PostLoad(UnitBody __instance)
         {
             if (__instance.m_PolymoprphHandsEquipmentSet != null)
             {
@@ -90,13 +84,9 @@ namespace kmbf.Patch.KM.Items
                     slot.PostLoad();
             }
         }
-    }
 
-    [HarmonyPatch(typeof(UnitBody), "Dispose")]
-    static class UnitBody_Dispose_Patch
-    {
-        [HarmonyPostfix]
-        public static void Dispose(UnitBody __instance)
+        [HarmonyPatch(typeof(UnitBody), "Dispose"), HarmonyPostfix]
+        public static void UnityBody_Dispose(UnitBody __instance)
         {
             if (__instance.m_PolymoprphHandsEquipmentSet != null)
             {
@@ -110,12 +100,8 @@ namespace kmbf.Patch.KM.Items
                     slot.Dispose();
             }
         }
-    }
 
-    [HarmonyPatch(typeof(ItemEntityWeapon), "Dispose")]
-    static class ItemEntityWeapon_Dispose_Patch
-    {
-        [HarmonyTranspiler]
+        [HarmonyPatch(typeof(ItemEntityWeapon), "Dispose"), HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> Dispose(IEnumerable<CodeInstruction> instructions)
         {
             MethodInfo ItemEntity_PostLoad = AccessTools.Method(typeof(ItemEntity), "PostLoad");
@@ -125,7 +111,7 @@ namespace kmbf.Patch.KM.Items
 
             foreach (var instr in instructions)
             {
-                if(instr.Calls(ItemEntity_PostLoad))
+                if (instr.Calls(ItemEntity_PostLoad))
                 {
                     var newInstr = new CodeInstruction(OpCodes.Callvirt, ItemEntity_Dispose);
                     newInstr.labels = instr.labels;
@@ -139,15 +125,11 @@ namespace kmbf.Patch.KM.Items
 
             return newInstructions;
         }
-    }
 
-    [HarmonyPatch(typeof(UnitDescriptor), "TurnOn")]
-    static class UnitDescriptor_TurnOn_Patch
-    {
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(UnitDescriptor), "TurnOn"), HarmonyPostfix]
         public static void TurnOn(UnitDescriptor __instance)
         {
-            if(__instance.Body.m_PolymoprphHandsEquipmentSet != null)
+            if (__instance.Body.m_PolymoprphHandsEquipmentSet != null)
             {
                 __instance.Body.m_PolymoprphHandsEquipmentSet.PrimaryHand?.MaybeItem?.TurnOn();
                 __instance.Body.m_PolymoprphHandsEquipmentSet.SecondaryHand?.MaybeItem?.TurnOn();
@@ -164,12 +146,8 @@ namespace kmbf.Patch.KM.Items
             //foreach (var emptyHand in __instance.Body.AllEmptyHands)
             //    emptyHand?.TurnOn();
         }
-    }
 
-    [HarmonyPatch(typeof(UnitDescriptor), "TurnOff")]
-    static class UnitDescriptor_TurnOff_Patch
-    {
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(UnitDescriptor), "TurnOff"), HarmonyPostfix]
         public static void TurnOff(UnitDescriptor __instance, bool force)
         {
             if (__instance.Body.m_PolymoprphHandsEquipmentSet != null)
@@ -189,11 +167,7 @@ namespace kmbf.Patch.KM.Items
             //foreach (var emptyHand in __instance.Body.AllEmptyHands)
             //    emptyHand?.TurnOff(force);
         }
-    }
 
-    [HarmonyPatch(typeof(EmptyHandWeaponOverride), "OnTurnOn")]
-    static class EmptyHandWeaponOverride_TurnOn_Patch
-    {
         static void SetBodyEmptyHandWeapon(UnitBody body, ItemEntityWeapon weapon)
         {
             if (!body.HandsAreEnabled)
@@ -208,7 +182,7 @@ namespace kmbf.Patch.KM.Items
             body.m_EmptyHandWeapon.OnDidEquipped(body.Owner);
         }
 
-        [HarmonyPrefix]
+        [HarmonyPatch(typeof(EmptyHandWeaponOverride), "OnTurnOn"), HarmonyPrefix]
         public static bool TurnOn(EmptyHandWeaponOverride __instance)
         {
             if (__instance.m_Weapon != null)

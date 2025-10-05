@@ -7,6 +7,12 @@ namespace kmbf.Patch.KM.UI.ConsoleUI.TurnBasedMode
     [HarmonyPatch]
     static class EventSubscription
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("InitiativeTrackerUnitVM Memory Leak", logOnce: true);
+        }
+
         // UnitBuffs in the initiative tracker are cleared and re-created every update, but not disposed
         [HarmonyPatch(typeof(InitiativeTrackerUnitVM), nameof(InitiativeTrackerUnitVM.UpdateBuffs))]
         [HarmonyPrefix]

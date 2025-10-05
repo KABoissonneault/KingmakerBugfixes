@@ -9,8 +9,13 @@ namespace kmbf.Patch
     {
         public static void Apply()
         {
-            var tryAddWordSeparator = AccessTools.Method(typeof(UIUtilityTexts), nameof(UIUtilityTexts.TryAddWordSeparator), [typeof(StringBuilder), typeof(string)]);
-            Main.HarmonyInstance.Patch(tryAddWordSeparator, prefix: new HarmonyMethod(typeof(UIUtilityTexts_Patch), nameof(UIUtilityTexts_Patch.TryAddWordSeparator)));
+            Main.Log.Log("Starting late patches");
+
+            if (PatchUtility.StartPatch("Unit Inspector Word Separator"))
+            {
+                var tryAddWordSeparator = AccessTools.Method(typeof(UIUtilityTexts), nameof(UIUtilityTexts.TryAddWordSeparator), [typeof(StringBuilder), typeof(string)]);
+                Main.HarmonyInstance.Patch(tryAddWordSeparator, prefix: new HarmonyMethod(typeof(UIUtilityTexts_Patch), nameof(UIUtilityTexts_Patch.TryAddWordSeparator)));
+            }
         }
     }
 }

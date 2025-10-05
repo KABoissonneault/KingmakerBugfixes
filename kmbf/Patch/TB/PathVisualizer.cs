@@ -8,6 +8,12 @@ namespace kmbf.Patch.TB
     [HarmonyPatch(typeof(PathVisualizer), nameof(PathVisualizer.Update))]
     internal class PathVisualizer_Transpiler
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("PathVisualizer Null Reference", logOnce: true);
+        }
+
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Update_Transpiler(IEnumerable<CodeInstruction> instructions)
         {

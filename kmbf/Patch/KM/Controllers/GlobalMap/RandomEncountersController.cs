@@ -20,6 +20,12 @@ namespace kmbf.Patch.KM.Controllers.GlobalMap
     [HarmonyPatch(typeof(RandomEncountersController), nameof(RandomEncountersController.RollTravelEncounter))]
     static class RandomEncountersController_RollTravelEncounter_Transpile
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("Upgraded Regions Random Encounters", logOnce: true);
+        }
+
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Run(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {

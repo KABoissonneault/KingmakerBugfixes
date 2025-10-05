@@ -9,6 +9,12 @@ namespace kmbf.Patch.KM.Visual.WeatherSystem
     [HarmonyPatch(typeof(WeatherSystemBehaviour), nameof(WeatherSystemBehaviour.Update))]
     static class WeatherSystemBehaviour_Update_Transpiler
     {
+        [HarmonyPrepare]
+        static bool Prepare()
+        {
+            return PatchUtility.StartPatch("WeatherSystemBehaviour Null Reference", logOnce: true);
+        }
+
         [HarmonyTranspiler]
         static IEnumerable<CodeInstruction> Update_Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
