@@ -30,8 +30,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 #### Class & Spells
 
 - [Opt-out] Fixed Arcane Trickster to properly require non-lawful alignment
-- Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
-- "Magic Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
+- [!CotW] Blight Druid's Darkness Domain's "Moonfire" damage now scales properly with Druid levels
+- [!CotW] "Magical Vestment, Shield" gives Shield Enhancer AC instead of Shield AC
 - Fixed Freedom of Movement to properly grant Immunity to Grapple
 - Fixed Rogue "Double Debilitation" not applying two Debilitating Injuries
 - Fixed Hampering Injury debuff icon to match the active
@@ -45,6 +45,10 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] Fixed Controlled Fireball not applying minimal damage to allies as intended
 - Allow Break Enchantment to remove petrification (like in Wrath)
 - Fixed cursed magic item DC for removing via Break Enchantment (25 for Cloak of Sold Souls, 33 for Gentle Persuasion, 25 for Narrow Path)
+- Fixed "AbilityScoreCheckBonus" used by Divine Power to boost Strength checks. Should now be able to leave Icy Prison easier! This also fixes Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus
+- Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus have been changed to show in the character sheet
+- [Opt-out] Fixed Touch of Glory giving Charisma instead of giving a bonus to Charisma checks (ie: roll d20 + charisma mod to save)
+- Moved Monk and Thrown weapons into different Fighter Weapon Groups so they can be boosted by a Weapon Training (KM has no Weapon Training for Monk and Thrown). Darts, sai, and kama are now Light Blades, javelins are Spears, nunchaku are Close, slings and slight staves are Hammers, and throwing axes are Axes
 
 #### Feat & Traits
 
@@ -53,6 +57,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Ekundayo's Dog "Loyal Companion" and "Enraged Companion" not giving stats
 - [Opt-out] Fixed Crane Wing to check for shield in offhand. Still allows 2h weapons, since KM has no 1h option
 - Fixed Foulspawn Tiefling bonus against Clerics, Paladins, and Inquisitors only working against characters that had all three classes instead of any
+- [Opt-out] Combat Expertise is now off by default. There is a hard to fix issue where Combat Expertise refreshes each time you save or load, so having it off by default makes it less detrimental to most characters
 
 #### Item
 
@@ -69,7 +74,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Misc
 
-- [Opt-out] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
+- [Opt-out] "Poison" descriptor removed from Nauseated debuff, and thus can be applied by non-poison sources (ex: Cacophonous Call, Swarm Distraction, Ooze Spit). Poison Immunity still blocks poison spells like Stinking Cloud
 
 ### Quests & Event
 
@@ -104,6 +109,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fix unit Inspector's Damage Reduction exceptions line rendering composite conditions ex: "Slashing and Magic" as "Slashingandmagic"
 - Fixed Tormentor showing "Comforter" as the debuff on targets (text change only)
 - Removed useless saving throw on Gamekeeper of the First World. Now showing debuff on affected target
+- Added support for fixing typos and text inconsistencies through the "DefaultStrings_<locale>.json" file. See DefaultStrings_enGB.json for all the changes in the English version
     
 ### Changes
 
@@ -117,7 +123,8 @@ Not quite "fixes", but should be a universal improvement for everyone
 - Fixed data leak in InitiativeTrackerUnitVM
 - Fixed null reference exception in BugReportCanvas
 - Fixed null reference exception in WeatherSystemBehaviour
-- Fixed null reference access in PathVisualizer Update
+- Fixed null reference exception in PathVisualizer Update
+- Fixed null reference exception in AreaEffectEntityData.ShouldUnitBeInside
   
 ## Known Issues
 
@@ -146,8 +153,10 @@ List of settings:
 - Fix Arcane Trickster Alignment Requirement: With this fix, only non-lawful characters can be an Arcane Trickster, as described in the in-game glossary - Fix Crane Wing Requirements: With this fix, you cannot use Crane Wing with a shield (not even a buckler). Still allows for using a weapon with two-hands, since there's almost no way to wield a weapon in one hand in Kingmaker
 - Fix Controlled Fireball: With this fix, Controlled Fireball applies minimal damage to allies instead of none. Watch out for Arcane Trickster sneak attacks
 - Fix Weapon Enhancement Damage Reduction: Without this fix, any "trait" on a weapon makes it magical for the purpose of bypassing Damage Reduction (ex: 10/magic), including Composite or Thrown (but not masterwork). With this fix, only the proper "+1" (or more) enchantment makes a weapon bypass DR, as described in the rules
+- Fix Touch of Glory: Without this fix, Touch of Glory gives raw Charisma, greatly boosting sorcerers and bards, among other things. With this fix, Touch of Glory only boosts Charisma checks, as described.
 - Fix Free Ezvanki Temple: Without this fix, you always get a free temple from Ezvanki when starting out your barony, even if you've never talked to him. With this fix, you need to pass the Diplomacy check, as intended
 - Bypass Spell Resistance for Out of Combat Buffs: In tabletop, a unit can always choose to remove its spell resistance by using a standard action, which removes it for a turn. This feature is not implemented in Kingmaker, but this setting allows units to ignore spell resistance when casting spells on allies while out of combat, as a shorthand.
+- Combat Expertise Off by Default: If you have a character that naturally has Int below 13 but becomes eligible for Combat Expertise with Racial or Inherent stat gains, Combat Expertise will constantly turn itself back on each time stats are refreshed. With this setting, Combat Expertise will instead always turn itself off, which has less risk of hurting your character.
 
 ## Contributors
 
@@ -168,6 +177,8 @@ Feel free to add all the issues you find on this page over there, or add the `mo
 ### Localization
 
 The mod supports localization, usings a `String_<locale>.json` file under the Localization folder. If you can make one for a locale other than enGB, feel free to send it here (through Pull Request or other means).
+
+The mod can also override the game's strings to fix typos and the like. See `DefaultStrings_enGB.json` for a reference.
 
 ## Acknowledgement
 
