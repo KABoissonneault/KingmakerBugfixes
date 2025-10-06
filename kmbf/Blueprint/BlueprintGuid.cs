@@ -4,6 +4,7 @@
 
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
@@ -520,6 +521,13 @@ public class BlueprintWeaponTypeGuid : BlueprintObjectGuid
     public bool GetBlueprint(out BlueprintWeaponType bp) => GetBlueprintAs(out bp);
 
     public static readonly BlueprintWeaponTypeGuid Dart = new BlueprintWeaponTypeGuid("f415ae950523a7843a74d7780dd551af");
+    public static readonly BlueprintWeaponTypeGuid Javelin = new BlueprintWeaponTypeGuid("a70cea34b275522458654beb3c53fe3f");
+    public static readonly BlueprintWeaponTypeGuid Kama = new BlueprintWeaponTypeGuid("f5872eb0deb3a1b48a36549f8d92c19e");
+    public static readonly BlueprintWeaponTypeGuid Nunchaku = new BlueprintWeaponTypeGuid("4703b4c0922142f4cbe8895c10a47a9f");
+    public static readonly BlueprintWeaponTypeGuid Sai = new BlueprintWeaponTypeGuid("0944f411666c7594aa1398a7476ecf7d");
+    public static readonly BlueprintWeaponTypeGuid SlingStaff = new BlueprintWeaponTypeGuid("25da2dc95ed4a6b419608c678f2a9cc3");
+    public static readonly BlueprintWeaponTypeGuid Sling = new BlueprintWeaponTypeGuid("f807334ef058b7148a5d1582767c70ab");
+    public static readonly BlueprintWeaponTypeGuid ThrowingAxe = new BlueprintWeaponTypeGuid("ca131c71f4fefcb48b30b5991520e01d");
 
     public static readonly BlueprintWeaponTypeGuid GiantSlugTongue = new BlueprintWeaponTypeGuid("4957290cee0b59542808c65c77bfbee3");
     public static readonly BlueprintWeaponTypeGuid BuletteBite = new BlueprintWeaponTypeGuid("ebb1e708e46d32c4888207913f76e555");
@@ -559,6 +567,22 @@ public class BlueprintFeatureGuid : BlueprintUnitFactGuid
     public static readonly BlueprintFeatureGuid TieflingHeritageFoulspawn = new("a53d760a364cd90429e16aa1e7048d0a");
     
     public static readonly BlueprintFeatureGuid ExplosionRing = new("9583bd98ef0b65a448ac79c5ec273db8");
+}
+
+public class BlueprintFeatureSelectionGuid : BlueprintFeatureGuid
+{
+    public BlueprintFeatureSelectionGuid() { }
+    public BlueprintFeatureSelectionGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Feature Selection";
+    public bool GetBlueprint(out BlueprintFeatureSelection bp) => GetBlueprintAs(out bp);
+
+    public static readonly BlueprintFeatureSelectionGuid WeaponTrainingSelection = new("b8cecf4e5e464ad41b79d5b42b76b399");
+    public static readonly BlueprintFeatureSelectionGuid WeaponTrainingRankUpSelection = new("5f3cc7b9a46b880448275763fe70c0b0");
 }
 
 public class BlueprintProgressionGuid : BlueprintFeatureGuid

@@ -6,6 +6,7 @@ using HarmonyLib;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Prerequisites;
+using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.Facts;
 using Kingmaker.Blueprints.Items;
@@ -643,15 +644,60 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintFeatureGuid, new()
         where TBuilder : BaseBlueprintFeatureConfigurator<BPType, GuidType, TBuilder>, new()
     {
+        public TBuilder AddGroup(FeatureGroup group)
+        {
+            return AddOperation(f =>
+            {
+                f.Groups = [.. f.Groups, group];
+            });
+        }
 
+        public TBuilder SetRanks(int ranks)
+        {
+            return AddOperation(f =>
+            {
+                f.Ranks = ranks;
+            });
+        }
+
+        public TBuilder SetIsClassFeature(bool isClassFeature)
+        {
+            return AddOperation(f =>
+            {
+                f.IsClassFeature = isClassFeature;
+            });
+        }
     }
 
-    public class BlueprintFeatureConfigurator : BaseBlueprintFeatureConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
+    public sealed class BlueprintFeatureConfigurator : BaseBlueprintFeatureConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
     {
-
+        public static BlueprintFeatureConfigurator New(BlueprintFeatureGuid guid, string objectName)
+        {
+            var instance = CreateInstance(guid, objectName);
+            return From(instance);
+        }
     }
 
-    public class BlueprintProgressionConfigurator : BaseBlueprintFeatureConfigurator<BlueprintProgression, BlueprintProgressionGuid, BlueprintProgressionConfigurator>
+    public sealed class BlueprintFeatureSelectionConfigurator : BaseBlueprintFactConfigurator<BlueprintFeatureSelection, BlueprintFeatureSelectionGuid, BlueprintFeatureSelectionConfigurator>
+    {
+        public BlueprintFeatureSelectionConfigurator SetMode(SelectionMode mode)
+        {
+            return AddOperation(f =>
+            {
+                f.Mode = mode;
+            });
+        }
+
+        public BlueprintFeatureSelectionConfigurator AddAllFeature(BlueprintFeature feature)
+        {
+            return AddOperation(f =>
+            {
+                f.AllFeatures = [.. f.AllFeatures, feature];
+            });
+        }
+    }
+
+    public sealed class BlueprintProgressionConfigurator : BaseBlueprintFeatureConfigurator<BlueprintProgression, BlueprintProgressionGuid, BlueprintProgressionConfigurator>
     {
         public BlueprintProgressionConfigurator EditLevelEntries(Func<LevelEntry[], LevelEntry[]> func)
         {
@@ -1073,6 +1119,14 @@ namespace kmbf.Blueprint.Configurator
             return AddOperation(i =>
             {
                 i.m_IsLight = value;
+            });
+        }
+
+        public BlueprintWeaponTypeConfigurator SetFighterGroup(WeaponFighterGroup fighterGroup)
+        {
+            return AddOperation(i =>
+            {
+                i.m_FighterGroup = fighterGroup;
             });
         }
     }
