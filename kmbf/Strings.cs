@@ -16,6 +16,8 @@ namespace kmbf
         [JsonProperty] public string Value;
         [JsonProperty] public string Target;
         [JsonProperty] public string Replace;
+        [JsonProperty] public string Add;
+        [JsonProperty] public string Remove;
     }
 
     public class ModLocalizedStringData
@@ -38,15 +40,13 @@ namespace kmbf
         {
             if (LocalizationManager.CurrentLocale == lastLoadedLocale)
                 return;
-
-            LoadDefaultStringOverrides();
-            LoadModStrings();
             
             try
             {
-                
+                LoadDefaultStringOverrides();
+                LoadModStrings();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Main.Log.LogException(e);
             }
@@ -86,6 +86,22 @@ namespace kmbf
                     else if(!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Replace))
                     {
                         LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Target, stringData.Replace);
+                    }
+                    else if (!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Add))
+                    {
+                        int index = currentValue.IndexOf(stringData.Target);
+                        if (index < 0)
+                        {
+                            Main.Log.Warning($"Could not find target string '{stringData.Target}' for '{stringData.Key}' in LocalizationManager");
+                        }
+                        else
+                        {
+                            LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Insert(index + stringData.Target.Length, stringData.Add);
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(stringData.Remove))
+                    {
+                        LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Remove, "");
                     }
                     else
                     {

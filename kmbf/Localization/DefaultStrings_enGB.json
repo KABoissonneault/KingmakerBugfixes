@@ -57,5 +57,33 @@
     "Key": "81cced08-3e94-45df-8535-8350b5669935",
     "Target": "Earthbreaker",
     "Replace": "Obliteration"
+  },
+  {
+    "Key": "e68222d0-1412-4a14-8e7a-817b74fcba73",
+    "Remove": "bardiche, "
+  },
+  {
+    "Key": "161c918e-2e6f-44e3-b3a5-485a2b3a5433",
+    "Target": "spiked shield, ",
+    "Add": "nunchaku, "
+  },
+  {
+    "Key": "e68222d0-1412-4a14-8e7a-817b74fcba73",
+    "Remove": "orc double axe, "
+  },
+  {
+    "Key": "b0f9d708-d4b7-4842-83a6-17bfb38a4a54",
+    "Target": "light mace, ",
+    "Add": "sling, sling staff, "
+  },
+  {
+    "Key": "18cb15d6-6bf7-4401-b9b6-5f501f1dc770",
+    "Target": "scythe, and two-bladed sword.",
+    "Replace": "and scythe."
+  },
+  {
+    "Key": "1049b2a5-f678-40b6-bd48-26a266092387",
+    "Target": "kukri, ",
+    "Add": "dart, sai, kama, "
   }
 ]

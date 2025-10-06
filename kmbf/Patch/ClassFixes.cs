@@ -2,10 +2,13 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Blueprint;
@@ -26,6 +29,7 @@ namespace kmbf.Patch
             FixDruid();
             FixKineticist();
             FixDoubleDebilitatingInjury();
+            FixFighterWeaponTraining();
 
             // Optional
             FixArcaneTricksterAlignmentRequirement();
@@ -140,6 +144,45 @@ namespace kmbf.Patch
 
             BlueprintCharacterClassConfigurator.From(BlueprintCharacterClassGuid.ArcaneTrickster)
                 .SetAlignmentRestriction(AlignmentMaskType.NeutralGood | AlignmentMaskType.TrueNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.Chaotic)
+                .Configure();
+        }
+
+        // KM is missing Weapon Training for Dart, Javelin, Kama, Nunchaku, Sai, Sling Staff, Throwing Axe, and Sling
+        // Move them around
+        static void FixFighterWeaponTraining()
+        {
+            if (!StartPatch("Fighter Weapon Training")) return;
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Dart)
+                .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Javelin)
+                .SetFighterGroup(WeaponFighterGroup.Spears)
+                .Configure();
+            
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Kama)
+                .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Nunchaku)
+                .SetFighterGroup(WeaponFighterGroup.Close)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Sai)
+                .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Sling)
+                .SetFighterGroup(WeaponFighterGroup.Hammers)
+                .Configure();
+
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.SlingStaff)
+                .SetFighterGroup(WeaponFighterGroup.Hammers)
+                .Configure();            
+            
+            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.ThrowingAxe)
+                .SetFighterGroup(WeaponFighterGroup.Axes)
                 .Configure();
         }
     }
