@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.RuleSystem.Rules;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.RuleSystem.Rules
 {
@@ -7,9 +8,9 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
     static class RuleCombatManeuver_IsSuccessRoll_Patch
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Combat Maneuver Immunity", logOnce: true);
+            return PatchUtility.StartPreparePatch("Combat Maneuver Immunity", original);
         }
 
         // If a unit is immune to a Combat Maneuver (ex: Freedom of Movement's immunity to Grapple),

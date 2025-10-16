@@ -18,7 +18,7 @@ namespace kmbf.Patch.KM.UnitLogic.Abilities.Components
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Vital Strike Ranged", PatchUtility.ModExclusionFlags.CallOfTheWild, logOnce: true);
+            return PatchUtility.StartPreparePatch("Vital Strike Ranged", original, PatchUtility.ModExclusionFlags.CallOfTheWild);
         }
 
         [HarmonyTranspiler]

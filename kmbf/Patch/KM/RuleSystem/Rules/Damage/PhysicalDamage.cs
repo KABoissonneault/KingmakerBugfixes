@@ -12,7 +12,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules.Damage
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("PhysicalDamage Enhancement Propagation", logOnce: true);
+            return PatchUtility.StartPreparePatch("PhysicalDamage Enhancement Propagation", original);
         }
 
         [HarmonyPostfix]

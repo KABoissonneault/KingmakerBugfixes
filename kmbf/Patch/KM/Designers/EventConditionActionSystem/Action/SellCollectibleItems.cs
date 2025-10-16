@@ -2,6 +2,7 @@
 using Kingmaker;
 using Kingmaker.Designers;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.Designers.EventConditionActionSystem.Action
 {
@@ -9,9 +10,9 @@ namespace kmbf.Patch.KM.Designers.EventConditionActionSystem.Action
     static class SellCollectibleItems_RunAction_Prefix
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Storyteller Stacked Artifacts", logOnce: true);
+            return PatchUtility.StartPreparePatch("Storyteller Stacked Artifacts", original);
         }
 
         [HarmonyPrefix]

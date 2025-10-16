@@ -13,9 +13,9 @@ namespace kmbf.Patch.KM.UI.CombatText
         static readonly MethodInfo RuleSavingThrow_StatValue = AccessTools.PropertyGetter(typeof(RuleSavingThrow), "StatValue");
 
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Saving Throw Display", logOnce: true);
+            return PatchUtility.StartPreparePatch("Saving Throw Display", original);
         }
 
         // When showing a Saving Throw as an "overtip" (on-field widget), the game shows "Roll vs DC" by default

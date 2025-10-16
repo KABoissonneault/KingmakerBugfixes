@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Kingmaker.TurnBasedMode;
+using System.Reflection;
 using System.Reflection.Emit;
 using TurnBased.Controllers;
 
@@ -9,9 +10,9 @@ namespace kmbf.Patch.TB
     internal class PathVisualizer_Transpiler
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase originalMethod)
         {
-            return PatchUtility.StartPatch("PathVisualizer Null Reference", logOnce: true);
+            return PatchUtility.StartPreparePatch("PathVisualizer Null Reference", originalMethod);
         }
 
         [HarmonyTranspiler]

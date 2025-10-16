@@ -13,9 +13,9 @@ namespace kmbf.Patch.KM.Designers.Mechanics.Facts
     internal class WeaponParametersDamageBonus_OnEventAboutToTrigger_Transpile
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("WeaponParametersDamageBonus Null Reference", logOnce: true);
+            return PatchUtility.StartPreparePatch("WeaponParametersDamageBonus Null Reference", original);
         }
 
         [HarmonyTranspiler]

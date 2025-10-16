@@ -10,9 +10,9 @@ namespace kmbf.Patch.KM.Visual.WeatherSystem
     static class WeatherSystemBehaviour_Update_Transpiler
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase originalMethod)
         {
-            return PatchUtility.StartPatch("WeatherSystemBehaviour Null Reference", logOnce: true);
+            return PatchUtility.StartPreparePatch("WeatherSystemBehaviour Null Reference", originalMethod);
         }
 
         [HarmonyTranspiler]

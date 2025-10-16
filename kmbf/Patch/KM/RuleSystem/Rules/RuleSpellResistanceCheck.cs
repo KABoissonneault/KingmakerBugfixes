@@ -15,7 +15,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartQualityOfLifePatch("Spell Resistance on Buffs", nameof(QualityOfLifeSettings.BypassSpellResistanceForOutOfCombatBuffs), logOnce: true);
+            return PatchUtility.StartPrepareQualityOfLifePatch("Spell Resistance on Buffs", original, nameof(QualityOfLifeSettings.BypassSpellResistanceForOutOfCombatBuffs));
         }
 
         [HarmonyPostfix]

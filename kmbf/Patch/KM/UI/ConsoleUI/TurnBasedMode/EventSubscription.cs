@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.UI._ConsoleUI.TurnBasedMode;
 using Kingmaker.Utility;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.UI.ConsoleUI.TurnBasedMode
 {
@@ -8,9 +9,9 @@ namespace kmbf.Patch.KM.UI.ConsoleUI.TurnBasedMode
     static class EventSubscription
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("InitiativeTrackerUnitVM Memory Leak", logOnce: true);
+            return PatchUtility.StartPreparePatch("InitiativeTrackerUnitVM Memory Leak", original);
         }
 
         // UnitBuffs in the initiative tracker are cleared and re-created every update, but not disposed

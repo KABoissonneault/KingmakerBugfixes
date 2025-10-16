@@ -7,6 +7,7 @@ using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.Kingdom.Buffs;
 using Kingmaker.Kingdom.Tasks;
 using Kingmaker.UnitLogic.Buffs;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.Controllers.GlobalMap
 {
@@ -16,9 +17,9 @@ namespace kmbf.Patch.KM.Controllers.GlobalMap
     static class RegionalBuffController_MultiRegionBuffs_Prefix
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Region Upgrade Multi Buff", logOnce: true);
+            return PatchUtility.StartPreparePatch("Region Upgrade Multi Buff", original);
         }
 
         [HarmonyPatch(typeof(RegionalBuffController), nameof(RegionalBuffController.CheckBuffs))]

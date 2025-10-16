@@ -10,42 +10,29 @@ namespace kmbf.Patch
             CallOfTheWild = 1 << 0,
         }
 
-        static HashSet<string> logOncePatches = new HashSet<string>();
-
-        static void DoLog(string patchName, bool logOnce, string log)
-        {
-            if (logOnce)
-            {
-                if (!logOncePatches.Add(patchName))
-                    return;
-            }
-
-            Main.Log.Log(log);
-        }
-
-        static bool CheckMod(string patchName, ModExclusionFlags modExclusionFlags, bool logOnce)
+        static bool CheckMod(string patchName, ModExclusionFlags modExclusionFlags)
         {
             if ((modExclusionFlags & ModExclusionFlags.CallOfTheWild) == ModExclusionFlags.CallOfTheWild && Main.RunsCallOfTheWild)
             {
-                DoLog(patchName, logOnce, $"Skip patching '{patchName}': Running Call of the Wild");
+                Main.Log.Log($"Skip patching '{patchName}': Running Call of the Wild");
                 return false;
             }
 
             return true;
         }
         
-        public static bool StartPatch(string patchName, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None, bool logOnce = false)
+        public static bool StartPatch(string patchName, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
         {
-            if (!CheckMod(patchName, modExclusionFlags, logOnce))
+            if (!CheckMod(patchName, modExclusionFlags))
             {
                 return false;
             }
 
-            DoLog(patchName, logOnce, $"Patching '{patchName}'");
+            Main.Log.Log($"Patching '{patchName}'");
             return true;
         }
 
-        public static bool StartBalancePatch(string patchName, string balanceFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None, bool logOnce = false)
+        public static bool StartBalancePatch(string patchName, string balanceFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
         {
             FieldInfo balanceFlagField = typeof(BalanceSettings).GetField(balanceFlag);
             if (balanceFlagField == null)
@@ -57,20 +44,20 @@ namespace kmbf.Patch
             bool balanceFlagValue = (bool)balanceFlagField.GetValue(Main.UMMSettings.BalanceSettings);
             if (!balanceFlagValue)
             {
-                DoLog(patchName, logOnce, $"Skip patching '{patchName}': '{balanceFlag}' off");
+                Main.Log.Log($"Skip patching '{patchName}': '{balanceFlag}' off");
                 return false;
             }
 
-            if (!CheckMod(patchName, modExclusionFlags, logOnce))
+            if (!CheckMod(patchName, modExclusionFlags))
             {
                 return false;
             }
 
-            DoLog(patchName, logOnce, $"Patching '{patchName}': '{balanceFlag}' on");
+            Main.Log.Log($"Patching '{patchName}': '{balanceFlag}' on");
             return true;
         }
 
-        public static bool StartQualityOfLifePatch(string patchName, string qolFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None, bool logOnce = false)
+        public static bool StartQualityOfLifePatch(string patchName, string qolFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
         {
             FieldInfo qolField = typeof(QualityOfLifeSettings).GetField(qolFlag);
             if (qolField == null)
@@ -82,20 +69,20 @@ namespace kmbf.Patch
             bool qolValue = (bool)qolField.GetValue(Main.UMMSettings.QualityOfLifeSettings);
             if (!qolValue)
             {
-                DoLog(patchName, logOnce, $"Skip patching '{patchName}': '{qolFlag}' off");
+                Main.Log.Log($"Skip patching '{patchName}': '{qolFlag}' off");
                 return false;
             }
 
-            if (!CheckMod(patchName, modExclusionFlags, logOnce))
+            if (!CheckMod(patchName, modExclusionFlags))
             {
                 return false;
             }
 
-            DoLog(patchName, logOnce, $"Patching '{patchName}': '{qolFlag}' on");
+            Main.Log.Log($"Patching '{patchName}': '{qolFlag}' on");
             return true;
         }
 
-        public static bool StartEventPatch(string patchName, string eventFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None, bool logOnce = false)
+        public static bool StartEventPatch(string patchName, string eventFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
         {
             FieldInfo eventField = typeof(EventSettings).GetField(eventFlag);
             if (eventField == null)
@@ -107,17 +94,50 @@ namespace kmbf.Patch
             bool eventValue = (bool)eventField.GetValue(Main.UMMSettings.EventSettings);
             if (!eventValue)
             {
-                DoLog(patchName, logOnce, $"Skip patching '{patchName}': '{eventFlag}' off");
+                Main.Log.Log($"Skip patching '{patchName}': '{eventFlag}' off");
                 return false;
             }
 
-            if (!CheckMod(patchName, modExclusionFlags, logOnce))
+            if (!CheckMod(patchName, modExclusionFlags))
             {
                 return false;
             }
 
-            DoLog(patchName, logOnce, $"Patching '{patchName}': '{eventFlag}' on");
+            Main.Log.Log($"Patching '{patchName}': '{eventFlag}' on");
             return true;
+        }
+
+        // Utility for the Prepare method of Harmony patches
+        // Prepare is called multiple times per patch, but the initial call has the "original" parameter as null
+        // Use this to identify the first call
+        public static bool StartPreparePatch(string patchName, MethodBase original, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
+        {
+            if(original != null)
+            {
+                return true;
+            }
+
+            return StartPatch(patchName, modExclusionFlags);
+        }
+
+        public static bool StartPrepareBalancePatch(string patchName, MethodBase original, string balanceFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
+        {
+            if(original != null)
+            {
+                return true;
+            }
+
+            return StartBalancePatch(patchName, balanceFlag, modExclusionFlags);
+        }
+
+        public static bool StartPrepareQualityOfLifePatch(string patchName, MethodBase original, string qolFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
+        {
+            if (original != null)
+            {
+                return true;
+            }
+
+            return StartQualityOfLifePatch(patchName, qolFlag, modExclusionFlags);
         }
     }
 }

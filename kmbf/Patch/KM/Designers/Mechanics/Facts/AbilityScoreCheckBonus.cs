@@ -2,6 +2,7 @@
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.RuleSystem;
 using Kingmaker.RuleSystem.Rules;
+using System.Reflection;
 
 namespace kmbf.Patch.KM.Designers.Mechanics.Facts
 {
@@ -9,9 +10,9 @@ namespace kmbf.Patch.KM.Designers.Mechanics.Facts
     internal class AbilityScoreCheckBonus_OnEventAboutToTrigger_Patch
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("AbilityScoreCheckBonus", logOnce: true);
+            return PatchUtility.StartPreparePatch("AbilityScoreCheckBonus", original);
         }
 
         // Ability Score Check Bonus has a few issues:

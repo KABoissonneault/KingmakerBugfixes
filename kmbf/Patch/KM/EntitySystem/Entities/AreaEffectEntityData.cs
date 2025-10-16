@@ -25,7 +25,7 @@ namespace kmbf.Patch.KM.EntitySystem.Entities
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartBalancePatch("Area of Effect Double Trigger", nameof(BalanceSettings.FixAreaOfEffectDoubleTrigger), logOnce: true);
+            return PatchUtility.StartPrepareBalancePatch("Area of Effect Double Trigger", original, nameof(BalanceSettings.FixAreaOfEffectDoubleTrigger));
         }
 
         // Prevents Area of Effect spells with both a UnitEnter event and a round event from triggering twice
@@ -43,9 +43,9 @@ namespace kmbf.Patch.KM.EntitySystem.Entities
     static class AreaOfEffectsTick_ShouldUnitBeInside_Patch
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("AreaEffectEntityData Null Reference", logOnce: true);
+            return PatchUtility.StartPreparePatch("AreaEffectEntityData Null Reference", original);
         }
 
         // Prevents Null Reference Exception on null Unit.View

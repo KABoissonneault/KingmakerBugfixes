@@ -21,9 +21,9 @@ namespace kmbf.Patch.KM.Controllers.GlobalMap
     static class RandomEncountersController_RollTravelEncounter_Transpile
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Upgraded Regions Random Encounters", logOnce: true);
+            return PatchUtility.StartPreparePatch("Upgraded Regions Random Encounters", original);
         }
 
         [HarmonyTranspiler]

@@ -22,9 +22,9 @@ namespace kmbf.Patch.KM.Items
     static class PolymorphLimbsFixes
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("Polymorph and Mutagen Buff", logOnce: true);
+            return PatchUtility.StartPreparePatch("Polymorph and Mutagen Buff", original);
         }
 
         [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter), HarmonyPostfix]
@@ -181,6 +181,8 @@ namespace kmbf.Patch.KM.Items
             body.m_EmptyHandWeapon = weapon;
             body.m_EmptyHandWeapon.OnDidEquipped(body.Owner);
         }
+
+
 
         [HarmonyPatch(typeof(EmptyHandWeaponOverride), "OnTurnOn"), HarmonyPrefix]
         public static bool TurnOn(EmptyHandWeaponOverride __instance)

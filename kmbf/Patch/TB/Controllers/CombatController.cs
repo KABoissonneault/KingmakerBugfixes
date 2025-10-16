@@ -12,9 +12,9 @@ namespace kmbf.Patch.TB.Controllers
         static readonly MethodInfo timeSpanTotalSeconds = AccessTools.PropertyGetter(typeof(TimeSpan), nameof(TimeSpan.TotalSeconds));
 
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase originalMethod)
         {
-            return PatchUtility.StartPatch("Turn-based Surprise Round", logOnce: true);
+            return PatchUtility.StartPreparePatch("Turn-based Surprise Round", originalMethod);
         }
 
         // The code checks if the timespan between now and the last surprise action is less than 6 seconds ago

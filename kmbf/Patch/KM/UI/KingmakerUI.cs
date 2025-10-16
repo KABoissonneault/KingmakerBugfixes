@@ -10,9 +10,9 @@ namespace kmbf.Patch.KM.UI
     static class BugReportCanvas_OnEnable_Transpiler
     {
         [HarmonyPrepare]
-        static bool Prepare()
+        static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPatch("BugReportCanvas Null Reference", logOnce: true);
+            return PatchUtility.StartPreparePatch("BugReportCanvas Null Reference", original);
         }
 
         [HarmonyTranspiler]
