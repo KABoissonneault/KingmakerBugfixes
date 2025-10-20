@@ -15,20 +15,20 @@ namespace kmbf.Patch
             {
                 List<KingdomBuff> buffsToRemove = KingdomState.Instance.ActiveBuffs.Enumerable.Where(b =>
                 {
-                    return b.Blueprint.AssetGuid == BlueprintKingdomBuffGuid.CandlemereTowerResearch.guid
-                    && !b.Region.Blueprint.Is(BlueprintRegionGuid.SouthNarlmarches);
+                    return b.Blueprint.AssetGuid == KingdomBuffRefs.CandlemereTowerResearch.guid
+                    && !b.Region.Blueprint.Is(RegionRefs.SouthNarlmarches);
                 }).ToList();
                 buffsToRemove.ForEach(KingdomState.Instance.ActiveBuffs.RemoveFact);
             }
 
-            var kingdomShrikeHills = KingdomState.Instance.Regions.FirstOrDefault(r => r.Blueprint.Is(BlueprintRegionGuid.ShrikeHills));
+            var kingdomShrikeHills = KingdomState.Instance.Regions.FirstOrDefault(r => r.Blueprint.Is(RegionRefs.ShrikeHills));
             if (kingdomShrikeHills != null)
             {
-                if(kingdomShrikeHills.IsUpgraded && kingdomShrikeHills.Upgrade.Project.Is(BlueprintKingdomUpgradeGuid.ItsAMagicalPlace))
+                if(kingdomShrikeHills.IsUpgraded && kingdomShrikeHills.Upgrade.Project.Is(KingdomUpgradeRefs.ItsAMagicalPlace))
                 {
-                    if(!KingdomState.Instance.ActiveBuffs.Enumerable.Any(b => b.Blueprint.Is(BlueprintKingdomBuffGuid.ItsAMagicalPlace)))
+                    if(!KingdomState.Instance.ActiveBuffs.Enumerable.Any(b => b.Blueprint.Is(KingdomBuffRefs.ItsAMagicalPlace)))
                     {
-                        if (BlueprintKingdomBuffGuid.ItsAMagicalPlace.GetBlueprint(out BlueprintKingdomBuff bp))
+                        if (KingdomBuffRefs.ItsAMagicalPlace.GetBlueprint(out BlueprintKingdomBuff bp))
                         {
                             KingdomState.Instance.ActiveBuffs.Add(bp, kingdomShrikeHills, null, 0);
                         }

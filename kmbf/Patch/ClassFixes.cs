@@ -40,8 +40,8 @@ namespace kmbf.Patch
             if (!StartPatch("Darkness Domain Moonfire", ModExclusionFlags.CallOfTheWild)) return;
 
             // Blight Druid Darkness Domain's Moonfire damage scaling
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DarknessDomainGreaterAbility)
-                .AddDamageDiceRankConfigClass(BlueprintCharacterClassGuid.Druid)
+            BlueprintAbilityConfigurator.From(AbilityRefs.DarknessDomainGreaterAbility)
+                .AddDamageDiceRankConfigClass(CharacterClassRefs.Druid)
                 .Configure();
         }
 
@@ -52,10 +52,10 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Rogue Double Debilitation")) return;
 
-            if (!BlueprintFeatureGuid.DoubleDebilitation.GetBlueprint(out BlueprintFeature DoubleDebilitation)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryBewilderedActive.GetBlueprint(out BlueprintBuff BewilderedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryDisorientedActive.GetBlueprint(out BlueprintBuff DisorientedActive)) return;
-            if (!BlueprintBuffGuid.DebilitatingInjuryHamperedActive.GetBlueprint(out BlueprintBuff HamperedActive)) return;
+            if (!FeatureRefs.DoubleDebilitation.GetBlueprint(out BlueprintFeature DoubleDebilitation)) return;
+            if (!BuffRefs.DebilitatingInjuryBewilderedActive.GetBlueprint(out BlueprintBuff BewilderedActive)) return;
+            if (!BuffRefs.DebilitatingInjuryDisorientedActive.GetBlueprint(out BlueprintBuff DisorientedActive)) return;
+            if (!BuffRefs.DebilitatingInjuryHamperedActive.GetBlueprint(out BlueprintBuff HamperedActive)) return;
 
             Conditional MakeConditional(BlueprintBuffGuid[] otherActives, BlueprintBuffGuid[] otherBuffs, Conditional[] normalConditionals)
             {
@@ -96,23 +96,23 @@ namespace kmbf.Patch
             Fixup
             (
                 BewilderedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryHamperedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryHamperedEffect]
+                , [BuffRefs.DebilitatingInjuryDisorientedActive, BuffRefs.DebilitatingInjuryHamperedActive]
+                , [BuffRefs.DebilitatingInjuryDisorientedEffect, BuffRefs.DebilitatingInjuryHamperedEffect]
             );
             Fixup
             (
                 DisorientedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryHamperedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
+                , [BuffRefs.DebilitatingInjuryHamperedActive, BuffRefs.DebilitatingInjuryBewilderedActive]
+                , [BuffRefs.DebilitatingInjuryHamperedEffect, BuffRefs.DebilitatingInjuryBewilderedEffect]
             );
             Fixup
             (
                 HamperedActive
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedActive, BlueprintBuffGuid.DebilitatingInjuryBewilderedActive]
-                , [BlueprintBuffGuid.DebilitatingInjuryDisorientedEffect, BlueprintBuffGuid.DebilitatingInjuryBewilderedEffect]
+                , [BuffRefs.DebilitatingInjuryDisorientedActive, BuffRefs.DebilitatingInjuryBewilderedActive]
+                , [BuffRefs.DebilitatingInjuryDisorientedEffect, BuffRefs.DebilitatingInjuryBewilderedEffect]
             );
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.DebilitatingInjuryHamperedEffect)
+            BlueprintBuffConfigurator.From(BuffRefs.DebilitatingInjuryHamperedEffect)
                 .SetIcon(HamperedActive.Icon)
                 .Configure();
         }
@@ -123,17 +123,17 @@ namespace kmbf.Patch
 
             // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
             // Copy the ContextRankConfigs from the Mud version
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
 
-            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
+            BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthMetalBlast)
+                .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
                 .Configure();
 
-            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.DeadlyEarthRareMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(BlueprintAbilityAreaEffectGuid.DeadlyEarthMudBlast)
+            BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthRareMetalBlast)
+                .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
                 .Configure();
         }
 
@@ -142,7 +142,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Arcane Trickster Alignment", nameof(BalanceSettings.FixArcaneTricksterAlignmentRequirement))) return;
 
-            BlueprintCharacterClassConfigurator.From(BlueprintCharacterClassGuid.ArcaneTrickster)
+            BlueprintCharacterClassConfigurator.From(CharacterClassRefs.ArcaneTrickster)
                 .SetAlignmentRestriction(AlignmentMaskType.NeutralGood | AlignmentMaskType.TrueNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.Chaotic)
                 .Configure();
         }
@@ -153,35 +153,35 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Fighter Weapon Training")) return;
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Dart)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Dart)
                 .SetFighterGroup(WeaponFighterGroup.BladesLight)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Javelin)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Javelin)
                 .SetFighterGroup(WeaponFighterGroup.Spears)
                 .Configure();
             
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Kama)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Kama)
                 .SetFighterGroup(WeaponFighterGroup.BladesLight)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Nunchaku)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Nunchaku)
                 .SetFighterGroup(WeaponFighterGroup.Close)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Sai)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sai)
                 .SetFighterGroup(WeaponFighterGroup.BladesLight)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Sling)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sling)
                 .SetFighterGroup(WeaponFighterGroup.Hammers)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.SlingStaff)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.SlingStaff)
                 .SetFighterGroup(WeaponFighterGroup.Hammers)
                 .Configure();            
             
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.ThrowingAxe)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.ThrowingAxe)
                 .SetFighterGroup(WeaponFighterGroup.Axes)
                 .Configure();
         }

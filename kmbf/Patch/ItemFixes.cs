@@ -1,6 +1,9 @@
-﻿using Kingmaker.Designers.Mechanics.Facts;
+﻿using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
+using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
@@ -41,7 +44,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Darts Weapon Type")) return;
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.Dart)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Dart)
                 .SetIsLight(true)
                 .Configure();
         }
@@ -54,7 +57,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Datura")) return;
 
-            BlueprintWeaponEnchantmentConfigurator.From(BlueprintWeaponEnchantmentGuid.Soporiferous)
+            BlueprintWeaponEnchantmentConfigurator.From(WeaponEnchantmentRefs.Soporiferous)
                 .ReplaceAttackRollTriggerWithWeaponTrigger(c =>
                 {
                     c.WaitForAttackResolve = true;
@@ -62,8 +65,8 @@ namespace kmbf.Patch
                 .SetDC(16, add10ToDC: false)
                 .Configure();
                         
-            BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.SoporiferousSecond)
-                .AddEnchantment(BlueprintWeaponEnchantmentGuid.Soporiferous)
+            BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SoporiferousSecond)
+                .AddEnchantment(WeaponEnchantmentRefs.Soporiferous)
                 .Configure();
         }
 
@@ -73,7 +76,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Nature's Wrath (Trident)")) return;
 
-            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.NaturesWrath)
+            BlueprintObjectConfigurator.From(WeaponEnchantmentRefs.NaturesWrath)
                 .EditComponent<WeaponConditionalDamageDice>(c =>
                 {
                     c.Conditions.Operation = Operation.Or;
@@ -93,8 +96,8 @@ namespace kmbf.Patch
         {
             if(!StartPatch("Summon Nature's Ally V (Single)")) return;
 
-            BlueprintItemEquipmentConfigurator.From(BlueprintItemEquipmentUsableGuid.ScrollSummonNaturesAllyVSingle)
-                .SetAbility(BlueprintAbilityGuid.SummonNaturesAllyVSingle)
+            BlueprintItemEquipmentConfigurator.From(ItemEquipmentUsableRefs.ScrollSummonNaturesAllyVSingle)
+                .SetAbility(AbilityRefs.SummonNaturesAllyVSingle)
                 .Configure();
         }
 
@@ -103,7 +106,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Solid Strategy")) return;
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.SolidStrategyEnchant)
+            BlueprintFeatureConfigurator.From(FeatureRefs.SolidStrategyEnchant)
                 .RemoveComponents<AddConditionImmunity>()
                 .AddComponent<AddCondition>(c => c.Condition = Kingmaker.UnitLogic.UnitCondition.ImmuneToAttackOfOpportunity)
                 .Configure();
@@ -117,12 +120,12 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Ring of Reckless Courage")) return;
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.RingOfRecklessCourage)
+            BlueprintFeatureConfigurator.From(FeatureRefs.RingOfRecklessCourage)
                 .RemoveComponentsWhere<AddStatBonus>(c => c.Stat == StatType.Charisma)
                 .Configure();
 
-            BlueprintItemEquipmentSimpleConfigurator.From(BlueprintItemEquipmentRingGuid.RingOfRecklessCourage)
-                .AddEnchantment(BlueprintEquipmentEnchantmentGuid.Charisma4)
+            BlueprintItemEquipmentSimpleConfigurator.From(ItemEquipmentRingRefs.RingOfRecklessCourage)
+                .AddEnchantment(EquipmentEnchantmentRefs.Charisma4)
                 .Configure();
         }
 
@@ -131,7 +134,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Quiver Haste")) return;
 
-            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LightningArrows)
+            BlueprintObjectConfigurator.From(WeaponEnchantmentRefs.LightningArrows)
                 .AddComponent<WeaponExtraAttack>(c =>
                 {
                     c.Number = 1;
@@ -139,7 +142,7 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.LoversArrows)
+            BlueprintObjectConfigurator.From(WeaponEnchantmentRefs.LoversArrows)
                 .AddComponent<WeaponExtraAttack>(c =>
                 {
                     c.Number = 1;
@@ -163,15 +166,15 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Cursed Items Dispel")) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.CloakOfSoldSoulsCurse)
+            BlueprintBuffConfigurator.From(BuffRefs.CloakOfSoldSoulsCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.GentlePersuasionCurse)
+            BlueprintBuffConfigurator.From(BuffRefs.GentlePersuasionCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(22))
                 .Configure();
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.NarrowPathCurse)
+            BlueprintBuffConfigurator.From(BuffRefs.NarrowPathCurse)
                 .SetCasterLevel(ContextValueFactory.Simple(14))
                 .Configure();
         }
@@ -183,7 +186,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Blade of the Merciful")) return;
 
-            BlueprintItemWeaponConfigurator.From(BlueprintItemWeaponGuid.BladeOfTheMerciful)
+            BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.BladeOfTheMerciful)
                 .SetDC(23) // 10 + spell level + "modifier from minimum ability to cast spell" = 10 + 9 + 4 (19 wisdom)
                 .Configure();
         }
@@ -199,7 +202,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Gamekeeper of the First World")) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.GameKeeperOfTheFirstWorld)
+            BlueprintBuffConfigurator.From(BuffRefs.GameKeeperOfTheFirstWorld)
                 .RemoveComponents<AddFactContextActions>()
                 .SetDisplayName(KMLocalizedStrings.GameKeeperOfTheFirstWorldName)
                 .SetDescription(KMLocalizedStrings.GameKeeperOfTheFirstWorldDescription)
@@ -212,7 +215,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Bane of the Living", nameof(BalanceSettings.FixBaneLiving))) return;
             
-            BlueprintObjectConfigurator.From(BlueprintWeaponEnchantmentGuid.BaneLiving)
+            BlueprintObjectConfigurator.From(WeaponEnchantmentRefs.BaneLiving)
                 .EditComponent<WeaponConditionalEnhancementBonus>(c =>
                 {
                     c.Conditions.Operation = Operation.And;
@@ -225,7 +228,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Necklace of Double Crosses", nameof(BalanceSettings.FixNecklaceOfDoubleCrosses))) return;
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.NecklaceOfDoubleCrosses)
+            BlueprintFeatureConfigurator.From(FeatureRefs.NecklaceOfDoubleCrosses)
                 .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
                 .AddComponent<AooAgainstAllies>()
                 .Configure();

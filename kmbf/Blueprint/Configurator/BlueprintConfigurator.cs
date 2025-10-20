@@ -678,6 +678,11 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
+    public sealed class BlueprintRaceConfigurator : BaseBlueprintFeatureConfigurator<BlueprintRace, BlueprintRaceGuid, BlueprintRaceConfigurator>
+    {
+
+    }
+
     public sealed class BlueprintFeatureSelectionConfigurator : BaseBlueprintFactConfigurator<BlueprintFeatureSelection, BlueprintFeatureSelectionGuid, BlueprintFeatureSelectionConfigurator>
     {
         public BlueprintFeatureSelectionConfigurator SetMode(SelectionMode mode)
@@ -1127,6 +1132,14 @@ namespace kmbf.Blueprint.Configurator
             return AddOperation(i =>
             {
                 i.m_FighterGroup = fighterGroup;
+            });
+        }
+
+        public BlueprintWeaponTypeConfigurator EditVisualParameters(Action<WeaponVisualParameters> action)
+        {
+            return AddOperation(i =>
+            {
+                action(i.m_VisualParameters);
             });
         }
     }

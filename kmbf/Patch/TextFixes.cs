@@ -21,16 +21,16 @@ namespace kmbf.Patch
             if (!StartPatch("Item Names")) return;
 
             // In the base game, AmethystEncrustedRing has the GarnetRing name, and GarnetEncrustedRing has the TopazRing name
-            BlueprintItemConfigurator.From(BlueprintItemEquipmentRingGuid.AmethystEncrustedRing)
+            BlueprintItemConfigurator.From(ItemEquipmentRingRefs.AmethystEncrustedRing)
                 .SetDisplayName(KMLocalizedStrings.AmethystRing)
                 .Configure();
 
-            BlueprintItemConfigurator.From(BlueprintItemEquipmentRingGuid.GarnetEncrustedRing)
+            BlueprintItemConfigurator.From(ItemEquipmentRingRefs.GarnetEncrustedRing)
                 .SetDisplayName(KMLocalizedStrings.GarnetRing)
                 .Configure();
 
             // In the base game, Cold Iron Rapier +3 is called Cold Iron Rapier +1 (no string for +3)
-            BlueprintItemConfigurator.From(BlueprintItemWeaponGuid.ColdIronRapierPlus3)
+            BlueprintItemConfigurator.From(ItemWeaponRefs.ColdIronRapierPlus3)
                 .SetDisplayName(KMBFLocalizedStrings.CreateString("cold-iron-rapier-plus3"))
                 .Configure();
         }
@@ -40,27 +40,27 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Empty Enemy Weapons")) return;
 
-            BlueprintUnitFactConfigurator.From(BlueprintAbilityGuid.MimicOozeSpit)
+            BlueprintUnitFactConfigurator.From(AbilityRefs.MimicOozeSpit)
                 .SetDisplayName(KMLocalizedStrings.Spit)
                 .SetDescription(KMBFLocalizedStrings.CreateString("ooze-spit-description"))
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.GiantSlugTongue)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.GiantSlugTongue)
                 .SetTypeName(KMBFLocalizedStrings.Tongue)
                 .SetDefaultName(KMBFLocalizedStrings.Tongue)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.ShockerLizardTouch)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.ShockerLizardTouch)
                 .SetTypeName(KMLocalizedStrings.TouchTypeName)
                 .SetDefaultName(KMLocalizedStrings.TouchDefaultName)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.BuletteBite)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.BuletteBite)
                 .SetTypeName(KMLocalizedStrings.BiteTypeName)
                 .SetDefaultName(KMLocalizedStrings.BiteDefaultName)
                 .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(BlueprintWeaponTypeGuid.MiteStoneThrow)
+            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.MiteStoneThrow)
                 .SetTypeName(KMLocalizedStrings.RockTypeName)
                 .SetDefaultName(KMLocalizedStrings.RockDefaultName)
                 .Configure();
@@ -71,7 +71,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Tormentor Buff")) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Tormentor)
+            BlueprintBuffConfigurator.From(BuffRefs.Tormentor)
                 .SetDisplayName(KMLocalizedStrings.TormentorDisplayName)
                 .SetDescription(KMLocalizedStrings.TormentorDescription)
                 .Configure();

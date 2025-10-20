@@ -47,10 +47,10 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Irlene Relations Rank 3 Tier 3 Gift")) return;
 
-            BlueprintCueConfigurator.From(BlueprintCueGuid.IrleneGiftCue3)
+            BlueprintCueConfigurator.From(CueRefs.IrleneGiftCue3)
                 .EditOnShowActionRecursive<KingdomActionGetArtisanGiftWithCertainTier>("$KingdomActionGetArtisanGiftWithCertainTier$cde3c826-6adc-4681-aee0-ed4c0c9f218c", a =>
                 {
-                    if (BlueprintKingdomArtisanGuid.ShadyTrader.GetBlueprint(out BlueprintKingdomArtisan artisan))
+                    if (KingdomArtisanRefs.ShadyTrader.GetBlueprint(out BlueprintKingdomArtisan artisan))
                     {
                         a.Artisan = artisan;
                     }
@@ -85,29 +85,29 @@ namespace kmbf.Patch
 
                     if (result.Margin == EventResult.MarginType.Success || result.Margin == EventResult.MarginType.GreatSuccess || result.Margin == EventResult.MarginType.AnySuccess)
                     {
-                        actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
+                        actions.Add(SetObjectiveStatusConfigurator.New(QuestObjectiveRefs.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
 
                         // We check if the solution includes Good leaders. For regent, this should also allow the Neutral case
                         if ((result.LeaderAlignment & AlignmentMaskType.Good) != 0)
                         {
-                            actions.Add(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyWaitForPeopleReaction).Configure());
+                            actions.Add(GiveObjectiveConfigurator.New(QuestObjectiveRefs.HonorAndDutyWaitForPeopleReaction).Configure());
                         }
                         else
                         {
-                            actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
+                            actions.Add(SetObjectiveStatusConfigurator.New(QuestObjectiveRefs.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Complete).Configure());
                         }
                     }
                     else
                     {
-                        actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
-                        actions.Add(SetObjectiveStatusConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
+                        actions.Add(SetObjectiveStatusConfigurator.New(QuestObjectiveRefs.HonorAndDutyProtectOrKickOut, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
+                        actions.Add(SetObjectiveStatusConfigurator.New(QuestObjectiveRefs.HonorAndDutyFail, SummonPoolCountTrigger.ObjectiveStatus.Fail).Configure());
                     }
 
                     result.Actions = ActionListFactory.Enumerable(actions);
                 }
             }
 
-            BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.HonorAndDuty)
+            BlueprintKingdomEventConfigurator.From(KingdomEventRefs.HonorAndDuty)
                 .EditPossibleSolution(LeaderType.Regent, FixSolution)
                 .EditPossibleSolution(LeaderType.General, FixSolution)
                 .EditComponent<EventFinalResults>(c =>
@@ -116,21 +116,21 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintObjectConfigurator.From(BlueprintComponentListGuid.CapitalThroneRoomActions)
+            BlueprintObjectConfigurator.From(ComponentListRefs.CapitalThroneRoomActions)
                 .EditFirstGameActionWhere<AlignmentSelector>(a =>
                 {
                     return a.LawfulGood.Action.GetGameActionsRecursive()
                         .OfType<KingdomActionStartEvent>()
-                        .Any(s => s.Event.AssetGuid == BlueprintKingdomEventGuid.HonorAndDuty.guid);
+                        .Any(s => s.Event.AssetGuid == KingdomEventRefs.HonorAndDuty.guid);
                 }, a =>
                 {
                     a.LawfulGood.Action = ActionListFactory.Enumerable(a.LawfulGood.Action.Actions
-                        .AddItem(GiveObjectiveConfigurator.New(BlueprintQuestObjectiveGuid.HonorAndDutyProtectOrKickOut).Configure())
+                        .AddItem(GiveObjectiveConfigurator.New(QuestObjectiveRefs.HonorAndDutyProtectOrKickOut).Configure())
                         );
                 })
                 .Configure();
 
-            BlueprintRandomEncounterConfigurator.From(BlueprintRandomEncounterGuid.HonorAndDuty)
+            BlueprintRandomEncounterConfigurator.From(RandomEncounterRefs.HonorAndDuty)
                 .SetPool(EncounterPool.Mixed) // Putting it in the Combat pool makes it harder to get than other special encounters. Plus you don't necessarily fight
                 .Configure();
         }
@@ -139,14 +139,14 @@ namespace kmbf.Patch
         {
             if (StartPatch("Improving Cultural Development Theater"))
             {
-                BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CulRank5_DiscountCulBuildings)
-                                .AddBuildingCostModifierBuilding(BlueprintSettlementBuildingGuid.Theater)
+                BlueprintKingdomBuffConfigurator.From(KingdomBuffRefs.CulRank5_DiscountCulBuildings)
+                                .AddBuildingCostModifierBuilding(SettlementBuildingRefs.Theater)
                                 .Configure();
             }
 
             if (StartPatch("Wigmold System Opportunities"))
             {
-                BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.StaRank10_WigmoldSystem)
+                BlueprintKingdomBuffConfigurator.From(KingdomBuffRefs.StaRank10_WigmoldSystem)
                     .EditAllComponents<KingdomEventModifier>(m =>
                     {
                         m.ApplyToOpportunities = true;
@@ -159,19 +159,19 @@ namespace kmbf.Patch
         {
             if (StartPatch("Embassy Row Adjacency"))
             {
-                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.EmbassyRow)
+                BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.EmbassyRow)
                     .EditComponent<KingdomEventModifier>(m =>
                     {
                         m.ApplyToOpportunities = true;
                     })
-                    .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, BlueprintSettlementBuildingGuid.School)
-                    .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, BlueprintSettlementBuildingGuid.Aviary, BlueprintSettlementBuildingGuid.BlackMarket, BlueprintSettlementBuildingGuid.ThievesGuild)
+                    .AddAdjacencyBonusBuildings(KingdomStats.Type.Culture, SettlementBuildingRefs.School)
+                    .AddAdjacencyBonusBuildings(KingdomStats.Type.Espionage, SettlementBuildingRefs.Aviary, SettlementBuildingRefs.BlackMarket, SettlementBuildingRefs.ThievesGuild)
                     .Configure();
             }
 
             if (StartBalancePatch("Embassy Row Grand Diplomat Region", nameof(BalanceSettings.FixEmbassyRowGrandDiplomatBonus)))
             {
-                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.EmbassyRow)
+                BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.EmbassyRow)
                     .EditComponent<KingdomEventModifier>(m =>
                     {
                         m.OnlyInRegion = true;
@@ -188,22 +188,22 @@ namespace kmbf.Patch
 
             AlignmentMaskType nonLawfulOrGood = AlignmentMaskType.TrueNeutral | AlignmentMaskType.ChaoticNeutral | AlignmentMaskType.NeutralEvil | AlignmentMaskType.ChaoticEvil;
             
-            BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.AssassinsGuild)
+            BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.AssassinsGuild)
                 .SetAlignmentRestriction(nonLawfulOrGood)
                 .Configure();
-            BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.GamblingDen)
+            BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.GamblingDen)
                 .SetAlignmentRestriction(nonLawfulOrGood)
                 .Configure();
-            BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.ThievesGuild)
+            BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.ThievesGuild)
                 .SetAlignmentRestriction(nonLawfulOrGood)
                 .RemoveComponents<AdjacencyRestriction>() // Adjacency restrictions are easy to work around and not documented by the game, just remove it
                 .Configure();
 
             if (StartBalancePatch("Black Market Alignemnt Requirement", nameof(BalanceSettings.FixKingdomBuildingAccess)))
             {
-                BlueprintSettlementBuildingConfigurator.From(BlueprintSettlementBuildingGuid.BlackMarket)
+                BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.BlackMarket)
                     .SetAlignmentRestriction(nonLawfulOrGood)
-                    .SetOtherBuildRestriction([BlueprintSettlementBuildingGuid.ThievesGuild])
+                    .SetOtherBuildRestriction([SettlementBuildingRefs.ThievesGuild])
                     .Configure();
             }
         }
@@ -216,15 +216,15 @@ namespace kmbf.Patch
         {
             if (!StartPatch("It's a Magical Place")) return;
 
-            BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ItsAMagicalPlace)
+            BlueprintKingdomUpgradeConfigurator.From(KingdomUpgradeRefs.ItsAMagicalPlace)
                 .EditEventSuccessAnyFinalResult(r =>
                 {
-                    r.Actions = ActionListFactory.Add(r.Actions, KingdomActionAddBuffConfigurator.NewRegional(BlueprintKingdomBuffGuid.ItsAMagicalPlace, BlueprintRegionGuid.ShrikeHills)
+                    r.Actions = ActionListFactory.Add(r.Actions, KingdomActionAddBuffConfigurator.NewRegional(KingdomBuffRefs.ItsAMagicalPlace, RegionRefs.ShrikeHills)
                         .Configure());
                 })
                 .Configure();
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ItsAMagicalPlace)
+            BlueprintBuffConfigurator.From(BuffRefs.ItsAMagicalPlace)
                 .RemoveComponents<AbilityScoreCheckBonus>()
                 .AddComponent<BuffSkillBonus>(b =>
                 {
@@ -246,9 +246,9 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Temple of Abadar")) return;
 
-            if (BlueprintKingdomRootGuid.KingdomRoot.GetBlueprint(out KingdomRoot kingdomRoot))
+            if (KingdomRootRefs.KingdomRoot.GetBlueprint(out KingdomRoot kingdomRoot))
             {
-                if (BlueprintSettlementBuildingGuid.TempleOfAbadar.GetBlueprint(out BlueprintSettlementBuilding templeOfAbadar)
+                if (SettlementBuildingRefs.TempleOfAbadar.GetBlueprint(out BlueprintSettlementBuilding templeOfAbadar)
                     && !kingdomRoot.Buildings.Contains(templeOfAbadar))
                 {
                     kingdomRoot.Buildings = [.. kingdomRoot.Buildings, templeOfAbadar];
@@ -260,7 +260,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Lure of the First World")) return;
 
-            BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.LureOfTheFirstWorld)
+            BlueprintKingdomEventConfigurator.From(KingdomEventRefs.LureOfTheFirstWorld)
                 .CopyPossibleSolutionResolutions(fromLeader: LeaderType.Regent, toLeader: LeaderType.Counsilor)
                 .EditPossibleSolution(LeaderType.Regent, s =>
                 {
@@ -273,7 +273,7 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintKingdomEventConfigurator.From(BlueprintKingdomEventGuid.LureOfTheFirstWorldSimple)
+            BlueprintKingdomEventConfigurator.From(KingdomEventRefs.LureOfTheFirstWorldSimple)
                 .CopyPossibleSolutionResolutions(fromLeader: LeaderType.Regent, toLeader: LeaderType.Counsilor)
                 .EditPossibleSolution(LeaderType.Regent, s =>
                 {
@@ -293,7 +293,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Candlemere Tower Research", nameof(BalanceSettings.FixCandlemereTowerResearch))) return;
 
-            BlueprintKingdomUpgradeConfigurator.From(BlueprintKingdomUpgradeGuid.ResearchOftheCandlemere)
+            BlueprintKingdomUpgradeConfigurator.From(KingdomUpgradeRefs.ResearchOftheCandlemere)
                 .EditEventSuccessAnyFinalResult(r =>
                 {
                     var addBuffAction = r.Actions.GetGameAction<KingdomActionAddBuff>();
@@ -304,7 +304,7 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintKingdomBuffConfigurator.From(BlueprintKingdomBuffGuid.CandlemereTowerResearch)
+            BlueprintKingdomBuffConfigurator.From(KingdomBuffRefs.CandlemereTowerResearch)
                 .EditComponent<KingdomEventModifier>(c =>
                 {
                     c.OnlyInRegion = true;

@@ -58,12 +58,12 @@ namespace kmbf.Patch
 
             // The "Master" features are accidentally added to Dog by the dialogue. Might as well put the stat bonuses directly on it
             // Plus the Offensive Master feature was accidentally giving the Defensive buff
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.EkunWolfOffensiveMaster)
-                .ReplaceAllComponentsWithSource(BlueprintFeatureGuid.EkunWolfOffensiveBuff)
+            BlueprintFeatureConfigurator.From(FeatureRefs.EkunWolfOffensiveMaster)
+                .ReplaceAllComponentsWithSource(FeatureRefs.EkunWolfOffensiveBuff)
                 .Configure();
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.EkunWolfDefensiveMaster)
-                .ReplaceAllComponentsWithSource(BlueprintFeatureGuid.EkunWolfDefensiveBuff)
+            BlueprintFeatureConfigurator.From(FeatureRefs.EkunWolfDefensiveMaster)
+                .ReplaceAllComponentsWithSource(FeatureRefs.EkunWolfDefensiveBuff)
                 .Configure();
         }
 
@@ -72,7 +72,7 @@ namespace kmbf.Patch
             if (!StartPatch("Magical Vestment Shield", ModExclusionFlags.CallOfTheWild)) return;
 
             // Magical Vestment: Make the Shield version as Shield Enhancement rather than pure Shield AC
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.MagicalVestmentShield)
+            BlueprintBuffConfigurator.From(BuffRefs.MagicalVestmentShield)
                 .EditComponent<AddStatBonusScaled>(c =>
                 {
                     c.Descriptor = ModifierDescriptor.ShieldEnhancement;
@@ -87,7 +87,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Raise Dead")) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.RaiseDead)
+            BlueprintAbilityConfigurator.From(AbilityRefs.RaiseDead)
                 .EditComponent<AbilityEffectRunAction>(runAction =>
                 {
                     var difficultyCheck = ContextConditionDifficultyHigherThanConfigurator
@@ -110,18 +110,18 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            if (!BlueprintAbilityGuid.RaiseDead.GetBlueprint(out BlueprintAbility raiseDead)) return;
+            if (!AbilityRefs.RaiseDead.GetBlueprint(out BlueprintAbility raiseDead)) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.RaiseDead_Cutscene)
+            BlueprintAbilityConfigurator.From(AbilityRefs.RaiseDead_Cutscene)
                 .SetDisplayName(raiseDead.m_DisplayName)
                 .SetDescription(raiseDead.m_Description)
                 .SetIcon(raiseDead.m_Icon)
                 .Configure();
 
-            BlueprintCueConfigurator.From(BlueprintCueGuid.LKBattle_Phase5_Cue_0065)
+            BlueprintCueConfigurator.From(CueRefs.LKBattle_Phase5_Cue_0065)
                 .EditOnStopActionRecursiveWhere<EvaluatedTrapCastSpell>(pred: null, editAction: a =>
                 {
-                    if (!BlueprintAbilityGuid.RaiseDead_Cutscene.GetBlueprint(out BlueprintAbility raiseDead_Cutscene)) return;
+                    if (!AbilityRefs.RaiseDead_Cutscene.GetBlueprint(out BlueprintAbility raiseDead_Cutscene)) return;
 
                     a.Spell = raiseDead_Cutscene;
                 })
@@ -134,7 +134,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Breath of Life")) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreathOfLifeTouch)
+            BlueprintAbilityConfigurator.From(AbilityRefs.BreathOfLifeTouch)
                 .SetFullRoundAction(false)
                 .EditComponent<AbilityEffectRunAction>(c =>
                 {
@@ -175,7 +175,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Joyful Rapture")) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.JoyfulRapture)
+            BlueprintAbilityConfigurator.From(AbilityRefs.JoyfulRapture)
                 .EditComponentGameAction<AbilityEffectRunAction, ContextActionDispelMagic>("$ContextActionDispelBuffs$b4781573-55ad-4e71-9dd9-75a0c38652e0", a =>
                 {
                     a.Descriptor |= SpellDescriptor.Fear | SpellDescriptor.Shaken | SpellDescriptor.Frightened | SpellDescriptor.NegativeEmotion;
@@ -191,11 +191,11 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Protection from Arrows")) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ProtectionFromArrowsCommunal)
+            BlueprintAbilityConfigurator.From(AbilityRefs.ProtectionFromArrowsCommunal)
                 .SetSpellResistance(false)
                 .Configure();
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ProtectionFromArrows)
+            BlueprintBuffConfigurator.From(BuffRefs.ProtectionFromArrows)
                 .RemoveComponents<DRAgainstRangedWithPool>()
                 .AddComponent<AddDamageResistancePhysical>(c =>
                 {
@@ -213,7 +213,7 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.ProtectionFromArrowsCommunal)
+            BlueprintBuffConfigurator.From(BuffRefs.ProtectionFromArrowsCommunal)
                 .RemoveComponents<DRAgainstRangedWithPool>()
                 .AddComponent<AddDamageResistancePhysical>(c =>
                 {
@@ -237,7 +237,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Leopard Companion")) return;
 
-            BlueprintObjectConfigurator.From(BlueprintFeatureGuid.AnimalCompanionUpgradeLeopard)
+            BlueprintObjectConfigurator.From(FeatureRefs.AnimalCompanionUpgradeLeopard)
                 .RemoveComponentsWhere<AddStatBonus>(b => b.Stat == StatType.Strength)
                 .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Constitution, b => b.Value = 2)
                 .EditComponentWhere<AddStatBonus>(b => b.Stat == StatType.Dexterity, b => b.Value = 2)
@@ -251,7 +251,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Gaze Attack Immunity")) return;
 
-            BlueprintAbilityAreaEffectConfigurator.From(BlueprintAbilityAreaEffectGuid.BalefulGaze)
+            BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.BalefulGaze)
                 .EditRoundActions(roundActions =>
                 {
                     foreach(GameAction action in roundActions.GetGameActionsRecursive())
@@ -288,7 +288,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Foulspawn Tiefling")) return;
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.TieflingHeritageFoulspawn)
+            BlueprintFeatureConfigurator.From(FeatureRefs.TieflingHeritageFoulspawn)
                 .EditComponent<AttackBonusConditional>(c =>
                 {
                     c.Conditions.Operation = Operation.Or;
@@ -303,7 +303,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Explosion Ring")) return;
 
-            BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ExplosionRing)
+            BlueprintFeatureConfigurator.From(FeatureRefs.ExplosionRing)
                 .AddComponent<AdditionalBonusOnDamage>(c =>
                 {
                     c.BonusOnDamage = 12;
@@ -312,11 +312,11 @@ namespace kmbf.Patch
                 })
                 .Configure();
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.AlchemistFire)
+            BlueprintAbilityConfigurator.From(AbilityRefs.AlchemistFire)
                 .AddSpellDescriptor(SpellDescriptor.Bomb)
                 .Configure();
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.AcidFlask)
+            BlueprintAbilityConfigurator.From(AbilityRefs.AcidFlask)
                 .AddSpellDescriptor(SpellDescriptor.Bomb)
                 .Configure();
         }
@@ -328,7 +328,7 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Break Enchantment")) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.BreakEnchantment)
+            BlueprintAbilityConfigurator.From(AbilityRefs.BreakEnchantment)
                 .AddAbilityEffectRunAction(
                     MakeGameActionConditional(
                         ConditionsCheckerFactory.Single(MakeContextConditionHasBuffWithDescriptor(SpellDescriptor.Petrified)),
@@ -355,7 +355,7 @@ namespace kmbf.Patch
         {
             if (StartPatch("Strength Surge"))
             {
-                BlueprintBuffConfigurator.From(BlueprintBuffGuid.StrengthSurge)
+                BlueprintBuffConfigurator.From(BuffRefs.StrengthSurge)
                     .RemoveComponents<AbilityScoreCheckBonus>()
                     .AddComponent<AddContextStatBonus>(b =>
                     {
@@ -368,7 +368,7 @@ namespace kmbf.Patch
 
             if (StartPatch("Animal Domain Perception Bonus"))
             {
-                BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.AnimalDomainBaseFeature)
+                BlueprintFeatureConfigurator.From(FeatureRefs.AnimalDomainBaseFeature)
                     .RemoveComponents<AbilityScoreCheckBonus>()
                     .AddComponent<AddContextStatBonus>(b =>
                     {
@@ -386,7 +386,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Touch of Glory", nameof(BalanceSettings.FixTouchOfGlory))) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.TouchOfGlory)
+            BlueprintBuffConfigurator.From(BuffRefs.TouchOfGlory)
                 .RemoveComponentWhere<AddContextStatBonus>(c => c.Stat == StatType.Charisma)
                 .AddComponent<AbilityScoreCheckBonus>(c =>
                 {
@@ -403,7 +403,7 @@ namespace kmbf.Patch
         {
             if (!StartQualityOfLifePatch("Combat Expertise Off By Default", nameof(QualityOfLifeSettings.CombatExpertiseOffByDefault))) return;
 
-            BlueprintActivatableAbilityConfigurator.From(BlueprintActivatableAbilityGuid.CombatExpertise)
+            BlueprintActivatableAbilityConfigurator.From(ActivatableAbilityRefs.CombatExpertise)
                 .SetIsOnByDefault(false)
                 .Configure();
         }
@@ -413,7 +413,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Nauseated Poison Descriptor", nameof(BalanceSettings.FixNauseatedPoisonDescriptor))) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.Nauseated)
+            BlueprintBuffConfigurator.From(BuffRefs.Nauseated)
                 .RemoveSpellDescriptor(SpellDescriptor.Poison)
                 .Configure();
         }
@@ -425,16 +425,20 @@ namespace kmbf.Patch
         // Depends on the RuleCheckTargetFlatFooted patch
         static void FixShatterDefenses()
         {
+            // GUIDs taken from CotW. Should not run together
+            BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
+            BlueprintBuffGuid KMBF_ShatterDefensesAppliedThisRound = new("cf3e721e93044a21b87692526b3c45e3");
+
             if (!StartBalancePatch("Shatter Defenses", nameof(BalanceSettings.FixShatterDefenses), ModExclusionFlags.CallOfTheWild)) return;
 
-            var shatterDefensesFeatureConfig = BlueprintFeatureConfigurator.From(BlueprintFeatureGuid.ShatterDefenses);
+            var shatterDefensesFeatureConfig = BlueprintFeatureConfigurator.From(FeatureRefs.ShatterDefenses);
             BlueprintFeature shatterDefenses = shatterDefensesFeatureConfig.Instance;
             if (shatterDefenses == null)
                 return;
 
             var shatterDefensesHitBuff = BlueprintBuffConfigurator.New
                 (
-                    BlueprintBuffGuid.KMBF_ShatterDefensesHit
+                    FixBuffRefs.ShatterDefensesHit
                     , "ShatterDefensesHit"
                     , shatterDefenses.m_DisplayName
                     , shatterDefenses.m_Description
@@ -455,7 +459,7 @@ namespace kmbf.Patch
                 .Configure();
 
             var shatterDefensesAppliedThisRoundBuff = BlueprintBuffConfigurator
-                .NewHidden(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, "ShatterDefensesAppliedThisRound")
+                .NewHidden(FixBuffRefs.ShatterDefensesAppliedThisRound, "ShatterDefensesAppliedThisRound")
                 .AddComponent<NewRoundTrigger>(n =>
                 {
                     n.NewRoundActions = ActionListFactory.Single(MakeContextActionRemoveSelf());
@@ -473,13 +477,13 @@ namespace kmbf.Patch
                         (
                             Operation.And
                             , MakeContextConditionHasConditions([UnitCondition.Shaken, UnitCondition.Frightened], any: true)
-                            , MakeContextConditionHasBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, not: true)
+                            , MakeContextConditionHasBuffFromCaster(FixBuffRefs.ShatterDefensesAppliedThisRound, not: true)
                         )
                         , ifTrue: ActionListFactory.From
                         (
-                            MakeContextActionRemoveBuffFromCaster(BlueprintBuffGuid.KMBF_ShatterDefensesHit)
-                            , MakeContextActionApplyUndispelableBuff(BlueprintBuffGuid.KMBF_ShatterDefensesHit, ContextDurationFactory.ConstantRounds(2))
-                            , MakeContextActionApplyUndispelableBuff(BlueprintBuffGuid.KMBF_ShatterDefensesAppliedThisRound, ContextDurationFactory.ConstantRounds(1))
+                            MakeContextActionRemoveBuffFromCaster(FixBuffRefs.ShatterDefensesHit)
+                            , MakeContextActionApplyUndispelableBuff(FixBuffRefs.ShatterDefensesHit, ContextDurationFactory.ConstantRounds(2))
+                            , MakeContextActionApplyUndispelableBuff(FixBuffRefs.ShatterDefensesAppliedThisRound, ContextDurationFactory.ConstantRounds(1))
                         )
 
                     )
@@ -496,7 +500,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Crane Wing Free Hand", nameof(BalanceSettings.FixCraneWingRequirements))) return;
 
-            BlueprintBuffConfigurator.From(BlueprintBuffGuid.CraneStyleWingBuff)
+            BlueprintBuffConfigurator.From(BuffRefs.CraneStyleWingBuff)
                 .EditComponent<ACBonusAgainstAttacks>(c => c.NoShield = true)
                 .Configure();
         }
@@ -506,7 +510,7 @@ namespace kmbf.Patch
         {
             if (!StartBalancePatch("Controlled Fireball", nameof(BalanceSettings.FixControlledFireball))) return;
 
-            BlueprintAbilityConfigurator.From(BlueprintAbilityGuid.ControlledFireball)
+            BlueprintAbilityConfigurator.From(AbilityRefs.ControlledFireball)
                 .EditComponent<AbilityTargetsAround>(c => c.m_TargetType = TargetType.Any)
                 .Configure();
         }

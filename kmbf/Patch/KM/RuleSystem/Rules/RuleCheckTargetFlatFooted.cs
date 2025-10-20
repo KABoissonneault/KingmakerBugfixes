@@ -42,7 +42,7 @@ namespace kmbf.Patch.KM.RuleSystem.Rules
             if (rule.Target?.Buffs == null)
                 return false;
 
-            return rule.Target.Buffs.Enumerable.Any(b => b.Blueprint.AssetGuid == BlueprintBuffGuid.KMBF_ShatterDefensesHit.guid && b.MaybeContext?.MaybeCaster == rule.Initiator);
+            return rule.Target.Buffs.Enumerable.Any(b => b.Blueprint.AssetGuid == FixBuffRefs.ShatterDefensesHit.guid && b.MaybeContext?.MaybeCaster == rule.Initiator);
         }
     }
 }

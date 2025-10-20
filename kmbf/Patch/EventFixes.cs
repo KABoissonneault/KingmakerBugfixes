@@ -32,11 +32,11 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Shrewish Gulch")) return;
 
-            BlueprintCheckConfigurator.From(BlueprintCheckGuid.ShrewishGulchLastStageTwoActions)
+            BlueprintCheckConfigurator.From(CheckRefs.ShrewishGulchLastStageTwoActions)
                 .SetSkillType(StatType.SkillAthletics)
                 .Configure();
 
-            BlueprintCheckConfigurator.From(BlueprintCheckGuid.ShrewishGulchLastStageThreeActions)
+            BlueprintCheckConfigurator.From(CheckRefs.ShrewishGulchLastStageThreeActions)
                 .SetSkillType(StatType.SkillAthletics)
                 .Configure();
         }
@@ -46,8 +46,8 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Candlemere Region Upgrade Unlock")) return;
 
-            BlueprintCueConfigurator.From(BlueprintCueGuid.CandlemereRismelDelayedStartFight)
-                .AddOnStopAction(UnlockFlagConfigurator.New(BlueprintUnlockableFlagGuid.SouthNarlmarches_MagicalUpgrade, 1).Configure())
+            BlueprintCueConfigurator.From(CueRefs.CandlemereRismelDelayedStartFight)
+                .AddOnStopAction(UnlockFlagConfigurator.New(UnlockableFlagRefs.SouthNarlmarches_MagicalUpgrade, 1).Configure())
                 .Configure();
         }
 
@@ -57,16 +57,16 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Unrest in the Streets First Check")) return;
 
-            BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Diplomacy)
-                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2)))
-                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3)))
-                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
+            BlueprintCheckConfigurator.From(CheckRefs.Unrest_AngryMob_FirstCheck_Diplomacy)
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -2)))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -3)))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
 
-            BlueprintCheckConfigurator.From(BlueprintCheckGuid.Unrest_AngryMob_FirstCheck_Intimidate)
-                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -2)))
-                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -3)))
-                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.AngryMob_FirstCheckModifier, -4)))
+            BlueprintCheckConfigurator.From(CheckRefs.Unrest_AngryMob_FirstCheck_Intimidate)
+                .EditDCModifierAt(4, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -2)))
+                .EditDCModifierAt(5, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -3)))
+                .EditDCModifierAt(6, m => m.Conditions = ConditionsCheckerFactory.Single(MakeConditionFlagUnlocked(UnlockableFlagRefs.AngryMob_FirstCheckModifier, -4)))
                 .Configure();
         }
 
@@ -83,9 +83,9 @@ namespace kmbf.Patch
         {
             if (!StartPatch("Test of Strength")) return;
 
-            if (!BlueprintAnswerGuid.TestOfStrength_BreakWallsSolution_Conclusion.GetBlueprint(out BlueprintAnswer breakWallsAnswer)) return;
+            if (!AnswerRefs.TestOfStrength_BreakWallsSolution_Conclusion.GetBlueprint(out BlueprintAnswer breakWallsAnswer)) return;
 
-            BlueprintAnswerConfigurator.From(BlueprintAnswerGuid.TestOfStrength_PushSolution_Conclusion)
+            BlueprintAnswerConfigurator.From(AnswerRefs.TestOfStrength_PushSolution_Conclusion)
                 .EditOnSelectActions(actions =>
                 {
                     // Remove the current open doors and add the ones from the "Break walls" solution
@@ -132,13 +132,13 @@ namespace kmbf.Patch
         {
             if (!StartEventPatch("Free Ezvanki Temple", nameof(EventSettings.FixFreeEzvankiTemple))) return;
 
-            BlueprintCueConfigurator.From(BlueprintCueGuid.Act2KestenTourToThroneRoom_Cue01)
+            BlueprintCueConfigurator.From(CueRefs.Act2KestenTourToThroneRoom_Cue01)
                 .EditOnStopActionWhere<Conditional>(c =>
                 {
                     return c.IfTrue.HasActions && c.IfTrue.Actions[0].name.Equals("$KingdomActionStartEvent$9f6659ab-f2f5-4481-b254-0d03340b7ba4");
                 }, c =>
                 {
-                    c.ConditionsChecker = ConditionsCheckerFactory.WithCondition(c.ConditionsChecker, MakeConditionFlagUnlocked(BlueprintUnlockableFlagGuid.EzvankiDeal));
+                    c.ConditionsChecker = ConditionsCheckerFactory.WithCondition(c.ConditionsChecker, MakeConditionFlagUnlocked(UnlockableFlagRefs.EzvankiDeal));
                 })
                 .Configure();
         }
