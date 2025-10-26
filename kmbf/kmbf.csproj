@@ -2,7 +2,7 @@
 	<Import Project="$(SolutionDir)GamePath.props" Condition="Exists('$(SolutionDir)GamePath.props')" />
 
 	<PropertyGroup>
-		<TargetFramework>net46</TargetFramework>
+		<TargetFramework>net462</TargetFramework>
 		<AssemblyName>KingmakerBugfixes</AssemblyName>
 		<Description>Kingmaker Bugfix</Description>
 		<Version>1.3.0</Version>
