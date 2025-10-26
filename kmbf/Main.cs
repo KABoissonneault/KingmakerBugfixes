@@ -1,11 +1,25 @@
 ﻿using HarmonyLib;
 using Kingmaker;
+using Kingmaker.EntitySystem.Persistence.JsonUtility;
 using kmbf.Patch;
+using kmbf.Patch.BP;
+using Newtonsoft.Json.Serialization;
+using System.Diagnostics;
 using System.Reflection;
 using UnityEngine;
 using UnityModManagerNet;
 
 namespace kmbf;
+
+class JsonTraceWriter : ITraceWriter
+{
+    public TraceLevel LevelFilter => TraceLevel.Error;
+
+    public void Trace(TraceLevel level, string message, Exception ex)
+    {
+        Main.Log.Log($"Json [{level}]: {message}");
+    }
+}
 
 public static class Main 
 {
@@ -34,6 +48,12 @@ public static class Main
         modEntry.OnSaveGUI = OnSaveGUI;
 
         runsCallOfTheWild = UnityModManager.modEntries.Any(mod => mod.Info.Id.Equals("CallOfTheWild") && mod.Enabled && !mod.ErrorOnLoading);
+
+        // This helps debug issues with loading saves
+        if (DefaultJsonSettings.DefaultSettings.TraceWriter == null)
+        {
+            DefaultJsonSettings.DefaultSettings.TraceWriter = new JsonTraceWriter();
+        }
 
         ModLocalizationManager.TryLoadingStringsOnLoad();
 
