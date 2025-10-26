@@ -1,4 +1,5 @@
 ﻿using Kingmaker.Designers.EventConditionActionSystem.Actions;
+using Kingmaker.Designers.EventConditionActionSystem.Evaluators;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
@@ -21,6 +22,7 @@ namespace kmbf.Patch.BP
             FixTestOfStrength();
             FixMimThreeWishes();
             FixAmiriReforgedBladeDialogueTrigger();
+            FixHarrimRevelation();
 
             // Optional
             FixFreeEzvankiTemple();
@@ -141,6 +143,27 @@ namespace kmbf.Patch.BP
                 })
                 .Configure();
         }
+        
+        // This event occurs in the Capital, so the only companion in party is the main character,
+        // making this Unit reference fail to resolve.
+        // Fortunately, we can simply include remote companions
+        static void FixHarrimRevelation()
+        {
+            if (!StartPatch("Harrim Revelation")) return;
 
+            BlueprintCueConfigurator.From(new BlueprintCueGuid("76827ac4224e5ee4fba03097842e00bc"))
+                .EditOnStopAction<AddFact>(f =>
+                {
+                    var companionUnit = f.Unit as CompanionInParty;
+                    if (companionUnit == null)
+                    {
+                        Main.Log.Error("AddFact unit not a CompanionInParty");
+                        return;
+                    }
+
+                    companionUnit.IncludeRemote = true;
+                })
+                .Configure();
+        }
     }
 }

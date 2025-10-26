@@ -14,10 +14,12 @@ namespace kmbf
     {
         [JsonProperty] public string Key;
         [JsonProperty] public string Value;
-        [JsonProperty] public string Target;
-        [JsonProperty] public string Replace;
-        [JsonProperty] public string Add;
-        [JsonProperty] public string Remove;
+        [JsonProperty] public string[] ModExclusion;
+        [JsonProperty] public string SettingCondition;
+        [JsonProperty] public string Remove; // If set, the contents are removed from the string
+        [JsonProperty] public string Target; // Operand used in the following operations
+        [JsonProperty] public string Replace; // If set, Target is replaced with the contents of Replace
+        [JsonProperty] public string Add; // If set, the contents are added after Target
     }
 
     public class ModLocalizedStringData
