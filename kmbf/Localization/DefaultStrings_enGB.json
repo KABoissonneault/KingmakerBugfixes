@@ -59,6 +59,11 @@
     "Replace": "Obliteration"
   },
   {
+    "Key": "d4270732-4f06-4618-83e4-a802e263ba35",
+    "Target": "Atheletics",
+    "Replace":  "Athletics"
+  },
+  {
     "Key": "e68222d0-1412-4a14-8e7a-817b74fcba73",
     "Remove": "bardiche, "
   },
