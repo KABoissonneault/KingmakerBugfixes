@@ -17,10 +17,9 @@ using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.UnitLogic.Alignments;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
-
 using static kmbf.Patch.PatchUtility;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.BP
 {
     static class KingdomFixes
     {

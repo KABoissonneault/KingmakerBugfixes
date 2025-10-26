@@ -18,11 +18,10 @@ using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
-
 using static kmbf.Blueprint.Builder.ElementBuilder;
 using static kmbf.Patch.PatchUtility;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.BP
 {
     static class AbilitiesFixes
     {
@@ -199,6 +198,7 @@ namespace kmbf.Patch
                 .RemoveComponents<DRAgainstRangedWithPool>()
                 .AddComponent<AddDamageResistancePhysical>(c =>
                 {
+                    c.name = "$AddDamageResistancePhysical$ddda39fa-685e-46e7-8517-f02635766e13";
                     c.Or = true;
                     c.BypassedByMagic = true;
                     c.BypassedByMeleeWeapon = true;
@@ -217,6 +217,7 @@ namespace kmbf.Patch
                 .RemoveComponents<DRAgainstRangedWithPool>()
                 .AddComponent<AddDamageResistancePhysical>(c =>
                 {
+                    c.name = "$AddDamageResistancePhysical$86197669-0d2c-407d-be88-d72b4bed5263";
                     c.Or = true;
                     c.BypassedByMagic = true;
                     c.BypassedByMeleeWeapon = true;

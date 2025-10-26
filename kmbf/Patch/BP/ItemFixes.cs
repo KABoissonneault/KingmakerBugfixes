@@ -1,20 +1,16 @@
-﻿using Kingmaker.Blueprints.Classes;
-using Kingmaker.Blueprints.Items.Weapons;
-using Kingmaker.Designers.Mechanics.Facts;
+﻿using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
-using Kingmaker.Enums;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
-
 using static kmbf.Blueprint.Builder.ElementBuilder;
 using static kmbf.Patch.PatchUtility;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.BP
 {
     static class ItemFixes
     {

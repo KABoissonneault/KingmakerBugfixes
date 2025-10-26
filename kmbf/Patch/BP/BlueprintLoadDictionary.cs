@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Kingmaker.Blueprints;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.BP
 {
     [HarmonyPatch(typeof(LibraryScriptableObject), "LoadDictionary")]
     static class LibraryScriptableObject_LoadDictionary_Patch
@@ -10,7 +10,7 @@ namespace kmbf.Patch
         static public bool Loaded { get => loaded; }
 
         [HarmonyPostfix]
-        public static void BlueprintPatch()
+        public static void BlueprintPatch(LibraryScriptableObject __instance)
         {
             if (loaded) return;
             loaded = true;

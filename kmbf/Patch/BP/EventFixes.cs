@@ -4,11 +4,10 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
-
 using static kmbf.Blueprint.Builder.ElementBuilder;
 using static kmbf.Patch.PatchUtility;
 
-namespace kmbf.Patch
+namespace kmbf.Patch.BP
 {
     static class EventFixes
     {
