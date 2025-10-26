@@ -19,6 +19,7 @@ namespace kmbf.Patch.BP
             Main.Log.Log("Starting Item patches");
 
             ChangeDartsWeaponType();
+            Item.SlingFixes.Apply();
 
             FixDatura();
             FixNaturesWrath();

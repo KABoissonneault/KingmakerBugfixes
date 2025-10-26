@@ -1,4 +1,6 @@
-﻿namespace kmbf.Blueprint
+﻿using Kingmaker.Blueprints.Items;
+
+namespace kmbf.Blueprint
 {
     public static class ComponentListRefs
     {
@@ -128,6 +130,22 @@
         public static readonly BlueprintItemWeaponGuid ColdIronRapierPlus3 = new("925d399524ae74748ac78b49f48785c0");
         public static readonly BlueprintItemWeaponGuid BladeOfTheMerciful = new("58a5d7af98c250944acf5f54ab88a924");
         public static readonly BlueprintItemWeaponGuid GameKeeperOfTheFirstWorld = new("717369864d0ef1f43a291b7b8f3ce4c9");
+
+        public static readonly BlueprintItemWeaponGuid StandardSling = new("d30a1e8901890a04eaddaceb4abd7002");
+        public static readonly BlueprintItemWeaponGuid MasterworkSling = new("15aedc56990d7394eae5364e08d7bc81");
+        public static readonly BlueprintItemWeaponGuid SlingPlus1 = new("32786a0a5807d5a448581a8b17864319");
+        public static readonly BlueprintItemWeaponGuid SlingPlus2 = new("c293e5abe38167b4e8b8cdaa1e95a054");
+        public static readonly BlueprintItemWeaponGuid SlingPlus3 = new("e42a450c2e14e2b458dc5c78a4d7b7ff");
+        public static readonly BlueprintItemWeaponGuid SlingPlus4 = new("30157903ff22e464e99e8098070e4de9");
+        public static readonly BlueprintItemWeaponGuid SlingPlus5 = new("3bec1e2f21ccfaf4bb8f4539abc5fd0e");
+
+        public static readonly BlueprintItemWeaponGuid StandardSlingStaff = new("dda1a4f8cbf8ad34ca7845ca17313e86");
+        public static readonly BlueprintItemWeaponGuid MasterworkSlingStaff = new("9f6b88554d5eb564ab2d247ab11f40b0");
+        public static readonly BlueprintItemWeaponGuid SlingStaffPlus1 = new("643b5b476b7fc1942aa24a50dedc8de4");
+        public static readonly BlueprintItemWeaponGuid SlingStaffPlus2 = new("1dc78587aa10b0849b863f57615ddce2");
+        public static readonly BlueprintItemWeaponGuid SlingStaffPlus3 = new("69245594968164347b63b2ddc3c24eef");
+        public static readonly BlueprintItemWeaponGuid SlingStaffPlus4 = new("db4d0076c83d9434a9e8557f805d7b9a");
+        public static readonly BlueprintItemWeaponGuid SlingStaffPlus5 = new("565ba27cf9808ae4285cf360df076723");
     }
 
     public static class ItemEquipmentRingRefs
@@ -271,5 +289,24 @@
         public static readonly BlueprintUnlockableFlagGuid SouthNarlmarches_MagicalUpgrade = new("a069e9ffe15aa214c830c8ef57a7bee0");
 
         public static readonly BlueprintUnlockableFlagGuid EzvankiDeal = new("00b40c4c7e679cb47be2eeb6cd857311");
+    }
+
+    public static class CategoryDefaultsRefs
+    {
+        public static readonly BlueprintCategoryDefaultsGuid DefaultsForWeaponCategories = new("567dc59213fd9664c8cb291643439714");
+    }
+
+    public static class TrashLootSettingsRefs
+    {
+        public static readonly BlueprintTrashLootSettingsGuid TrashLootSettings = new("b2554a2be56f1c6478c14a442b0f64f3");
+        public static readonly BlueprintTrashLootSettingsGuid DLC3TrashLootSettings = new("77fe4de4c707e51439971ee480e94efc");
+    }
+
+    public static class SharedVendorTableRefs
+    {
+        public static readonly BlueprintSharedVendorTableGuid Oleg = new("f720440559fc00949900bfa1575196ac");
+
+        public static readonly BlueprintSharedVendorTableGuid DLC2QuartermasterBase = new("8035c1313902fae4796d36065e769297"); // aka Kjerdi
+        public static readonly BlueprintSharedVendorTableGuid DLC2QuartermasterImproved = new("7c68519dca4334c408227bb0140ac50f"); // aka Kjerdi
     }
 }

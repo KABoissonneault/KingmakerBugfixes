@@ -13,6 +13,7 @@ using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Loot;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.ElementsSystem;
@@ -728,6 +729,14 @@ namespace kmbf.Blueprint.Configurator
                 f.IsClassFeature = isClassFeature;
             });
         }
+
+        public TBuilder SetHideInUI(bool hideInUI)
+        {
+            return AddOperation(f =>
+            {
+                f.HideInUI = hideInUI;
+            });
+        }
     }
 
     public sealed class BlueprintFeatureConfigurator : BaseBlueprintFeatureConfigurator<BlueprintFeature, BlueprintFeatureGuid, BlueprintFeatureConfigurator>
@@ -741,7 +750,13 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintRaceConfigurator : BaseBlueprintFeatureConfigurator<BlueprintRace, BlueprintRaceGuid, BlueprintRaceConfigurator>
     {
-
+        public BlueprintRaceConfigurator AddFeature(BlueprintFeature feature)
+        {
+            return AddOperation(r =>
+            {
+                r.Features = [.. r.Features, feature];
+            });
+        }
     }
 
     public sealed class BlueprintFeatureSelectionConfigurator : BaseBlueprintFactConfigurator<BlueprintFeatureSelection, BlueprintFeatureSelectionGuid, BlueprintFeatureSelectionConfigurator>
@@ -817,6 +832,15 @@ namespace kmbf.Blueprint.Configurator
             });
         }
 
+        // Seems to be used to evaluate loot importance. The higher, the rarer
+        public TBuilder SetCR(int cr)
+        {
+            return AddOperation(i =>
+            {
+                i.CR = cr;
+            });
+        }
+
         public TBuilder SetDC(int dc)
         {
             return AddOperation(i =>
@@ -853,7 +877,21 @@ namespace kmbf.Blueprint.Configurator
 
     }
 
-    public sealed class BlueprintItemWeaponConfigurator : BaseBlueprintItemEquipmentConfigurator<BlueprintItemWeapon, BlueprintItemWeaponGuid,  BlueprintItemWeaponConfigurator>
+    public abstract class BaseBlueprintItemEquipmentHandConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintItemEquipmentConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintItemEquipmentHand
+        where GuidType : BlueprintItemEquipmentHandGuid, new()
+        where TBuilder : BaseBlueprintItemEquipmentHandConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+        public TBuilder EditVisualParameters(Action<WeaponVisualParameters> action)
+        {
+            return AddOperation(h =>
+            {
+                action(h.m_VisualParameters);
+            });
+        }
+    }
+
+    public sealed class BlueprintItemWeaponConfigurator : BaseBlueprintItemEquipmentHandConfigurator<BlueprintItemWeapon, BlueprintItemWeaponGuid,  BlueprintItemWeaponConfigurator>
     {
         public BlueprintItemWeaponConfigurator AddEnchantment(BlueprintWeaponEnchantmentGuid enchantmentId)
         {
@@ -865,6 +903,15 @@ namespace kmbf.Blueprint.Configurator
                 }
             });
         }
+
+        public BlueprintItemWeaponConfigurator AddTrashCategory(TrashLootType lootType)
+        {
+            return AddOperation(i =>
+            {
+                i.TrashLootTypes = [.. i.TrashLootTypes, lootType];
+            });
+        }
+
     }
 
     public abstract class BaseBlueprintItemEnchantmentConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintFactConfigurator<BPType, GuidType, TBuilder>
@@ -1160,6 +1207,14 @@ namespace kmbf.Blueprint.Configurator
                 c.Alignment = alignmentMask; 
             });
         }
+
+        public BlueprintCharacterClassConfigurator AddStartingItem(BlueprintItem itemBp)
+        {
+            return AddOperation(c =>
+            {
+                c.StartingItems = [.. c.StartingItems, itemBp];
+            });
+        }
     }
 
     public sealed class BlueprintWeaponTypeConfigurator : BaseBlueprintObjectConfigurator<BlueprintWeaponType, BlueprintWeaponTypeGuid, BlueprintWeaponTypeConfigurator>
@@ -1239,6 +1294,60 @@ namespace kmbf.Blueprint.Configurator
             return AddOperation(i =>
             {
                 i.m_FinishParent = value;
+            });
+        }
+    }
+
+    public class BlueprintCategoryDefaultsConfigurator : BaseBlueprintObjectConfigurator<BlueprintCategoryDefaults, BlueprintCategoryDefaultsGuid, BlueprintCategoryDefaultsConfigurator>
+    {
+        public BlueprintCategoryDefaultsConfigurator AddEntry(BlueprintCategoryDefaults.CategoryDefaultEntry entry)
+        {
+            return AddOperation(c =>
+            {
+                c.Entries = [.. c.Entries, entry];
+            });
+        }
+    }
+
+    public class BlueprintTrashLootSettingsConfigurator : BaseBlueprintObjectConfigurator<TrashLootSettings, BlueprintTrashLootSettingsGuid, BlueprintTrashLootSettingsConfigurator>
+    {
+        public BlueprintTrashLootSettingsConfigurator AddTypeEntry(TrashLootType type, params BlueprintItem[] items)
+        {
+            return AddOperation(s =>
+            {
+                var typeEntry = s.Types.FirstOrDefault(t => t.Type == type);
+                if(typeEntry == null)
+                {
+                    typeEntry = new TrashLootSettings.TypeSettings { Type = type, Items = new() };
+                    s.Types.Add(typeEntry);
+                }
+
+                typeEntry.Items.AddRange(items);
+            });
+        }
+    }
+
+    public abstract class BaseBlueprintUnitLootConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintObjectConfigurator<BPType, GuidType, TBuilder>
+        where BPType : BlueprintUnitLoot
+        where GuidType : BlueprintUnitLootGuid, new()
+        where TBuilder : BaseBlueprintUnitLootConfigurator<BPType, GuidType, TBuilder>, new()
+    {
+
+    }
+
+    public sealed class BlueprintSharedVendorTableConfigurator : BaseBlueprintUnitLootConfigurator<BlueprintSharedVendorTable, BlueprintSharedVendorTableGuid, BlueprintSharedVendorTableConfigurator>
+    {
+        public BlueprintSharedVendorTableConfigurator AddItem(string persistenceGuid, BlueprintItem item, int count = 1)
+        {
+            return AddComponent<LootItemsPackFixed>(c =>
+            {
+                c.name = $"$LootItemsPackFixed${persistenceGuid}";
+                c.m_Item = new LootItem
+                {
+                    m_Type = LootItemType.Item,
+                    m_Item = item
+                };
+                c.m_Count = count;
             });
         }
     }

@@ -6,9 +6,11 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Selection;
 using Kingmaker.Blueprints.Facts;
+using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Equipment;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Blueprints.Loot;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.DialogSystem.Blueprints;
 using Kingmaker.Globalmap.Blueprints;
@@ -361,7 +363,20 @@ public class BlueprintItemEquipmentSimpleGuid : BlueprintItemEquipmentGuid
     public override string BlueprintTypeName => "Item Equipment Simple";
 }
 
-public class BlueprintItemWeaponGuid : BlueprintItemEquipmentGuid
+public class BlueprintItemEquipmentHandGuid : BlueprintItemEquipmentGuid
+{
+    public BlueprintItemEquipmentHandGuid() { }
+    public BlueprintItemEquipmentHandGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Item Equipment Hand";
+    public bool GetBlueprint(out BlueprintItemEquipmentHand bp) => GetBlueprintAs(out bp);
+}
+
+public class BlueprintItemWeaponGuid : BlueprintItemEquipmentHandGuid
 {
     public BlueprintItemWeaponGuid() { }
     public BlueprintItemWeaponGuid(string guid)
@@ -581,4 +596,56 @@ public class BlueprintUnlockableFlagGuid : BlueprintObjectGuid
 
     public override string BlueprintTypeName => "Unlockable Flag";
     public bool GetBlueprint(out BlueprintUnlockableFlag bp) => GetBlueprintAs(out bp);
+}
+
+public class BlueprintCategoryDefaultsGuid : BlueprintObjectGuid
+{
+    public BlueprintCategoryDefaultsGuid() { }
+    public BlueprintCategoryDefaultsGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Category Defaults";
+    public bool GetBlueprint(out BlueprintCategoryDefaults bp) => GetBlueprintAs(out bp);
+}
+
+public class BlueprintTrashLootSettingsGuid : BlueprintObjectGuid
+{
+    public BlueprintTrashLootSettingsGuid() { }
+    public BlueprintTrashLootSettingsGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Trash Loot Settings";
+    public bool GetBlueprint(out TrashLootSettings bp) => GetBlueprintAs(out bp);
+}
+
+public class BlueprintUnitLootGuid : BlueprintObjectGuid
+{
+    public BlueprintUnitLootGuid() { }
+    public BlueprintUnitLootGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Unit Loot";
+    public bool GetBlueprint(out BlueprintUnitLoot bp) => GetBlueprintAs(out bp);
+}
+
+public class BlueprintSharedVendorTableGuid : BlueprintUnitLootGuid
+{
+    public BlueprintSharedVendorTableGuid() { }
+    public BlueprintSharedVendorTableGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Shared Vendor Table";
+    public bool GetBlueprint(out BlueprintSharedVendorTable bp) => GetBlueprintAs(out bp);
 }

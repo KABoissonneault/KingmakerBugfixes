@@ -26,5 +26,13 @@
   {
     "Key": "cold-iron-rapier-plus3",
     "Value": "Cold Iron Rapier +3"
+  },
+  {
+    "Key": "halfling-weapon-familiarity",
+    "Value": "Halfling Weapon Familiarity"
+  },
+  {
+    "Key": "halfling-weapon-familiarity-description",
+    "Value": "Halflings are proficient with slings, and treat sling staves as martial weapons."
   }
 ]

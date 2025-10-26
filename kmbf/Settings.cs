@@ -35,11 +35,19 @@ namespace kmbf
         public bool CombatExpertiseOffByDefault = true;
     }
 
+    [DrawFields(DrawFieldMask.Public)]
+    public class AddedContentSettings
+    {
+        public bool Slings = true;
+    }
+
     public class UMMSettings : UnityModManager.ModSettings, IDrawable
     {
         [Draw("Balance")] public BalanceSettings BalanceSettings = new();
         [Draw("Event")] public EventSettings EventSettings = new();
         [Draw("Quality of Life")] public QualityOfLifeSettings QualityOfLifeSettings = new();
+        [Draw("Added Content")] public AddedContentSettings AddedContentSettings = new();
+
 
         bool fixesDirty = false;
         public bool FixesDirty { get => fixesDirty; }

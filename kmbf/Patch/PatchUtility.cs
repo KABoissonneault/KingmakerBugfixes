@@ -107,6 +107,31 @@ namespace kmbf.Patch
             return true;
         }
 
+        public static bool StartAddedContentPatch(string patchName, string addedContentFlag, ModExclusionFlags modExclusionFlags = ModExclusionFlags.None)
+        {
+            FieldInfo addedContentField = typeof(AddedContentSettings).GetField(addedContentFlag);
+            if (addedContentField == null)
+            {
+                Main.Log.Error($"Invalid flag value '{addedContentField}'");
+                return false;
+            }
+
+            bool addedContentValue = (bool)addedContentField.GetValue(Main.UMMSettings.AddedContentSettings);
+            if (!addedContentValue)
+            {
+                Main.Log.Log($"Skip patching '{patchName}': '{addedContentFlag}' off");
+                return false;
+            }
+
+            if (!CheckMod(patchName, modExclusionFlags))
+            {
+                return false;
+            }
+
+            Main.Log.Log($"Patching '{patchName}': '{addedContentFlag}' on");
+            return true;
+        }
+
         // Utility for the Prepare method of Harmony patches
         // Prepare is called multiple times per patch, but the initial call has the "original" parameter as null
         // Use this to identify the first call
