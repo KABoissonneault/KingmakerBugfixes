@@ -34,6 +34,8 @@ using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.Utility;
+using Newtonsoft.Json;
+using System.Reflection;
 using UnityEngine;
 
 namespace kmbf.Blueprint.Configurator
@@ -126,13 +128,22 @@ namespace kmbf.Blueprint.Configurator
         
         protected static BPType CreateInstance(GuidType id, string objectName)
         {
+            if(ResourcesLibrary.LibraryObject.BlueprintsByAssetId.ContainsKey(id.guid))
+            {
+                Main.Log.Error($"Blueprint with GUID '{id.guid}' is already registered in Resources Library");
+                return null;
+            }
+
             BPType bp = CreateInstance();
             bp.AssetGuid = id.guid;
             bp.name = objectName;
             bp.Components = [];
 
+            ResourcesLibrary.LibraryObject.m_AllBlueprints.Add(bp);
+            ResourcesLibrary.LibraryObject.BlueprintsByAssetId.Add(id.guid, bp);
+
             id.AssignNewInstance(bp);
-            
+                        
             return bp;
         }
 
@@ -195,7 +206,6 @@ namespace kmbf.Blueprint.Configurator
             {
                 C c = ScriptableObject.CreateInstance<C>();
                 UnityEngine.Object.DontDestroyOnLoad(c);
-                c.name = $"${typeof(C).Name}";
                 if (init != null)
                     init(c);
                 addedComponents.Add(c);
@@ -434,11 +444,62 @@ namespace kmbf.Blueprint.Configurator
         
         protected override void OnConfigure()
         {
-            // At this stage, WotR's BPCore would ensure all the components have a unique name, for serialization purposes
-            // KM doesn't have Component serialization, so not needed here
             Instance.Components = Instance.Components.Except(componentsToRemove).Concat(addedComponents).ToArray();
+
+            // Ensure unique names
+            // Components with JsonPropertyAttribute/SerializableAttribute should have a fixed name!
+            var names = new HashSet<string>();
+            foreach(var c in Instance.Components)
+            {
+                if (string.IsNullOrEmpty(c.name))
+                {
+#if DEBUG
+                    if (IsStatefulComponent(c))
+                    {
+                        Main.Log.Error($"Stateful component of type '{c.GetType().Name}' has no fixed name in Blueprint '{GetDebugName()}'");
+                    }
+#endif
+
+                    for (int i = 0; !names.Add(c.name = $"${c.GetType().Name}${i}"); ++i) ;
+
+                }
+                else if(!names.Add(c.name))
+                {
+#if DEBUG
+                    if (IsStatefulComponent(c))
+                    {
+                        Main.Log.Error($"Stateful component of type '{c.GetType().Name}' has duplicated name in Blueprint '{GetDebugName()}'");
+                    }
+#endif
+
+                    for (int i = 0; !names.Add(c.name = $"${c.name}${i}"); ++i) ;
+                }
+            }
         }
 
+#if DEBUG
+        static Dictionary<Type, bool> typeStateCheck = new Dictionary<Type, bool>();
+
+        private static bool IsStatefulComponent(BlueprintComponent c)
+        {
+            Type derivedType = c.GetType();
+
+            if (typeStateCheck.TryGetValue(derivedType, out bool stateful)) return stateful;
+
+            for(var t = derivedType; t != null; t = t.BaseType)
+            {
+                if(t.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
+                    .Any(f => f.CustomAttributes.Any(a => a.AttributeType == typeof(JsonPropertyAttribute) || a.AttributeType == typeof(SerializableAttribute))))
+                {
+                    typeStateCheck.Add(derivedType, true);
+                    return true;
+                }
+            }
+
+            typeStateCheck.Add(derivedType, false);
+            return false;
+        }
+#endif
     }
 
     public sealed class BlueprintObjectConfigurator : BaseBlueprintObjectConfigurator<BlueprintScriptableObject, BlueprintObjectGuid, BlueprintObjectConfigurator>
