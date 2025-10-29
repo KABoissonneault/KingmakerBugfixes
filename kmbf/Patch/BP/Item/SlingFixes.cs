@@ -16,6 +16,7 @@ namespace kmbf.Patch.BP.Item
         {
             lhs.m_Projectiles = (BlueprintProjectile[])rhs.m_Projectiles?.Clone();
             lhs.m_WeaponAnimationStyle = rhs.m_WeaponAnimationStyle;
+            lhs.m_WeaponModel = rhs.m_WeaponModel;
             lhs.m_WeaponBeltModel = rhs.m_WeaponBeltModel;
             lhs.m_SoundSize = rhs.m_SoundSize;
             lhs.m_SoundType = rhs.m_SoundType;
@@ -91,14 +92,17 @@ namespace kmbf.Patch.BP.Item
             var masterworkSling = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.MasterworkSling)
                     .AddTrashCategory(TrashLootType.Equipment)
                     .SetCR(1)
+                    .SetIcon(BundleManager.MakeAssetId("SlingMasterwork"))
                     .Configure();
 
             var slingPlus1 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus1)
                 .SetCR(4)
+                .SetIcon(BundleManager.MakeAssetId("SlingMasterwork"))
                 .Configure();
 
             var slingPlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus2)
                 .SetCR(7)
+                .SetIcon(BundleManager.MakeAssetId("SlingMagic"))
                 .EditVisualParameters(v =>
                 {
                     v.CopyFrom(slingStaffPlus2.m_VisualParameters);
@@ -107,6 +111,7 @@ namespace kmbf.Patch.BP.Item
 
             var slingPlus3 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus3)
                 .SetCR(10)
+                .SetIcon(BundleManager.MakeAssetId("SlingMoreMagic"))
                 .EditVisualParameters(v =>
                 {
                     v.CopyFrom(slingStaffPlus3.m_VisualParameters);
@@ -115,6 +120,7 @@ namespace kmbf.Patch.BP.Item
 
             var slingPlus4 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus4)
                 .SetCR(13)
+                .SetIcon(BundleManager.MakeAssetId("SlingVeryMagic"))
                 .EditVisualParameters(v =>
                 {
                     v.CopyFrom(slingStaffPlus4.m_VisualParameters);
@@ -123,6 +129,7 @@ namespace kmbf.Patch.BP.Item
 
             var slingPlus5 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus5)
                 .SetCR(16)
+                .SetIcon(BundleManager.MakeAssetId("SlingMostMagic"))
                 .EditVisualParameters(v =>
                 {
                     v.CopyFrom(slingStaffPlus5.m_VisualParameters);

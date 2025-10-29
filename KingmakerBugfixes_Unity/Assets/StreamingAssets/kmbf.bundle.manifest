@@ -1,0 +1,22 @@
+ManifestFileVersion: 0
+CRC: 1708943491
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e6802648f3d533a874a828bcfab68a44
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: ea5a42e0fd8ea905efa7aa926a3b8944
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+Assets:
+- Assets/Icons/SlingMasterwork.png
+- Assets/Icons/SlingVeryMagic.png
+- Assets/Icons/SlingMostMagic.png
+- Assets/Icons/SlingMoreMagic.png
+- Assets/Icons/SlingMagic.png
+Dependencies: []

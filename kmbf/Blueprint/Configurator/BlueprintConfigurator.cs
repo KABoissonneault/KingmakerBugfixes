@@ -809,6 +809,20 @@ namespace kmbf.Blueprint.Configurator
                 i.m_FlavorText = text;
             });
         }
+        
+        public TBuilder SetIcon(string assetId)
+        {
+            return AddOperation(i =>
+            {
+                var icon = ResourcesLibrary.TryGetResource<Sprite>(assetId);
+                if(icon == null)
+                {
+                    Main.Log.Error($"Could not find sprite '{assetId}'");
+                    return;
+                }
+                i.m_Icon = icon;
+            });
+        }
     }
 
     public sealed class BlueprintItemConfigurator : BaseBlueprintItemConfigurator<BlueprintItem, BlueprintItemGuid, BlueprintItemConfigurator>

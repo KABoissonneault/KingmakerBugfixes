@@ -10,11 +10,13 @@ namespace kmbf.Patch.BP
         static public bool Loaded { get => loaded; }
 
         [HarmonyPostfix]
-        public static void BlueprintPatch(LibraryScriptableObject __instance)
+        public static void BlueprintPatch()
         {
             if (loaded) return;
             loaded = true;
-                        
+
+            BundleManager.LoadBundle();
+
             AbilitiesFixes.Apply();
             ClassFixes.Apply();
             ItemFixes.Apply();
@@ -24,6 +26,6 @@ namespace kmbf.Patch.BP
 
             // Harmony patches applied manually after Blueprints are loaded
             PostBlueprintPatches.Apply();
-        }
+        }        
     }
 }

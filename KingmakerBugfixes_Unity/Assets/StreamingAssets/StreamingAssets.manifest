@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 3703666654
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: kmbf.bundle
+      Dependencies: {}
