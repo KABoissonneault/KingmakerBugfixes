@@ -647,6 +647,14 @@ namespace kmbf.Blueprint.Configurator
             });
         }
 
+        public BlueprintAbilityConfigurator RemoveAbilityEffectRunActionsWhere(Predicate<GameAction> p)
+        {
+            return EditComponent<AbilityEffectRunAction>(c =>
+            {
+                c.Actions = ActionListFactory.Enumerable(c.Actions.Actions­.Where(a => !p(a)));
+            });
+        }
+
         public BlueprintAbilityConfigurator SetSpellResistance(bool value)
         {
             return AddOperation(i =>

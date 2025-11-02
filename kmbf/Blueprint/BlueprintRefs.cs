@@ -18,6 +18,9 @@ namespace kmbf.Blueprint
         public static readonly BlueprintAbilityGuid BreakEnchantment = new("7792da00c85b9e042a0fdfc2b66ec9a8");
 
         public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new("31acd268039966940872c916782ae018");
+        public static readonly BlueprintAbilityGuid LawDomainGreaterAbility = new("0b1615ec2dabc6f4294a254b709188a4");
+        public static readonly BlueprintAbilityGuid ChaosDomainGreaterAbility = new("5d8c4161d21f63e4a99b47d1e99e654e");
+
         public static readonly BlueprintAbilityGuid DeadlyEarthMudBlast = new("0be97d0e752060f468bbf62ce032b9f5");
         public static readonly BlueprintAbilityGuid DeadlyEarthEarthBlast = new("e29cf5372f89c40489227edc9ffc52be");
         public static readonly BlueprintAbilityGuid DeadlyEarthMagmaBlast = new("c0704daaf6e4c5840a94e7db6d7dbe0e");
@@ -86,6 +89,11 @@ namespace kmbf.Blueprint
 
     public static class WeaponEnchantmentRefs
     {
+        public static readonly BlueprintWeaponEnchantmentGuid Holy = new("28a9964d81fedae44bae3ca45710c140");
+        public static readonly BlueprintWeaponEnchantmentGuid Axiomatic = new("0ca43051edefcad4b9b2240aa36dc8d4");
+        public static readonly BlueprintWeaponEnchantmentGuid Unholy = new("d05753b8df780fc4bb55b318f06af453");
+        public static readonly BlueprintWeaponEnchantmentGuid Anarchic = new("57315bc1e1f62a741be0efde688087e9");
+
         public static readonly BlueprintWeaponEnchantmentGuid Soporiferous = new("da0a0c76266c96b45aacc34dc6635b28");
         public static readonly BlueprintWeaponEnchantmentGuid BaneLiving = new("e1d6f5e3cd3855b43a0cb42f6c747e1c");
         public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new("afa5d47f05724ac43a4dc19e5ecbd150");

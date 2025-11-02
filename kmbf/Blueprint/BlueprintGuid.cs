@@ -286,6 +286,7 @@ public class BlueprintItemEnchantmentGuid : BlueprintFactGuid
     }
 
     public override string BlueprintTypeName => "Item Enchantment";
+    public bool GetBlueprint(out BlueprintItemEnchantment bp) => GetBlueprintAs(out bp);
 }
 
 public class BlueprintEquipmentEnchantmentGuid : BlueprintItemEnchantmentGuid

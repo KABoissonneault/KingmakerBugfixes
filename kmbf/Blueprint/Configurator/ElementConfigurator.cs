@@ -5,6 +5,7 @@
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes.Spells;
 using Kingmaker.Blueprints.GameDifficulties;
+using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Quests;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Quests.Common;
@@ -12,6 +13,7 @@ using Kingmaker.ElementsSystem;
 using Kingmaker.Kingdom.Actions;
 using Kingmaker.Kingdom.Blueprints;
 using Kingmaker.RuleSystem.Rules;
+using Kingmaker.UI.GenericSlot;
 using Kingmaker.UnitLogic.Mechanics;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
@@ -194,6 +196,33 @@ namespace kmbf.Blueprint.Configurator
             return AddOperation(i =>
             {
                 i.OnSuccess = ActionListFactory.Add(i.OnSuccess, action);
+            });
+        }
+    }
+
+    public class ContextActionEnchantWornItemConfigurator : BaseContextActionConfigurator<ContextActionEnchantWornItem, ContextActionEnchantWornItemConfigurator>
+    {
+        public static ContextActionEnchantWornItemConfigurator New(BlueprintItemEnchantmentGuid enchantment)
+        {
+            ContextActionEnchantWornItem action = CreateInstance();
+            enchantment.GetBlueprint(out action.Enchantment);
+            action.DurationValue = new();
+            return From(action);
+        }
+
+        public ContextActionEnchantWornItemConfigurator SetSlot(EquipSlotBase.SlotType slot)
+        {
+            return AddOperation(a =>
+            {
+                a.Slot = slot;
+            });
+        }
+
+        public ContextActionEnchantWornItemConfigurator SetDuration(ContextDurationValue duration)
+        {
+            return AddOperation(a =>
+            {
+                a.DurationValue = duration;
             });
         }
     }

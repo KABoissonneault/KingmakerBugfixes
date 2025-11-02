@@ -7,6 +7,7 @@ using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.UI.GenericSlot;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
@@ -41,6 +42,7 @@ namespace kmbf.Patch.BP
             FixExplosionRing();
             FixBreakEnchantment();
             FixAbilityScoreCheckBonuses();
+            FixLawChaosGreaterAbility();
 
             // Optional
             FixTouchOfGlory();
@@ -377,6 +379,37 @@ namespace kmbf.Patch.BP
                         b.Descriptor = ModifierDescriptor.Racial;
                         b.Value = ContextValueFactory.Rank();
                     })
+                    .Configure();
+            }
+        }
+
+        // Both Staff of Order and Chaos Blade fail to do anything on use.
+        // Give them a ContextActionEnchantWornItem like Scythe of Evil and Holy Lance
+        static void FixLawChaosGreaterAbility()
+        {
+            if (StartPatch("Staff of Order"))
+            {
+                BlueprintAbilityConfigurator.From(AbilityRefs.LawDomainGreaterAbility)
+                    .RemoveAbilityEffectRunActionsWhere(a => a == null)
+                    .AddAbilityEffectRunAction(
+                        ContextActionEnchantWornItemConfigurator.New(WeaponEnchantmentRefs.Axiomatic)
+                            .SetSlot(EquipSlotBase.SlotType.PrimaryHand)
+                            .SetDuration(ContextDurationFactory.RankRounds())
+                            .Configure()
+                        )
+                    .Configure();
+            }
+
+            if (StartPatch("Chaos Blade"))
+            {
+                BlueprintAbilityConfigurator.From(AbilityRefs.ChaosDomainGreaterAbility)
+                    .RemoveAbilityEffectRunActionsWhere(a => a == null)
+                    .AddAbilityEffectRunAction(
+                        ContextActionEnchantWornItemConfigurator.New(WeaponEnchantmentRefs.Anarchic)
+                            .SetSlot(EquipSlotBase.SlotType.PrimaryHand)
+                            .SetDuration(ContextDurationFactory.RankRounds())
+                            .Configure()
+                        )
                     .Configure();
             }
         }
