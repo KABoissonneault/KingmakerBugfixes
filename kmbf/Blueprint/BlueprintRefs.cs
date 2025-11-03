@@ -260,6 +260,8 @@ namespace kmbf.Blueprint
     {
         public static readonly BlueprintKingdomBuffGuid CandlemereTowerResearch = new("b92f2b91fe37f4f4e8000842069cf4a3");
         public static readonly BlueprintKingdomBuffGuid ItsAMagicalPlace = new("540f7dfba39b96c46bb76680e46077da");
+        public static readonly BlueprintKingdomBuffGuid PitaxianSpies = new("51a7482c5e6d485438ca4cefe03d0ded");
+
         public static readonly BlueprintKingdomBuffGuid CulRank5_DiscountCulBuildings = new("60e1176b4240bda409ce6a2ba7037f8c");
         public static readonly BlueprintKingdomBuffGuid StaRank10_WigmoldSystem = new("133818e83c8fb724fa9a59b547a7e0c6");
     }

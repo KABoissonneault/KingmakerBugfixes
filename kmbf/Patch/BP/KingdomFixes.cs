@@ -30,6 +30,7 @@ namespace kmbf.Patch.BP
             FixIrleneGift();
             FixTempleOfAbadar();
             FixItsAMagicalPlace();
+            FixPitaxianSpies();
             FixAlignedBuildings();
             FixEmbassyRow();
             FixStatRankUpgrades();
@@ -198,7 +199,7 @@ namespace kmbf.Patch.BP
                 .RemoveComponents<AdjacencyRestriction>() // Adjacency restrictions are easy to work around and not documented by the game, just remove it
                 .Configure();
 
-            if (StartBalancePatch("Black Market Alignemnt Requirement", nameof(BalanceSettings.FixKingdomBuildingAccess)))
+            if (StartBalancePatch("Black Market Alignment Requirement", nameof(BalanceSettings.FixKingdomBuildingAccess)))
             {
                 BlueprintSettlementBuildingConfigurator.From(SettlementBuildingRefs.BlackMarket)
                     .SetAlignmentRestriction(nonLawfulOrGood)
@@ -236,6 +237,18 @@ namespace kmbf.Patch.BP
                     b.Stat = StatType.SkillLoreReligion;
                     b.Descriptor = ModifierDescriptor.Competence;
                     b.Value = 5;
+                })
+                .Configure();
+        }
+
+        private static void FixPitaxianSpies()
+        {
+            if (!StartPatch("Daggermark's Rival / Pitaxian Spies")) return;
+
+            BlueprintKingdomBuffConfigurator.From(KingdomBuffRefs.PitaxianSpies)
+                .EditComponentWithName<KingdomEventModifier>("$KingdomEventModifier$06dc0017-1260-4d7f-b8ba-478f7ce9ecf4", c =>
+                {
+                    c.ApplyToOpportunities = true;
                 })
                 .Configure();
         }
