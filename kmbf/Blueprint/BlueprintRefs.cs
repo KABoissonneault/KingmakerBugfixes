@@ -29,6 +29,8 @@ namespace kmbf.Blueprint
         public static readonly BlueprintAbilityGuid LawDomainGreaterAbility = new("0b1615ec2dabc6f4294a254b709188a4");
         public static readonly BlueprintAbilityGuid ChaosDomainGreaterAbility = new("5d8c4161d21f63e4a99b47d1e99e654e");
 
+        public static readonly BlueprintAbilityGuid CognatogenWisdom = new("84a9092b8430a1344a3c8b002cc68e7f");
+
         public static readonly BlueprintAbilityGuid DeadlyEarthMudBlast = new("0be97d0e752060f468bbf62ce032b9f5");
         public static readonly BlueprintAbilityGuid DeadlyEarthEarthBlast = new("e29cf5372f89c40489227edc9ffc52be");
         public static readonly BlueprintAbilityGuid DeadlyEarthMagmaBlast = new("c0704daaf6e4c5840a94e7db6d7dbe0e");

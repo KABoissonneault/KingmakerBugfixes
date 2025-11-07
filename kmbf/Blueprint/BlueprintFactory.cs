@@ -54,6 +54,11 @@ namespace kmbf.Blueprint
         {
             return new() { Rate = DurationRate.Rounds, DiceCountValue = 0, BonusValue = ContextValueFactory.Rank(rankType) };
         }
+
+        public static ContextDurationValue RankTenMinutes(AbilityRankType rankType = AbilityRankType.Default)
+        {
+            return new() { Rate = DurationRate.TenMinutes, DiceCountValue = 0, BonusValue = ContextValueFactory.Rank(rankType) };
+        }
     }
 
     public static class ConditionsCheckerFactory

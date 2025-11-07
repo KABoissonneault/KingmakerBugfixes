@@ -6,9 +6,11 @@ using Kingmaker.Blueprints.Items.Weapons;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
+using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Alignments;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
+using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
 using Kingmaker.UnitLogic.Mechanics.Conditions;
 using kmbf.Blueprint;
@@ -26,6 +28,7 @@ namespace kmbf.Patch.BP
         {
             Main.Log.Log("Starting Class patches");
 
+            FixAlchemist();
             FixDruid();
             FixKineticist();
             FixDoubleDebilitatingInjury();
@@ -33,6 +36,19 @@ namespace kmbf.Patch.BP
 
             // Optional
             FixArcaneTricksterAlignmentRequirement();
+        }
+
+        static void FixAlchemist()
+        {
+            if (StartPatch("Wisdom Cognatogen"))
+            {
+                BlueprintAbilityConfigurator.From(AbilityRefs.CognatogenWisdom)
+                    .EditComponentGameAction<AbilityEffectRunAction, ContextActionApplyBuff>("$ContextActionApplyBuff$2e1602e5-fa74-47db-9bf6-163e65d056d1", b =>
+                    {
+                        b.DurationValue = ContextDurationFactory.RankTenMinutes();
+                    })
+                    .Configure();
+            }
         }
 
         static void FixDruid()
