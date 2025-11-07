@@ -721,6 +721,14 @@ namespace kmbf.Blueprint.Configurator
                 a.IsOnByDefault = onByDefault;
             });
         }
+
+        public BlueprintActivatableAbilityConfigurator SetDeactivateIfCombatEnded(bool value)
+        {
+            return AddOperation(a =>
+            {
+                a.DeactivateIfCombatEnded = value;
+            });
+        }
     }
 
     public abstract class BaseBlueprintFeatureConfigurator<BPType, GuidType, TBuilder> : BaseBlueprintUnitFactConfigurator<BPType, GuidType, TBuilder>

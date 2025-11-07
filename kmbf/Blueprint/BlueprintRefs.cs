@@ -49,6 +49,9 @@ namespace kmbf.Blueprint
     public static class ActivatableAbilityRefs
     {
         public static readonly BlueprintActivatableAbilityGuid CombatExpertise = new("a75f33b4ff41fc846acbac75d1a88442");
+        
+        public static readonly BlueprintActivatableAbilityGuid InspireGreatness = new("be36959e44ac33641ba9e0204f3d227b");
+        public static readonly BlueprintActivatableAbilityGuid InspireHeroics = new("a4ce06371f09f504fa86fcf6d0e021e4");
     }
 
     public static class AbilityAreaEffectRefs

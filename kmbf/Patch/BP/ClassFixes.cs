@@ -29,6 +29,7 @@ namespace kmbf.Patch.BP
             Main.Log.Log("Starting Class patches");
 
             FixAlchemist();
+            FixBard();
             FixDruid();
             FixKineticist();
             FixDoubleDebilitatingInjury();
@@ -47,6 +48,20 @@ namespace kmbf.Patch.BP
                     {
                         b.DurationValue = ContextDurationFactory.RankTenMinutes();
                     })
+                    .Configure();
+            }
+        }
+
+        static void FixBard()
+        {
+            if (StartPatch("Inspire Greatness/Heroics Combat End"))
+            {
+                BlueprintActivatableAbilityConfigurator.From(ActivatableAbilityRefs.InspireGreatness)
+                    .SetDeactivateIfCombatEnded(true)
+                    .Configure();
+
+                BlueprintActivatableAbilityConfigurator.From(ActivatableAbilityRefs.InspireHeroics)
+                    .SetDeactivateIfCombatEnded(true)
                     .Configure();
             }
         }
