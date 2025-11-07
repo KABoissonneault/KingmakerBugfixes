@@ -11,10 +11,12 @@ using Kingmaker.UI.GenericSlot;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
+using Kingmaker.UnitLogic.Abilities.Components.TargetCheckers;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Actions;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.UnitLogic.Parts;
 using kmbf.Action;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -43,6 +45,8 @@ namespace kmbf.Patch.BP
             FixBreakEnchantment();
             FixAbilityScoreCheckBonuses();
             FixLawChaosGreaterAbility();
+            FixUndeadImmunities();
+            FixSpellDescriptors();
 
             // Optional
             FixTouchOfGlory();
@@ -414,6 +418,105 @@ namespace kmbf.Patch.BP
             }
         }
 
+        static void FixUndeadImmunities()
+        {
+            // Undead don't take Charisma modifiers into account for saving throws
+            // Paladin's Divine Grace uses a RecalculateOnStatChange, so we copy this approach here
+            if (StartPatch("Undead Saving Throws"))
+            {
+                BlueprintFeatureConfigurator.From(FeatureRefs.UndeadImmunities)
+                    .AddComponent<RecalculateOnStatChange>(c =>
+                    {
+                        c.Stat = StatType.Charisma;
+                    })
+                    .Configure();
+            }
+
+            // Undead have too many immunities compared to their description, and too many are added conditionally on the caster not having the Undead Bloodline arcana
+            // This patch tries to resolve this mess by limiting unconditional immunities to the ones in the description (matching tabletop),
+            // and having MindAffecting as the only conditional one
+            // We also need to go and make sure spells targeting humanoids don't target undead unless the undead bloodline arcana is present
+            // In short,
+            // Added immunities: Paralysis
+            // Removed immunities: Shaken, Frightened, Sickened, Nauseated
+            // Immunities made unconditional: Sleep
+            //
+            // Fortitude spells handled: Baleful Polymorph, Flare, Flare Burst, Ray of Sickening
+            if (StartBalancePatch("Construct and Undead Immunities", nameof(BalanceSettings.FixConstructUndeadImmunities)))
+            {
+                if (!FeatureRefs.ConstructType.GetBlueprint(out BlueprintFeature constructType)) return;
+                if (!FeatureRefs.UndeadType.GetBlueprint(out BlueprintFeature undeadType)) return;
+
+                SpellDescriptorWrapper unconditionalDescriptor = SpellDescriptor.Bleed | SpellDescriptor.Death | SpellDescriptor.Disease | SpellDescriptor.Fatigue | SpellDescriptor.Paralysis
+                            | SpellDescriptor.Poison | SpellDescriptor.Sleep | SpellDescriptor.Stun | SpellDescriptor.VilderavnBleed;
+                SpellDescriptorWrapper conditionalDescriptor = SpellDescriptor.MindAffecting;
+                BlueprintFeatureConfigurator.From(FeatureRefs.UndeadImmunities)
+                    .EditComponentWithName<BuffDescriptorImmunity>("$BuffDescriptorImmunity$eb929088-4f9e-4c60-92ee-89a0fa13d8f1", c =>
+                    {
+                        c.Descriptor = unconditionalDescriptor;
+                    })
+                    .EditComponentWithName<BuffDescriptorImmunity>("$BuffDescriptorImmunity$d4fb14f4-7d7b-45b3-ab7f-d7eb6f9f7a63", c =>
+                    {
+                        c.Descriptor = conditionalDescriptor;
+                    })
+                    .EditComponentWithName<SpellImmunityToSpellDescriptor>("$SpellImmunityToSpellDescriptor$c0976aae-8934-4994-9b1a-f5614f7d4f26", c =>
+                    {
+                        c.Descriptor = unconditionalDescriptor;
+                    })
+                    .EditComponentWithName<SpellImmunityToSpellDescriptor>("$SpellImmunityToSpellDescriptor$fb56d182-0078-4f5e-a1dd-5730215f7e72", c =>
+                    {
+                        c.Descriptor = conditionalDescriptor;
+                    })
+                    .Configure();
+
+                void AddUndeadConstructCheck(BlueprintAbilityGuid ability)
+                {
+                    if (!ability.GetBlueprint(out BlueprintAbility bp)) return;
+
+                    BlueprintAbilityConfigurator.From(ability)
+                        .AddComponent<AbilityTargetHasFact>(c =>
+                        {
+                            c.CheckedFacts = [constructType, undeadType];
+                            c.Inverted = true;
+                        })
+                        .Configure();
+                }
+
+                // Removes the "unless undead blood arcana" to be an unconditional untargetable
+                // Used for Paralysis abilities
+                void MoveUndeadCheck(BlueprintAbilityGuid ability)
+                {
+                    if (!ability.GetBlueprint(out BlueprintAbility bp)) return;
+
+                    BlueprintAbilityConfigurator.From(ability)
+                        .RemoveComponentWhere<AbilityTargetHasNoFactUnless>(c => c.CheckedFacts.Length == 1 && c.CheckedFacts[0] == undeadType)
+                        .EditComponentWhere<AbilityTargetHasFact>(c => c.Inverted && c.CheckedFacts.Contains(constructType), c =>
+                        {
+                            c.CheckedFacts = [.. c.CheckedFacts, undeadType];
+                        })
+                        .Configure();
+                }
+
+                AddUndeadConstructCheck(AbilityRefs.BalefulPolymorph);
+                AddUndeadConstructCheck(AbilityRefs.Flare);
+                AddUndeadConstructCheck(AbilityRefs.FlareBurst);
+                AddUndeadConstructCheck(AbilityRefs.RayOfSickening);
+                AddUndeadConstructCheck(AbilityRefs.LostlandKeep_TransmutationTrap);
+                MoveUndeadCheck(AbilityRefs.HoldPerson);
+                MoveUndeadCheck(AbilityRefs.HoldPersonAasimar);
+                MoveUndeadCheck(AbilityRefs.HoldMonster);
+            }
+        }
+
+        // A bunch of spells have bad descriptors, let's do a bunch of them here
+        static void FixSpellDescriptors()
+        {
+            if (!StartPatch("Spell Descriptors")) return;
+
+            BlueprintAbilityConfigurator.From(AbilityRefs.Daze).AddSpellDescriptor(SpellDescriptor.Daze).Configure();
+            BlueprintBuffConfigurator.From(BuffRefs.Daze).RemoveSpellDescriptor(SpellDescriptor.Stun).Configure();
+        }
+
         // Touch of Glory adds +1-10 Charisma instead of adding +1-10 to Charisma checks
         // Fortunately, this mod fixed AbilityScoreCheckBonus, so we can use that instead
         static void FixTouchOfGlory()
@@ -459,10 +562,6 @@ namespace kmbf.Patch.BP
         // Depends on the RuleCheckTargetFlatFooted patch
         static void FixShatterDefenses()
         {
-            // GUIDs taken from CotW. Should not run together
-            BlueprintBuffGuid KMBF_ShatterDefensesHit = new("843741b85d8249b9acdcffb042015f06");
-            BlueprintBuffGuid KMBF_ShatterDefensesAppliedThisRound = new("cf3e721e93044a21b87692526b3c45e3");
-
             if (!StartBalancePatch("Shatter Defenses", nameof(BalanceSettings.FixShatterDefenses), ModExclusionFlags.CallOfTheWild)) return;
 
             var shatterDefensesFeatureConfig = BlueprintFeatureConfigurator.From(FeatureRefs.ShatterDefenses);

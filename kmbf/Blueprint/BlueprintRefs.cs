@@ -9,14 +9,22 @@ namespace kmbf.Blueprint
 
     public static class AbilityRefs
     {
-        public static readonly BlueprintAbilityGuid ProtectionFromArrowsCommunal = new("96c9d98b6a9a7c249b6c4572e4977157");
+        public static readonly BlueprintAbilityGuid BalefulPolymorph = new("3105d6e9febdc3f41a08d2b7dda1fe74");
+        public static readonly BlueprintAbilityGuid BreakEnchantment = new("7792da00c85b9e042a0fdfc2b66ec9a8");
+        public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
         public static readonly BlueprintAbilityGuid ControlledFireball = new("f72f8f03bf0136c4180cd1d70eb773a5");
+        public static readonly BlueprintAbilityGuid Daze = new("55f14bc84d7c85446b07a1b5dd6b2b4c");
+        public static readonly BlueprintAbilityGuid Flare = new("f0f8e5b9808f44e4eadd22b138131d52");
+        public static readonly BlueprintAbilityGuid FlareBurst = new("39a602aa80cc96f4597778b6d4d49c0a");
+        public static readonly BlueprintAbilityGuid HoldPerson = new("c7104f7526c4c524f91474614054547e");
+        public static readonly BlueprintAbilityGuid HoldPersonAasimar = new("6170150bd050e234d9ab50b3e3b87bd1");
+        public static readonly BlueprintAbilityGuid HoldMonster = new("41e8a952da7a5c247b3ec1c2dbb73018");
+        public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");
+        public static readonly BlueprintAbilityGuid ProtectionFromArrowsCommunal = new("96c9d98b6a9a7c249b6c4572e4977157");
         public static readonly BlueprintAbilityGuid RaiseDead = new("a0fc99f0933d01643b2b8fe570caa4c5");
         public static readonly BlueprintAbilityGuid RaiseDead_Cutscene = new("9e3b861c3ed7e404f896d187e995e0ad");
-        public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
-        public static readonly BlueprintAbilityGuid JoyfulRapture = new("15a04c40f84545949abeedef7279751a");
-        public static readonly BlueprintAbilityGuid BreakEnchantment = new("7792da00c85b9e042a0fdfc2b66ec9a8");
-
+        public static readonly BlueprintAbilityGuid RayOfSickening = new("fa3078b9976a5b24caf92e20ee9c0f54");
+        
         public static readonly BlueprintAbilityGuid DarknessDomainGreaterAbility = new("31acd268039966940872c916782ae018");
         public static readonly BlueprintAbilityGuid LawDomainGreaterAbility = new("0b1615ec2dabc6f4294a254b709188a4");
         public static readonly BlueprintAbilityGuid ChaosDomainGreaterAbility = new("5d8c4161d21f63e4a99b47d1e99e654e");
@@ -32,6 +40,8 @@ namespace kmbf.Blueprint
         public static readonly BlueprintAbilityGuid AcidFlask = new("28ea1b2e0c4a9094da208b4c186f5e4f");
 
         public static readonly BlueprintAbilityGuid MimicOozeSpit = new("3ea0add618aab444bb5a4e2701a3ee4b");
+
+        public static readonly BlueprintAbilityGuid LostlandKeep_TransmutationTrap = new("51dd72d056281b34581979a9a0970432");
     }
 
     public static class ActivatableAbilityRefs
@@ -104,6 +114,8 @@ namespace kmbf.Blueprint
 
     public static class BuffRefs
     {
+        public static readonly BlueprintBuffGuid BalefulPolymorph = new("0a52d8761bfd125429842103aed48b90");
+        public static readonly BlueprintBuffGuid Daze = new("9934fedff1b14994ea90205d189c8759");
         public static readonly BlueprintBuffGuid ProtectionFromArrows = new("241ee6bd8c8767343994bce5dc1a95e0");
         public static readonly BlueprintBuffGuid ProtectionFromArrowsCommunal = new("10014a817b0780c49a2d2d954f62fa55");
         public static readonly BlueprintBuffGuid MagicalVestmentArmor = new("9e265139cf6c07c4fb8298cb8b646de9");
@@ -192,6 +204,8 @@ namespace kmbf.Blueprint
 
         public static readonly BlueprintFeatureGuid AnimalDomainBaseFeature = new("d577aba79b5727a4ab74627c4c6ba23c");
 
+        public static readonly BlueprintFeatureGuid BloodlineUndeadArcana = new("1a5e7191279e7cd479b17a6ca438498c");
+
         public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new("64f74b75ed0d1f8478de5245cf061bcc");
         public static readonly BlueprintFeatureGuid EkunWolfDefensiveMaster = new("915616ab61446694dbd73c7d269ea184");
         public static readonly BlueprintFeatureGuid EkunWolfOffensiveBuff = new("29b33987fae4f81448410007f8f9b902");
@@ -206,6 +220,9 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid AnimalCompanionUpgradeLeopard = new("b8c98af302ee334499d30a926306327d");
 
         public static readonly BlueprintFeatureGuid TieflingHeritageFoulspawn = new("a53d760a364cd90429e16aa1e7048d0a");
+        public static readonly BlueprintFeatureGuid ConstructType = new("fd389783027d63343b4a5634bd81645f");
+        public static readonly BlueprintFeatureGuid UndeadType = new("734a29b693e9ec346ba2951b27987e33");
+        public static readonly BlueprintFeatureGuid UndeadImmunities = new("8a75eb16bfff86949a4ddcb3dd2f83ae");
 
         public static readonly BlueprintFeatureGuid ExplosionRing = new("9583bd98ef0b65a448ac79c5ec273db8");
     }
