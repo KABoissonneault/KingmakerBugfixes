@@ -39,5 +39,13 @@ namespace kmbf.Patch
                 , new CodeInstruction(OpCodes.Brfalse_S, ifNotNull)
                 ];
         }
+
+        public static CodeInstruction NewInstructionFrom(OpCode opCode, object operand, CodeInstruction from)
+        {
+            CodeInstruction i = new(opCode, operand);
+            i.labels = from.labels;
+            i.blocks = from.blocks;
+            return i;
+        }
     }
 }
