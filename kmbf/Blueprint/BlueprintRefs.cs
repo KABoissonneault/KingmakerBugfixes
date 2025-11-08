@@ -286,6 +286,7 @@ namespace kmbf.Blueprint
 
         public static readonly BlueprintKingdomBuffGuid CulRank5_DiscountCulBuildings = new("60e1176b4240bda409ce6a2ba7037f8c");
         public static readonly BlueprintKingdomBuffGuid StaRank10_WigmoldSystem = new("133818e83c8fb724fa9a59b547a7e0c6");
+        public static readonly BlueprintKingdomBuffGuid DivRank10_BlessingOfLamashtu = new("5753f01b86cc7844ab3e9099acc72028");
     }
 
     public static class RegionRefs

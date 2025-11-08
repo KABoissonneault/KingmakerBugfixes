@@ -153,6 +153,17 @@ namespace kmbf.Patch.BP
                     })
                     .Configure();
             }
+
+            if (StartPatch("Blessing of Lamashtu"))
+            {
+                // Blessing of Lamashtu only applies on Success instead of "Success or Triumph"
+                BlueprintKingdomBuffConfigurator.From(KingdomBuffRefs.DivRank10_BlessingOfLamashtu)
+                    .EditAllComponents<EventResolutonTrigger>(c =>
+                    {
+                        c.OnMargin = EventResult.MarginType.AnySuccess;
+                    })
+                    .Configure();
+            }
         }
 
         private static void FixEmbassyRow()
