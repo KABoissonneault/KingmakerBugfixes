@@ -840,16 +840,10 @@ namespace kmbf.Blueprint.Configurator
             });
         }
         
-        public TBuilder SetIcon(string assetId)
+        public TBuilder SetIcon(Sprite icon)
         {
             return AddOperation(i =>
             {
-                var icon = ResourcesLibrary.TryGetResource<Sprite>(assetId);
-                if(icon == null)
-                {
-                    Main.Log.Error($"Could not find sprite '{assetId}'");
-                    return;
-                }
                 i.m_Icon = icon;
             });
         }

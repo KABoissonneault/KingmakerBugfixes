@@ -11,6 +11,9 @@ namespace kmbf
         // These are all loaded and inserted into ResourcesLibrary for now
         static readonly string BundlePath = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(LibraryScriptableObject_LoadDictionary_Patch)).Location), "kmbf.bundle");
         static readonly string AssetPrefix = "kmbf";
+
+        static readonly Dictionary<string, UnityEngine.Object> s_bundleAssets = new Dictionary<string, UnityEngine.Object>();
+
         public static void LoadBundle()
         {
             if (!File.Exists(BundlePath))
@@ -20,17 +23,50 @@ namespace kmbf
             }
 
             var bundle = AssetBundle.LoadFromFile(BundlePath);
+
             var assets = bundle.LoadAllAssets();
             foreach (var asset in assets)
             {
-                ResourcesLibrary.LoadedResource resource = new ResourcesLibrary.LoadedResource(asset);
-                ResourcesLibrary.s_LoadedResources[MakeAssetId(asset.name)] = resource;
+                var assetId = MakeAssetId(asset);
+                s_bundleAssets[assetId] = asset;
             }
         }
 
-        public static string MakeAssetId(string assetName)
+        public static string MakeAssetId<T>(T asset) where T : UnityEngine.Object
         {
-            return $"{AssetPrefix}/{assetName}";
+            return MakeAssetId(asset.name, asset.GetType());
+        }
+
+        public static string MakeAssetId<T>(string assetName) where T : UnityEngine.Object
+        {
+            return MakeAssetId(assetName, typeof(T));
+        }
+
+        public static string MakeAssetId(string assetName, Type type)
+        {
+            return $"{AssetPrefix}/{assetName}:{type.Name}";
+        }
+
+        public static bool IsKmbfAssetId(string assetId)
+        {
+            return assetId.StartsWith($"{AssetPrefix}/");
+        }
+
+        public static T GetResource<T>(string assetId) where T : UnityEngine.Object
+        {
+            if(IsKmbfAssetId(assetId))
+            {
+                return s_bundleAssets[assetId] as T;
+            }
+            else
+            {
+                return ResourcesLibrary.TryGetResource<T>(assetId);
+            }
+        }
+
+        public static T GetKmbfResource<T>(string assetName) where T : UnityEngine.Object
+        {
+            return s_bundleAssets[MakeAssetId<T>(assetName)] as T;
         }
     }
 }
