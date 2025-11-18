@@ -24,6 +24,15 @@ namespace kmbf.Blueprint
         }
     }
 
+    public static class DiceFormulaFactory
+    {
+        // Null dice count defaults to 1
+        public static DiceFormula Value(DiceType diceType, int rolls = 1)
+        {
+            return new() { m_Dice = diceType, m_Rolls = rolls };
+        }
+    }
+
     public static class ContextValueFactory
     {
         public static ContextValue Simple(int value)

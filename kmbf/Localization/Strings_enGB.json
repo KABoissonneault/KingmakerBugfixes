@@ -1,11 +1,11 @@
 ﻿[
   {
     "Key": "mod-load-warning",
-    "Value":  "Mod turned on during gameplay, no fixes are applied. Reboot the game for fixes to take effect."
+    "Value": "Mod turned on during gameplay, no fixes are applied. Reboot the game for fixes to take effect."
   },
   {
     "Key": "mod-dirty-warning",
-    "Value":  "Mod fixes changed during gameplay. Reboot the game for changes to take effect."
+    "Value": "Mod fixes changed during gameplay. Reboot the game for changes to take effect."
   },
   {
     "Key": "saves-fixes",
@@ -34,5 +34,37 @@
   {
     "Key": "halfling-weapon-familiarity-description",
     "Value": "Halflings are proficient with slings, and treat sling staves as martial weapons."
+  },
+  {
+    "Key": "kobold-sling-description",
+    "Value": "This +1 speed sling is sized for a kobold, and might require some more strength to deal real damage."
+  },
+  {
+    "Key": "kobold-sling-flavor",
+    "Value": "You're pretty certain you've never seen a kobold use a sling before. Or much of anyone in the Stolen Lands."
+  },
+  {
+    "Key": "troll-sling-display-name",
+    "Value": "Troll Greatsling"
+  },
+  {
+    "Key": "troll-sling-description",
+    "Value": "This +4 sling deals 1d6 damage, and launches large rocks, yet its clumsiness and weight impose a -2 penalty on the wielder's attack rolls."
+  },
+  {
+    "Key": "troll-sling-flavor",
+    "Value": "The Dire Narlmarches are famous for their unique slings, but this does not seem like a local craft."
+  },
+  {
+    "Key": "rock-throw-strength-description",
+    "Value": "This throws exceptionally large rocks, adding 1-1/2 times your Strength modifier on damage rolls."
+  },
+  {
+    "Key": "undersized-name",
+    "Value": "Undersized"
+  },
+  {
+    "Key": "undersized-description",
+    "Value": "Weapon is exceptionally small and deals less damage, and Medium or larger creatures suffer a penalty of -2 to attack rolls."
   }
 ]

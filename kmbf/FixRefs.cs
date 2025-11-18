@@ -18,4 +18,9 @@ namespace kmbf
     {
         public static readonly BlueprintFeatureGuid HalflingWeaponFamiliarity = new("02a08242dd3b488bb21f6b93a42f1f66");
     }
+
+    static class FixWeaponEnchantmentRefs
+    {
+        public static readonly BlueprintWeaponEnchantmentGuid Undersized = new("bcf386cda90443b1b651a5e6ccbe2d6f");
+    }
 }

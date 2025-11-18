@@ -174,7 +174,9 @@ namespace kmbf
         public static LocalizedString TouchDefaultName = new LocalizedString() { m_Key = "c7e2893d-dcb5-4c8c-8415-a908b048b329" };
         public static LocalizedString RockTypeName = new LocalizedString() { m_Key = "cd8f12e9-36db-498c-b3a3-f52a7f4b5f52" };
         public static LocalizedString RockDefaultName = new LocalizedString() { m_Key = "b685d2aa-a2b3-4ba1-81de-7867fa10434d" };
-        
+
+        public static LocalizedString RockThrow = new LocalizedString() { m_Key = "4ba2ac9a-3a25-4548-858d-dda71c55c4ac" };
+
         public static LocalizedString AmethystRing = new LocalizedString() { m_Key = "09c2b1ec-ffb5-4e26-91a0-3840221676bf" };
         public static LocalizedString GarnetRing = new LocalizedString() { m_Key = "3fa6ae88-bc24-44d5-ac74-109d250df757" };
         public static LocalizedString TormentorDisplayName = new LocalizedString() { m_Key = "8ea2ec9c-970f-4960-ae92-ffda5fd5b414" };

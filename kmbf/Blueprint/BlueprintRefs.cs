@@ -104,14 +104,24 @@ namespace kmbf.Blueprint
 
     public static class WeaponEnchantmentRefs
     {
-        public static readonly BlueprintWeaponEnchantmentGuid Holy = new("28a9964d81fedae44bae3ca45710c140");
-        public static readonly BlueprintWeaponEnchantmentGuid Axiomatic = new("0ca43051edefcad4b9b2240aa36dc8d4");
-        public static readonly BlueprintWeaponEnchantmentGuid Unholy = new("d05753b8df780fc4bb55b318f06af453");
         public static readonly BlueprintWeaponEnchantmentGuid Anarchic = new("57315bc1e1f62a741be0efde688087e9");
+        public static readonly BlueprintWeaponEnchantmentGuid Axiomatic = new("0ca43051edefcad4b9b2240aa36dc8d4");
+        public static readonly BlueprintWeaponEnchantmentGuid Holy = new("28a9964d81fedae44bae3ca45710c140");
+        public static readonly BlueprintWeaponEnchantmentGuid Oversized = new("d8e1ebc1062d8cc42abff78783856b0d");
+        public static readonly BlueprintWeaponEnchantmentGuid Speed = new("f1c0c50108025d546b2554674ea1c006");
+        public static readonly BlueprintWeaponEnchantmentGuid Unholy = new("d05753b8df780fc4bb55b318f06af453");
+
+        public static readonly BlueprintWeaponEnchantmentGuid Enhancement1 = new("d42fc23b92c640846ac137dc26e000d4");
+        public static readonly BlueprintWeaponEnchantmentGuid Enhancement2 = new("eb2faccc4c9487d43b3575d7e77ff3f5");
+        public static readonly BlueprintWeaponEnchantmentGuid Enhancement3 = new("80bb8a737579e35498177e1e3c75899b");
+        public static readonly BlueprintWeaponEnchantmentGuid Enhancement4 = new("783d7d496da6ac44f9511011fc5f1979");
+        public static readonly BlueprintWeaponEnchantmentGuid Enhancement5 = new("bdba267e951851449af552aa9f9e3992");
 
         public static readonly BlueprintWeaponEnchantmentGuid Soporiferous = new("da0a0c76266c96b45aacc34dc6635b28");
         public static readonly BlueprintWeaponEnchantmentGuid BaneLiving = new("e1d6f5e3cd3855b43a0cb42f6c747e1c");
         public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new("afa5d47f05724ac43a4dc19e5ecbd150");
+
+        public static readonly BlueprintWeaponEnchantmentGuid RockThrowStrength = new("2a0859c4984fd2e428f9edb79c97d753");
 
         public static readonly BlueprintWeaponEnchantmentGuid LightningArrows = new("d0cab2c642c912245a5c35821db45d0e");
         public static readonly BlueprintWeaponEnchantmentGuid LoversArrows = new("c5301596b1e29a846a92e27344d1844a");
@@ -163,6 +173,17 @@ namespace kmbf.Blueprint
         public static readonly BlueprintItemWeaponGuid SlingPlus3 = new("e42a450c2e14e2b458dc5c78a4d7b7ff");
         public static readonly BlueprintItemWeaponGuid SlingPlus4 = new("30157903ff22e464e99e8098070e4de9");
         public static readonly BlueprintItemWeaponGuid SlingPlus5 = new("3bec1e2f21ccfaf4bb8f4539abc5fd0e");
+        public static readonly BlueprintItemWeaponGuid SlingCorrosivePlus1 = new("444c7d507010510448a672f427d35c41");
+        public static readonly BlueprintItemWeaponGuid SlingCorrosivePlus2 = new("f2366221f91211c4291aa1508aeff849");
+        public static readonly BlueprintItemWeaponGuid SlingFlamingPlus1 = new("e03d19b21a829ce488798bbac0471c40");
+        public static readonly BlueprintItemWeaponGuid SlingFlamingPlus2 = new("93af8026558c0814f9acbe5e3661f512");
+        public static readonly BlueprintItemWeaponGuid SlingFrostPlus1 = new("f7d7786950b106249b39b41314bab8de");
+        public static readonly BlueprintItemWeaponGuid SlingFrostPlus2 = new("a11321efe11f24c4ca672164cffd662c");
+        public static readonly BlueprintItemWeaponGuid SlingShockPlus1 = new("a0504491e89f97047a4e60946807118c");
+        public static readonly BlueprintItemWeaponGuid SlingShockPlus2 = new("a536560afb694de4ba0dd13f782c54d0");
+        public static readonly BlueprintItemWeaponGuid SlingSonicPlus2 = new("ee07ebcef5abf57499e9b1b716d14330");
+        public static readonly BlueprintItemWeaponGuid KoboldSling = new("9ffed9655afacbe458b8f5e0a0666adb");
+        public static readonly BlueprintItemWeaponGuid LargeStandardSling = new("6d8d161daf0e9e740bb38c07cf79a636");
 
         public static readonly BlueprintItemWeaponGuid StandardSlingStaff = new("dda1a4f8cbf8ad34ca7845ca17313e86");
         public static readonly BlueprintItemWeaponGuid MasterworkSlingStaff = new("9f6b88554d5eb564ab2d247ab11f40b0");
@@ -219,6 +240,7 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid SolidStrategyEnchant = new("09de6da5469ab1943924139d5145835f");
         public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
         public static readonly BlueprintFeatureGuid RingOfRecklessCourage = new("aa9102221a042504c94f0a313c4c40a1");
+        public static readonly BlueprintFeatureGuid TrailblazerHelmet = new("a32d8eb9c88e3b64ab1bbf84c41524d6");
 
         public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
 
@@ -338,8 +360,18 @@ namespace kmbf.Blueprint
     public static class SharedVendorTableRefs
     {
         public static readonly BlueprintSharedVendorTableGuid Oleg = new("f720440559fc00949900bfa1575196ac");
+        public static readonly BlueprintSharedVendorTableGuid DireNarlmarchesVillageTrader = new("f072a8f6889b5f345b7f4e7c74cb3e4c");
+        public static readonly BlueprintSharedVendorTableGuid TrollLairVendor = new("8029a1615d891554f90ded0dee4057b0"); // Covers both Kobold and Troll version
 
         public static readonly BlueprintSharedVendorTableGuid DLC2QuartermasterBase = new("8035c1313902fae4796d36065e769297"); // aka Kjerdi
         public static readonly BlueprintSharedVendorTableGuid DLC2QuartermasterImproved = new("7c68519dca4334c408227bb0140ac50f"); // aka Kjerdi
+
+        public static readonly BlueprintSharedVendorTableGuid DLC3_HonestGuy = new("a6bae621a7bd96b4fb3c1511cd2f9fac");
+
+    }
+
+    public static class ProjectileRefs
+    {
+        public static readonly BlueprintProjectileGuid RockThrow = new("0b84cce27ec7b2346935f1359882d74d");
     }
 }

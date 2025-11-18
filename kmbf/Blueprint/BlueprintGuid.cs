@@ -650,3 +650,16 @@ public class BlueprintSharedVendorTableGuid : BlueprintUnitLootGuid
     public override string BlueprintTypeName => "Shared Vendor Table";
     public bool GetBlueprint(out BlueprintSharedVendorTable bp) => GetBlueprintAs(out bp);
 }
+
+public class BlueprintProjectileGuid : BlueprintObjectGuid
+{
+    public BlueprintProjectileGuid() { }
+    public BlueprintProjectileGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Projectile";
+    public bool GetBlueprint(out BlueprintProjectile bp) => GetBlueprintAs(out bp);
+}

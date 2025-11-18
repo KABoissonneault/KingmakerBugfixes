@@ -26,6 +26,7 @@ using Kingmaker.Kingdom.Settlements;
 using Kingmaker.Kingdom.Settlements.BuildingComponents;
 using Kingmaker.Kingdom.Tasks;
 using Kingmaker.Localization;
+using Kingmaker.RuleSystem;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
 using Kingmaker.UnitLogic.Abilities.Components;
 using Kingmaker.UnitLogic.Abilities.Components.AreaEffects;
@@ -832,6 +833,14 @@ namespace kmbf.Blueprint.Configurator
             });
         }
 
+        public TBuilder SetDescription(LocalizedString text)
+        {
+            return AddOperation(i =>
+            {
+                i.m_DescriptionText = text;
+            });
+        }
+
         public TBuilder SetFlavorText(LocalizedString text)
         {
             return AddOperation(i =>
@@ -845,6 +854,14 @@ namespace kmbf.Blueprint.Configurator
             return AddOperation(i =>
             {
                 i.m_Icon = icon;
+            });
+        }
+
+        public TBuilder SetCost(int cost)
+        {
+            return AddOperation(i =>
+            {
+                i.m_Cost = cost;
             });
         }
     }
@@ -931,6 +948,23 @@ namespace kmbf.Blueprint.Configurator
 
     public sealed class BlueprintItemWeaponConfigurator : BaseBlueprintItemEquipmentHandConfigurator<BlueprintItemWeapon, BlueprintItemWeaponGuid,  BlueprintItemWeaponConfigurator>
     {
+        public BlueprintItemWeaponConfigurator SetSize(Size size)
+        {
+            return AddOperation(i =>
+            {
+                i.m_Size = size;
+            });
+        }
+
+        public BlueprintItemWeaponConfigurator SetOverrideDamageDice(DiceFormula dice)
+        {
+            return AddOperation(i =>
+            {
+                i.m_OverrideDamageDice = true;
+                i.m_DamageDice = dice;
+            });
+        }
+        
         public BlueprintItemWeaponConfigurator AddEnchantment(BlueprintWeaponEnchantmentGuid enchantmentId)
         {
             return AddOperation(i =>
@@ -957,11 +991,31 @@ namespace kmbf.Blueprint.Configurator
         where GuidType : BlueprintItemEnchantmentGuid, new()
         where TBuilder : BaseBlueprintItemEnchantmentConfigurator<BPType, GuidType, TBuilder>, new()
     {
+        public TBuilder SetEnchantName(LocalizedString enchantName)
+        {
+            return AddOperation(i =>
+            {
+                i.m_EnchantName = enchantName;
+            });
+        }
 
+        public TBuilder SetDescription(LocalizedString description)
+        {
+            return AddOperation(i =>
+            {
+                i.m_Description = description;
+            });
+        }
     }
 
     public sealed class BlueprintWeaponEnchantmentConfigurator : BaseBlueprintItemEnchantmentConfigurator<BlueprintWeaponEnchantment, BlueprintWeaponEnchantmentGuid, BlueprintWeaponEnchantmentConfigurator>
     {
+        public static BlueprintWeaponEnchantmentConfigurator New(BlueprintWeaponEnchantmentGuid guid, string objectName)
+        {
+            BlueprintWeaponEnchantment enchantment = CreateInstance(guid, objectName);
+            return From(enchantment);
+        }
+
         public BlueprintWeaponEnchantmentConfigurator SetDC(ContextValue value, bool add10ToDC)
         {
             return EditOrAddComponent<ContextSetAbilityParams>(c =>

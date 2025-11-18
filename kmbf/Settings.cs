@@ -39,7 +39,7 @@ namespace kmbf
     [DrawFields(DrawFieldMask.Public)]
     public class AddedContentSettings
     {
-        public bool Slings = true;
+        public bool SlingsExperimental = false;
     }
 
     public class UMMSettings : UnityModManager.ModSettings, IDrawable

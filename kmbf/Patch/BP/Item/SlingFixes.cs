@@ -1,14 +1,35 @@
 ﻿using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Classes;
+using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Items.Weapons;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.Enums;
+using Kingmaker.PubSubSystem;
+using Kingmaker.RuleSystem;
+using Kingmaker.RuleSystem.Rules;
 using Kingmaker.UnitLogic.FactLogic;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
+using UnityEngine;
 using static kmbf.Patch.PatchUtility;
 
 namespace kmbf.Patch.BP.Item
 {
+    public class WeaponUndersized : WeaponEnchantmentLogic, IInitiatorRulebookHandler<RuleCalculateAttackBonusWithoutTarget>, IRulebookHandler<RuleCalculateAttackBonusWithoutTarget>, IInitiatorRulebookSubscriber
+    {
+        public void OnEventAboutToTrigger(RuleCalculateAttackBonusWithoutTarget evt)
+        {
+            if (evt.Weapon == base.Owner && (evt.Initiator?.Descriptor?.OriginalSize ?? Size.Medium) > Size.Small)
+            {
+                evt.AddBonus(-2, base.Fact);
+            }
+        }
+
+        public void OnEventDidTrigger(RuleCalculateAttackBonusWithoutTarget evt)
+        {
+        }
+    }
+
     static class SlingFixes
     {
         // The fields that matter to slings
@@ -72,9 +93,14 @@ namespace kmbf.Patch.BP.Item
                 })
                 .Configure();
 
+            var rockThrow = BlueprintWeaponEnchantmentConfigurator.From(WeaponEnchantmentRefs.RockThrowStrength)
+                .SetEnchantName(KMLocalizedStrings.RockThrow)
+                .SetDescription(KMBFLocalizedStrings.CreateString("rock-throw-strength-description"))
+                .Configure();
+
             #endregion
 
-            if (!StartAddedContentPatch("Slings - Added Content", nameof(AddedContentSettings.Slings)))
+            if (!StartAddedContentPatch("Slings - Added Content", nameof(AddedContentSettings.SlingsExperimental)))
             {
                 #region Dummy Feats for save compat
                 BlueprintFeatureConfigurator.New(FixFeatureRefs.HalflingWeaponFamiliarity, "HalflingWeaponFamiliarity")
@@ -117,7 +143,7 @@ namespace kmbf.Patch.BP.Item
 
             var slingPlus3 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingPlus3)
                 .SetCR(10)
-                .SetIcon(BundleManager.MakeAssetId("SlingMoreMagic"))
+                .SetIcon(slingMoreMagicIcon)
                 .EditVisualParameters(v =>
                 {
                     v.CopyFrom(slingStaffPlus3.m_VisualParameters);
@@ -141,6 +167,134 @@ namespace kmbf.Patch.BP.Item
                     v.CopyFrom(slingStaffPlus5.m_VisualParameters);
                 })
                 .Configure();
+
+            var slingCorrosivePlus1 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingCorrosivePlus1)
+                .SetCR(7)
+                .SetIcon(slingMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus2.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingCorrosivePlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingCorrosivePlus2)
+                .SetCR(10)
+                .SetIcon(slingMoreMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingFlamingPlus1 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingFlamingPlus1)
+                .SetCR(7)
+                .SetIcon(slingMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus2.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingFlamingPlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingFlamingPlus2)
+                .SetCR(10)
+                .SetIcon(slingMoreMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingFrostPlus1 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingFrostPlus1)
+                .SetCR(7)
+                .SetIcon(slingMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus2.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingFrostPlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingFrostPlus2)
+                .SetCR(10)
+                .SetIcon(slingMoreMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingShockPlus1 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingShockPlus1)
+                .SetCR(7)
+                .SetIcon(slingMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus2.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingShockPlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingShockPlus2)
+                .SetCR(10)
+                .SetIcon(slingMoreMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                .Configure();
+
+            var slingSonicPlus2 = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SlingSonicPlus2)
+                .SetCR(10)
+                .SetIcon(slingMoreMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                .Configure();
+
+            var undersized = BlueprintWeaponEnchantmentConfigurator.New(FixWeaponEnchantmentRefs.Undersized, "Undersized")
+                .AddComponent<WeaponUndersized>()
+                .SetEnchantName(KMBFLocalizedStrings.CreateString("undersized-name"))
+                .SetDescription(KMBFLocalizedStrings.CreateString("undersized-description"))
+                .Configure();
+
+            var koboldSling = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.KoboldSling)
+                .AddEnchantment(WeaponEnchantmentRefs.Enhancement1)
+                .AddEnchantment(WeaponEnchantmentRefs.Speed)
+                .AddEnchantment(FixWeaponEnchantmentRefs.Undersized)
+                .SetCR(11)
+                .SetDescription(KMBFLocalizedStrings.CreateString("kobold-sling-description"))
+                .SetFlavorText(KMBFLocalizedStrings.CreateString("kobold-sling-flavor"))
+                .SetIcon(slingVeryMagicIcon)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                })
+                // "+3" cost
+                // Enchantment: +1
+                // Speed: +3
+                // Small: -1
+                // Same as Devourer of Metal
+                .SetCost(18500)
+                .Configure();            
+
+            var trollSling = BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.LargeStandardSling)
+                .SetSize(Size.Medium) // Counter-intuitive, but this is how KM does large weapons
+                .SetOverrideDamageDice(DiceFormulaFactory.Value(DiceType.D6))
+                .AddEnchantment(WeaponEnchantmentRefs.Enhancement4)
+                .AddEnchantment(WeaponEnchantmentRefs.RockThrowStrength)
+                .AddEnchantment(WeaponEnchantmentRefs.Oversized)
+                .EditVisualParameters(v =>
+                {
+                    v.CopyFrom(slingStaffPlus3.m_VisualParameters);
+                    v.m_Projectiles = [null];
+                    ProjectileRefs.RockThrow.GetBlueprint(out v.m_Projectiles[0]);
+                })
+                .SetCR(16)
+                .SetDisplayName(KMBFLocalizedStrings.CreateString("troll-sling-display-name"))
+                .SetDescription(KMBFLocalizedStrings.CreateString("troll-sling-description"))
+                .SetFlavorText(KMBFLocalizedStrings.CreateString("troll-sling-flavor"))
+                .SetIcon(slingMostMagicIcon)
+                .SetCost(50000)
+                .Configure();
+
             #endregion
 
             #region Vendors
@@ -150,7 +304,48 @@ namespace kmbf.Patch.BP.Item
                     .AddItem("KMBF3", masterworkSling)
                     .Configure();
 
-            // TODO
+            BlueprintSharedVendorTableConfigurator.From(SharedVendorTableRefs.DLC2QuartermasterBase)
+                    .AddItem("KMBF1", standardSling, 10)
+                    .AddItem("KMBF2", masterworkSling, 6)
+                    .AddItem("KMBF3", slingPlus1, 6)
+                    .Configure();
+
+            BlueprintSharedVendorTableConfigurator.From(SharedVendorTableRefs.DLC2QuartermasterImproved)
+                    .AddItem("KMBF1", slingStaffPlus2, 2)
+                    .AddItem("KMBF2", slingCorrosivePlus1, 2)
+                    .AddItem("KMBF3", slingPlus2, 3)
+                    .Configure();
+
+            BlueprintSharedVendorTableConfigurator.From(SharedVendorTableRefs.DireNarlmarchesVillageTrader)
+                    .AddItem("KMBF1", slingPlus1, 1)
+                    .AddItem("KMBF2", slingPlus2, 1)
+                    .AddItem("KMBF3", slingPlus3, 1)
+                    .AddItem("KMBF4", slingPlus4, 1)
+                    .AddItem("KMBF5", slingPlus5, 1)
+                    .AddItem("KMBF6", slingCorrosivePlus1, 1)
+                    .AddItem("KMBF7", slingCorrosivePlus2, 1)
+                    .AddItem("KMBF8", slingFlamingPlus1, 1)
+                    .AddItem("KMBF9", slingFlamingPlus2, 1)
+                    .AddItem("KMBF10", slingFrostPlus1, 1)
+                    .AddItem("KMBF11", slingFrostPlus2, 1)
+                    .AddItem("KMBF12", slingShockPlus1, 1)
+                    .AddItem("KMBF13", slingShockPlus2, 1)
+                    .AddItem("KMBF14", slingSonicPlus2, 1)
+                    .AddItem("KMBF15", trollSling, 1)
+                    .Configure();
+
+            BlueprintSharedVendorTableConfigurator.From(SharedVendorTableRefs.DLC3_HonestGuy)
+                .AddItem("KMBF1", masterworkSling, 8)
+                .AddItem("KMBF2", slingPlus1, 7)
+                .AddItem("KMBF3", standardSling, 10)
+                .Configure();
+
+            BlueprintSharedVendorTableConfigurator.From(SharedVendorTableRefs.TrollLairVendor)
+                .AddItem("KMBF1", masterworkSling, 3)
+                .AddItem("KMBF2", koboldSling)
+                .Configure();
+
+            // TODO, more
 
             #endregion
 
@@ -193,13 +388,17 @@ namespace kmbf.Patch.BP.Item
             BlueprintTrashLootSettingsConfigurator.From(TrashLootSettingsRefs.DLC3TrashLootSettings)
                 .AddTypeEntry(TrashLootType.Equipment, standardSling, masterworkSling)
                 .Configure();
+
+            // Helmet is supposed to protect against rocks
+            BlueprintFeatureConfigurator.From(FeatureRefs.TrailblazerHelmet)
+                .AddComponent<DamageReductionAgainstRangedWeapons>(c =>
+                {
+                    c.Type = slingType;
+                    c.ReductionTrue = 10;
+                    c.ReductionFalse = 2;
+                })
+                .Configure();
             #endregion
-
-
-        }
-
-        static void FixSlings()
-        {
         }
     }
 }
