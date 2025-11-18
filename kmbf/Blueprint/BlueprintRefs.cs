@@ -125,6 +125,8 @@ namespace kmbf.Blueprint
 
         public static readonly BlueprintWeaponEnchantmentGuid LightningArrows = new("d0cab2c642c912245a5c35821db45d0e");
         public static readonly BlueprintWeaponEnchantmentGuid LoversArrows = new("c5301596b1e29a846a92e27344d1844a");
+
+        public static readonly BlueprintWeaponEnchantmentGuid FieryBody = new("1daab3baedcd2db4e9f596ae91bff1c5");
     }
 
     public static class BuffRefs

@@ -90,5 +90,13 @@
     "Key": "1049b2a5-f678-40b6-bd48-26a266092387",
     "Target": "kukri, ",
     "Add": "dart, sai, kama, "
-  }
+  },
+  {
+    "Key": "2ab6566f-48e3-4782-97d2-943c12d25d82",
+    "Value": "Fiery Body"
+  },
+  {
+    "Key": "23d1f690-1f1a-429e-b111-47a3309634fd",
+    "Value": "Your Fiery Body is sheathed in fire that deals an extra 3d6 points of fire damage on a successful hit. The fire does not harm the wielder."
+  },
 ]

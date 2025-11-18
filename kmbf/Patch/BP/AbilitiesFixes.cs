@@ -1,5 +1,6 @@
 ﻿using Kingmaker.Blueprints.Classes;
 using Kingmaker.Blueprints.Classes.Spells;
+using Kingmaker.Blueprints.Items.Ecnchantments;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.Designers.Mechanics.Buffs;
@@ -7,6 +8,7 @@ using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.Enums;
+using Kingmaker.RuleSystem;
 using Kingmaker.UI.GenericSlot;
 using Kingmaker.UnitLogic;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
@@ -33,16 +35,22 @@ namespace kmbf.Patch.BP
             Main.Log.Log("Starting Ability patches");
 
             FixEkunWolfBuffs();
+            
             FixMagicalVestmentShield();
             FixRaiseDead();
             FixBreathOfLife();
             FixJoyfulRapture();
             FixProtectionFromArrows();
+            FixBreakEnchantment();
+            FixFieryBody();
+
             FixLeopardCompanionUpgrade();
             FixGazeImmunities();
+
             FixTieflingFoulspawn();
             FixExplosionRing();
-            FixBreakEnchantment();
+            
+            
             FixAbilityScoreCheckBonuses();
             FixLawChaosGreaterAbility();
             FixUndeadImmunities();
@@ -352,6 +360,21 @@ namespace kmbf.Patch.BP
                     c.m_IncludeDead = true;
                 })
                 .Configure();
+        }
+        
+        // The "Fiery Body" weapon enchantment is supposed to add 3d6 to the "claws", not 1d6 like normal Flaming
+        // Description (23d1f690-1f1a-429e-b111-47a3309634fd) fixed in DefaultStrings_enGB.json
+        static void FixFieryBody()
+        {
+            if(StartPatch("Fiery Body"))
+            {
+                BlueprintWeaponEnchantmentConfigurator.From(WeaponEnchantmentRefs.FieryBody)
+                    .EditComponent<WeaponEnergyDamageDice>(c =>
+                    {
+                        c.EnergyDamageDice = DiceFormulaFactory.Value(DiceType.D6, 3);
+                    })
+                    .Configure();
+            }
         }
 
         // While AbilityScoreCheckBonus has been fixed by this mod,
