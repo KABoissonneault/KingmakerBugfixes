@@ -1,4 +1,3 @@
-
 # KingmakerBugfixes
 
 Bug fixing mod for Pathfinder: Kingmaker. Many long-standing bugs in Kingmaker are simple mistakes in the game data (Blueprints) that can easily be patched by a mod.
@@ -10,6 +9,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 ## Fixes
 
 [Opt-out] means those fixes can be disabled in the Unity Mod Manager settings (CTRL+F10 while in-game). Generally, those fixes remove exploits that benefit the player. You need to reboot the game after changing the settings for the fixes to apply or be reverted.
+
+[Opt-in] means those fixes can be enabled in the Unity Mod Manager settings (CTRL+F10 while in-game). Generally, those changes are experimental. You need to reboot the game after changing the settings for the fixes to apply or be reverted.
 
 [Modify Save] means those fixes may not be able to fully fix the issue if your save already contains the bug. In that case, to fix the issue, you need to go into the UMM settings (CTRL+F10) and press the "Modify Current Save" while a save is loaded. **Those fixes are permanent, and can only be reverted by going back to an earlier save**
 
@@ -49,6 +50,10 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus have been changed to show in the character sheet
 - [Opt-out] Fixed Touch of Glory giving Charisma instead of giving a bonus to Charisma checks (ie: roll d20 + charisma mod to save)
 - Moved Monk and Thrown weapons into different Fighter Weapon Groups so they can be boosted by a Weapon Training (KM has no Weapon Training for Monk and Thrown). Darts, sai, and kama are now Light Blades, javelins are Spears, nunchaku are Close, slings and slight staves are Hammers, and throwing axes are Axes
+- Fixed Law domain "Staff of Order" and Chaos domain "Chaos Blade" not doing anything
+- Fixed Cognatogen - Wisdom duration
+- Fixed Inspire Greatness / Inspire Heroics not ending at combat end, like Inspire Courage does
+- Fixed Fiery Body only adding 1d6 fire damage to unarmed attacks instead of 3d6
 
 #### Feat & Traits
 
@@ -58,6 +63,9 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] Fixed Crane Wing to check for shield in offhand. Still allows 2h weapons, since KM has no 1h option
 - Fixed Foulspawn Tiefling bonus against Clerics, Paladins, and Inquisitors only working against characters that had all three classes instead of any
 - [Opt-out] Combat Expertise is now off by default. There is a hard to fix issue where Combat Expertise refreshes each time you save or load, so having it off by default makes it less detrimental to most characters
+- Fixed Undead charisma modified value (ex: buffs) not applying to saving throws
+- [Opt-out] Fixed Undead immunities to include Paralysis and Sleep (no longer bypassed by Undead Bloodline Arcana), but also exclude Shakened, Frightened, Sickened, and Nauseated (still needs Undead Bloodline for mind-affecting effects). Undead are properly immune to some spells with a Fortitude saving throw, such as Baleful Polymorph, Flare Burst, or Ray of Sickening. Note that this is different from the other "Undead Immunities" mod
+- Fixed Penetrating Strike feat, as well as the Greater version
 
 #### Item
 
@@ -71,6 +79,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Quiver of Lightning Arrows and Quiver of Lover's Arrows not having the extra haste attack despite mentioning "speed" in the description
 - Fixed Explosion Ring not giving +12 damage to bomb abilities
 - Fixed Blade of the Merciful's "Mass Heal" DC to 23 instead of 0
+- Fixed sling weapon type not having a model or proper projectiles, for the one sling you can find in KM
 
 #### Misc
 
@@ -86,6 +95,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Armag Tomb's Test of Strength not opening all doors when solving the problem "the intended way" (with the 25 Athletics checks after passing the 18 Intelligence check)
 - Fixed Mim's "Three Wishes" quest not raising artisan tier on completion (not backward compatible)
 - Fixed Amiri's "Reforged Blade" quest having a dialogue with improper trigger if trying to sacrifice Nilak while Akaia is alive
+- Fixed Harrim's "Revelation" quest reward not granting the Madness domain
 
 ### Kingdom
 
@@ -99,6 +109,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - The "Wigmold System" from the Stability Rank 10 event now also applies to Opportunities in addition to Problems
 - Fixed "Improving Cultural Development" not including Theater
 - Fixed "Lure of the First World" event to use Consilor instead of Regent
+- Fixed Daggermark's Rival / Pitaxian Spies not applying to opportunities
+- Fixed Blessing of Abadar/Asmodeus/Caiden/Gorum/Lamashtu divine rank 9 kingdom buffs, as well as No Import Taxes and Trade Guild (economy rank 7)
 
 ### Text and UI
 
@@ -120,11 +132,17 @@ Not quite "fixes", but should be a universal improvement for everyone
 
 ### Stability
 
+- Added Json loading error logging to output_log.txt, to help debug save load issues
 - Fixed data leak in InitiativeTrackerUnitVM
 - Fixed null reference exception in BugReportCanvas
 - Fixed null reference exception in WeatherSystemBehaviour
 - Fixed null reference exception in PathVisualizer Update
 - Fixed null reference exception in AreaEffectEntityData.ShouldUnitBeInside
+- Fixed null reference exception in Familiar.Update
+
+### Added Content
+
+- [Opt-in] Slings restoration (Experimental). While Kingmaker has one sling you can find after act 4, this change aims to make slings a viable build from the start, all the way to the endgame. Currently, you can find mundane, masterwork, +1 to +5, some slings with elemental bonuses, as well as two secret unique slings. As of writing, vendor support is pretty scarce (mostly Oleg and the secret vendor), but they are functional if you added them through Bag of Tricks.
   
 ## Known Issues
 
@@ -154,9 +172,11 @@ List of settings:
 - Fix Controlled Fireball: With this fix, Controlled Fireball applies minimal damage to allies instead of none. Watch out for Arcane Trickster sneak attacks
 - Fix Weapon Enhancement Damage Reduction: Without this fix, any "trait" on a weapon makes it magical for the purpose of bypassing Damage Reduction (ex: 10/magic), including Composite or Thrown (but not masterwork). With this fix, only the proper "+1" (or more) enchantment makes a weapon bypass DR, as described in the rules
 - Fix Touch of Glory: Without this fix, Touch of Glory gives raw Charisma, greatly boosting sorcerers and bards, among other things. With this fix, Touch of Glory only boosts Charisma checks, as described.
+- Fix Construct / Undead Immunities: Without this fix, undead are not immune to Paralysis and Sleep, and are immune to Nauseating/Sickened even with Undead Bloodline Arcana. In addition, both Constructs and Undead are prone to some Fortitude-based spells, such as Baleful Polymorph. With this fix, all immunities work closer to tabletop. Note that this is different from the other Undead Immunities mod
 - Fix Free Ezvanki Temple: Without this fix, you always get a free temple from Ezvanki when starting out your barony, even if you've never talked to him. With this fix, you need to pass the Diplomacy check, as intended
 - Bypass Spell Resistance for Out of Combat Buffs: In tabletop, a unit can always choose to remove its spell resistance by using a standard action, which removes it for a turn. This feature is not implemented in Kingmaker, but this setting allows units to ignore spell resistance when casting spells on allies while out of combat, as a shorthand.
 - Combat Expertise Off by Default: If you have a character that naturally has Int below 13 but becomes eligible for Combat Expertise with Racial or Inherent stat gains, Combat Expertise will constantly turn itself back on each time stats are refreshed. With this setting, Combat Expertise will instead always turn itself off, which has less risk of hurting your character.
+- Slings (Experimental): With this setting on, slings will be added as starting items for druids and halflings, and can be found on multiple vendors. Still not ready for a full playthrough, but you should be able to find some +1 to +5 slings somewhere
 
 ## Contributors
 
