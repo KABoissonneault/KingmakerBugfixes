@@ -242,6 +242,10 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid RingOfRecklessCourage = new("aa9102221a042504c94f0a313c4c40a1");
         public static readonly BlueprintFeatureGuid TrailblazerHelmet = new("a32d8eb9c88e3b64ab1bbf84c41524d6");
 
+        // Feats
+        public static readonly BlueprintFeatureGuid PenetratingStrike = new("308cd7dc4f10efd428f531bbf4f2823d");
+        public static readonly BlueprintFeatureGuid GreaterPenetratingStrike = new("eb6eb946c68ef094f89c7633f5bfdc9b");
+
         public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
 
         public static readonly BlueprintFeatureGuid AnimalCompanionUpgradeLeopard = new("b8c98af302ee334499d30a926306327d");

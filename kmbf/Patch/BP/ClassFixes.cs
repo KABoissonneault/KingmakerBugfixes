@@ -31,10 +31,10 @@ namespace kmbf.Patch.BP
             FixAlchemist();
             FixBard();
             FixDruid();
+            FixFighter();
             FixKineticist();
             FixDoubleDebilitatingInjury();
-            FixFighterWeaponTraining();
-
+            
             // Optional
             FixArcaneTricksterAlignmentRequirement();
         }
@@ -180,41 +180,59 @@ namespace kmbf.Patch.BP
 
         // KM is missing Weapon Training for Dart, Javelin, Kama, Nunchaku, Sai, Sling Staff, Throwing Axe, and Sling
         // Move them around
-        static void FixFighterWeaponTraining()
+        static void FixFighter()
         {
-            if (!StartPatch("Fighter Weapon Training")) return;
+            if (StartPatch("Fighter Weapon Training"))
+            {
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Dart)
+                    .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Dart)
-                .SetFighterGroup(WeaponFighterGroup.BladesLight)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Javelin)
+                    .SetFighterGroup(WeaponFighterGroup.Spears)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Javelin)
-                .SetFighterGroup(WeaponFighterGroup.Spears)
-                .Configure();
-            
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Kama)
-                .SetFighterGroup(WeaponFighterGroup.BladesLight)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Kama)
+                    .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Nunchaku)
-                .SetFighterGroup(WeaponFighterGroup.Close)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Nunchaku)
+                    .SetFighterGroup(WeaponFighterGroup.Close)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sai)
-                .SetFighterGroup(WeaponFighterGroup.BladesLight)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sai)
+                    .SetFighterGroup(WeaponFighterGroup.BladesLight)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sling)
-                .SetFighterGroup(WeaponFighterGroup.Hammers)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.Sling)
+                    .SetFighterGroup(WeaponFighterGroup.Hammers)
+                    .Configure();
 
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.SlingStaff)
-                .SetFighterGroup(WeaponFighterGroup.Hammers)
-                .Configure();            
-            
-            BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.ThrowingAxe)
-                .SetFighterGroup(WeaponFighterGroup.Axes)
-                .Configure();
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.SlingStaff)
+                    .SetFighterGroup(WeaponFighterGroup.Hammers)
+                    .Configure();
+
+                BlueprintWeaponTypeConfigurator.From(WeaponTypeRefs.ThrowingAxe)
+                    .SetFighterGroup(WeaponFighterGroup.Axes)
+                    .Configure();
+            }
+
+            if(StartPatch("Penetrating Strike"))
+            {
+                BlueprintFeatureConfigurator.From(FeatureRefs.PenetratingStrike)
+                    .ReplaceComponents<Kingmaker.Designers.Mechanics.Facts.PenetratingStrike, kmbf.Component.PenetratingStrike>((prev, next) =>
+                    {
+                        next.ReductionPenalty = prev.ReductionReduction;
+                    })
+                    .Configure();
+
+                BlueprintFeatureConfigurator.From(FeatureRefs.GreaterPenetratingStrike)
+                    .ReplaceComponents<Kingmaker.Designers.Mechanics.Facts.PenetratingStrike, kmbf.Component.PenetratingStrike>((prev, next) =>
+                    {
+                        next.ReductionPenalty = prev.ReductionReduction;
+                    })
+                    .Configure();
+            }
         }
     }
 }
