@@ -63,7 +63,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] Fixed Crane Wing to check for shield in offhand. Still allows 2h weapons, since KM has no 1h option
 - Fixed Foulspawn Tiefling bonus against Clerics, Paladins, and Inquisitors only working against characters that had all three classes instead of any
 - [Opt-out] Combat Expertise is now off by default. There is a hard to fix issue where Combat Expertise refreshes each time you save or load, so having it off by default makes it less detrimental to most characters
-- Fixed Undead charisma modified value (ex: buffs) not applying to saving throws
+- Fixed Undead charisma modified value (ex: buffs) not applying to Fortitude saving throws
 - [Opt-out] Fixed Undead immunities to include Paralysis and Sleep (no longer bypassed by Undead Bloodline Arcana), but also exclude Shakened, Frightened, Sickened, and Nauseated (still needs Undead Bloodline for mind-affecting effects). Undead are properly immune to some spells with a Fortitude saving throw, such as Baleful Polymorph, Flare Burst, or Ray of Sickening. Note that this is different from the other "Undead Immunities" mod
 - Fixed Penetrating Strike feat, as well as the Greater version
 
