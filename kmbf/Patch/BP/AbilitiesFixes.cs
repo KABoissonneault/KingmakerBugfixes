@@ -445,7 +445,7 @@ namespace kmbf.Patch.BP
         {
             // Undead don't take Charisma modifiers into account for saving throws
             // Paladin's Divine Grace uses a RecalculateOnStatChange, so we copy this approach here
-            if (StartPatch("Undead Saving Throws"))
+            if (StartPatch("Undead Saving Throws", ModExclusionFlags.CallOfTheWild))
             {
                 BlueprintFeatureConfigurator.From(FeatureRefs.UndeadImmunities)
                     .AddComponent<RecalculateOnStatChange>(c =>
@@ -465,7 +465,7 @@ namespace kmbf.Patch.BP
             // Immunities made unconditional: Sleep
             //
             // Fortitude spells handled: Baleful Polymorph, Flare, Flare Burst, Ray of Sickening
-            if (StartBalancePatch("Construct and Undead Immunities", nameof(BalanceSettings.FixConstructUndeadImmunities)))
+            if (StartBalancePatch("Construct and Undead Immunities", nameof(BalanceSettings.FixConstructUndeadImmunities), ModExclusionFlags.CallOfTheWild))
             {
                 if (!FeatureRefs.ConstructType.GetBlueprint(out BlueprintFeature constructType)) return;
                 if (!FeatureRefs.UndeadType.GetBlueprint(out BlueprintFeature undeadType)) return;
@@ -474,6 +474,19 @@ namespace kmbf.Patch.BP
                             | SpellDescriptor.Poison | SpellDescriptor.Sleep | SpellDescriptor.Stun | SpellDescriptor.VilderavnBleed;
                 SpellDescriptorWrapper conditionalDescriptor = SpellDescriptor.MindAffecting;
                 BlueprintFeatureConfigurator.From(FeatureRefs.UndeadImmunities)
+                    // TODO: fix saving throws for Swarm distraction before removing the Nauseated/Sickened immunity
+                    .AddComponent<AddConditionImmunity>(c =>
+                    {
+                        c.Condition = UnitCondition.Exhausted;
+                    })
+                    .AddComponent<AddConditionImmunity>(c =>
+                    {
+                        c.Condition = UnitCondition.Paralyzed;
+                    })
+                    .AddComponent<AddConditionImmunity>(c =>
+                    {
+                        c.Condition = UnitCondition.Stunned;
+                    })
                     .EditComponentWithName<BuffDescriptorImmunity>("$BuffDescriptorImmunity$eb929088-4f9e-4c60-92ee-89a0fa13d8f1", c =>
                     {
                         c.Descriptor = unconditionalDescriptor;
