@@ -41,7 +41,7 @@ namespace kmbf.Patch.BP
 
         static void FixAlchemist()
         {
-            if (StartPatch("Wisdom Cognatogen"))
+            if (StartPatch("Wisdom Cognatogen", ModExclusionFlags.CallOfTheWild))
             {
                 BlueprintAbilityConfigurator.From(AbilityRefs.CognatogenWisdom)
                     .EditComponentGameAction<AbilityEffectRunAction, ContextActionApplyBuff>("$ContextActionApplyBuff$2e1602e5-fa74-47db-9bf6-163e65d056d1", b =>
