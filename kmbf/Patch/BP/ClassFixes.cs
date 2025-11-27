@@ -150,22 +150,38 @@ namespace kmbf.Patch.BP
 
         static void FixKineticist()
         {
-            if (!StartPatch("Kineticist Deadly Earth")) return;
+            if (StartPatch("Kineticist Deadly Earth"))
+            {
+                // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
+                // Copy the ContextRankConfigs from the Mud version
+                BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+                BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+                BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+                BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
 
-            // Deadly Earth: Metal (and Rare variant) has scaling that does not match other compound elements or other Metal abilities
-            // Copy the ContextRankConfigs from the Mud version
-            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMudBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthEarthBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMagmaBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
-            BlueprintAbilityConfigurator.From(AbilityRefs.DeadlyEarthMetalBlast).AddSpellDescriptor(SpellDescriptor.Ground).Configure();
+                BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthMetalBlast)
+                    .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
+                    .Configure();
 
-            BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
-                .Configure();
+                BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthRareMetalBlast)
+                    .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
+                    .Configure();
+            }
 
-            BlueprintAbilityAreaEffectConfigurator.From(AbilityAreaEffectRefs.DeadlyEarthRareMetalBlast)
-                .ReplaceComponentsWithSource<ContextRankConfig>(AbilityAreaEffectRefs.DeadlyEarthMudBlast)
-                .Configure();
+            if (StartPatch("Kinetic Knight Armor Proficiency"))
+            {
+                if (!FeatureRefs.MediumArmorProficiency.GetBlueprint(out BlueprintFeature mediumArmorProficiency)) return;
+                if (!FeatureRefs.HeavyArmorProficiency.GetBlueprint(out BlueprintFeature heavyArmorProficiency)) return;
+                if (!FeatureRefs.ShieldsProficiency.GetBlueprint(out BlueprintFeature shieldsProficiency)) return;
+
+                BlueprintFeatureConfigurator.From(FeatureRefs.ElementalBastion)
+                    .RemoveComponentWithName<AddProficiencies>("$AddProficiencies$02ab1d84-42d1-43db-998e-a997d92bde9b")
+                    .EditComponentWithName<AddFacts>("$AddFacts$b2820ef6-d3cf-4f23-9ea0-4980c7ff0373", c =>
+                    {
+                        c.Facts = [.. c.Facts, mediumArmorProficiency, heavyArmorProficiency, shieldsProficiency];
+                    })
+                    .Configure();
+            }
         }
 
         // Both tabletop and in-game encyclopedia say Arcane Trickster requirement non-lawful, but the game (or WotR) does not enforce it

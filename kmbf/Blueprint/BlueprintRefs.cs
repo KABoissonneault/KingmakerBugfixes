@@ -228,10 +228,16 @@ namespace kmbf.Blueprint
 
     public static class FeatureRefs
     {
-        public static readonly BlueprintFeatureGuid DoubleDebilitation = new("dd699394df0ef8847abba26038333f02");
-
+        // Domain
         public static readonly BlueprintFeatureGuid AnimalDomainBaseFeature = new("d577aba79b5727a4ab74627c4c6ba23c");
 
+        // Kineticist
+        public static readonly BlueprintFeatureGuid ElementalBastion = new("82fbdd5eb5ac73b498c572cc71bda48f");
+
+        // Rogue
+        public static readonly BlueprintFeatureGuid DoubleDebilitation = new("dd699394df0ef8847abba26038333f02");
+                
+        // Sorcerer
         public static readonly BlueprintFeatureGuid BloodlineUndeadArcana = new("1a5e7191279e7cd479b17a6ca438498c");
 
         public static readonly BlueprintFeatureGuid EkunWolfOffensiveMaster = new("64f74b75ed0d1f8478de5245cf061bcc");
@@ -245,11 +251,19 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid TrailblazerHelmet = new("a32d8eb9c88e3b64ab1bbf84c41524d6");
 
         // Feats
+
+        // Proficiency
+        public static readonly BlueprintFeatureGuid MediumArmorProficiency = new("46f4fb320f35704488ba3d513397789d");
+        public static readonly BlueprintFeatureGuid HeavyArmorProficiency = new("1b0f68188dcc435429fb87a022239681");
+        public static readonly BlueprintFeatureGuid ShieldsProficiency = new("cb8686e7357a68c42bdd9d4e65334633");
+
+        // Fighter
         public static readonly BlueprintFeatureGuid PenetratingStrike = new("308cd7dc4f10efd428f531bbf4f2823d");
         public static readonly BlueprintFeatureGuid GreaterPenetratingStrike = new("eb6eb946c68ef094f89c7633f5bfdc9b");
 
         public static readonly BlueprintFeatureGuid ShatterDefenses = new("61a17ccbbb3d79445b0926347ec07577");
 
+        // Racial
         public static readonly BlueprintFeatureGuid AnimalCompanionUpgradeLeopard = new("b8c98af302ee334499d30a926306327d");
 
         public static readonly BlueprintFeatureGuid TieflingHeritageFoulspawn = new("a53d760a364cd90429e16aa1e7048d0a");
@@ -257,6 +271,7 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid UndeadType = new("734a29b693e9ec346ba2951b27987e33");
         public static readonly BlueprintFeatureGuid UndeadImmunities = new("8a75eb16bfff86949a4ddcb3dd2f83ae");
 
+        // Item
         public static readonly BlueprintFeatureGuid ExplosionRing = new("9583bd98ef0b65a448ac79c5ec273db8");
     }
 

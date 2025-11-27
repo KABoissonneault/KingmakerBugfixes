@@ -230,6 +230,20 @@ namespace kmbf.Blueprint.Configurator
             return Self;
         }
 
+        public TBuilder RemoveComponentWithName<C>(string name) where C : BlueprintComponent
+        {
+            if (Instance != null)
+            {
+                C c = Instance.Components.OfType<C>().FirstOrDefault(c => c.name == name);
+                if (c != null)
+                    componentsToRemove.Add(c);
+                else
+                    Main.Log.Error($"Could not find component of type \"{typeof(C).Name}\" with name '{name}' in \"{GetDebugName()}\"");
+            }
+
+            return Self;
+        }
+
         public TBuilder RemoveComponentWhere<C>(Predicate<C> pred) where C : BlueprintComponent
         {
             if (Instance != null)
