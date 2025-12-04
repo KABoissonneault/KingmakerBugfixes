@@ -31,6 +31,8 @@ namespace kmbf.Blueprint
 
         public static readonly BlueprintAbilityGuid CognatogenWisdom = new("84a9092b8430a1344a3c8b002cc68e7f");
 
+        public static readonly BlueprintAbilityGuid SmiteEvil = new("7bb9eb2042e67bf489ccd1374423cdec");
+
         public static readonly BlueprintAbilityGuid DeadlyEarthMudBlast = new("0be97d0e752060f468bbf62ce032b9f5");
         public static readonly BlueprintAbilityGuid DeadlyEarthEarthBlast = new("e29cf5372f89c40489227edc9ffc52be");
         public static readonly BlueprintAbilityGuid DeadlyEarthMagmaBlast = new("c0704daaf6e4c5840a94e7db6d7dbe0e");

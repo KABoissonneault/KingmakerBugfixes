@@ -33,6 +33,7 @@ namespace kmbf.Patch.BP
             FixDruid();
             FixFighter();
             FixKineticist();
+            FixPaladin();
             FixDoubleDebilitatingInjury();
             
             // Optional
@@ -179,6 +180,21 @@ namespace kmbf.Patch.BP
                     .EditComponentWithName<AddFacts>("$AddFacts$b2820ef6-d3cf-4f23-9ea0-4980c7ff0373", c =>
                     {
                         c.Facts = [.. c.Facts, mediumArmorProficiency, heavyArmorProficiency, shieldsProficiency];
+                    })
+                    .Configure();
+            }
+        }
+
+        static void FixPaladin()
+        {
+            // Smite Evil uses Charisma *bonus*, not modifier. Negatives don't count
+            if(StartPatch("Paladin Smite Evil"))
+            {
+                BlueprintAbilityConfigurator.From(AbilityRefs.SmiteEvil)
+                    .EditComponentWithName<ContextRankConfig>("$ContextRankConfig$5c386933-69cc-4d38-8600-b8f756d05a1a", c =>
+                    {
+                        c.m_UseMin = true;
+                        c.m_Min = 0;
                     })
                     .Configure();
             }
