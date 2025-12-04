@@ -12,6 +12,8 @@ namespace kmbf.Blueprint
         public static readonly BlueprintAbilityGuid BalefulPolymorph = new("3105d6e9febdc3f41a08d2b7dda1fe74");
         public static readonly BlueprintAbilityGuid BreakEnchantment = new("7792da00c85b9e042a0fdfc2b66ec9a8");
         public static readonly BlueprintAbilityGuid BreathOfLifeTouch = new("cbd03c874e39e6c4795fe0093544f2a2");
+        public static readonly BlueprintAbilityGuid CaveFangsStalactites = new("949d5ee85b7237042a4b47bc504dd763");
+        public static readonly BlueprintAbilityGuid CaveFangsStalactitesAbility = new("039681ca00c74f24eb302f340f8c6be7");
         public static readonly BlueprintAbilityGuid ControlledFireball = new("f72f8f03bf0136c4180cd1d70eb773a5");
         public static readonly BlueprintAbilityGuid Daze = new("55f14bc84d7c85446b07a1b5dd6b2b4c");
         public static readonly BlueprintAbilityGuid Flare = new("f0f8e5b9808f44e4eadd22b138131d52");

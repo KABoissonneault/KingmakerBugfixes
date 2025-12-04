@@ -41,6 +41,7 @@ namespace kmbf.Patch.BP
             FixProtectionFromArrows();
             FixBreakEnchantment();
             FixFieryBody();
+            FixCaveFangs();
 
             FixLeopardCompanionUpgrade();
             FixGazeImmunities();
@@ -373,6 +374,15 @@ namespace kmbf.Patch.BP
                     })
                     .Configure();
             }
+        }
+
+        static void FixCaveFangs()
+        {
+            if (!StartPatch("Cave Fangs Stalactites")) return;
+            if (!AbilityRefs.CaveFangsStalactites.GetBlueprint(out BlueprintAbility caveFangsStalactites)) return;
+            BlueprintAbilityConfigurator.From(AbilityRefs.CaveFangsStalactitesAbility)
+                .SetIcon(caveFangsStalactites.Icon)
+                .Configure();
         }
 
         // While AbilityScoreCheckBonus has been fixed by this mod,
