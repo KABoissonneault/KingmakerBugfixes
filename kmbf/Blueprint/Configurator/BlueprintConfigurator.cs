@@ -1338,6 +1338,23 @@ namespace kmbf.Blueprint.Configurator
         }
     }
 
+    public sealed class BlueprintArchetypeConfigurator : BaseBlueprintObjectConfigurator<BlueprintArchetype, BlueprintArchetypeGuid, BlueprintArchetypeConfigurator>
+    {
+        public BlueprintArchetypeConfigurator EditAddedFeatureLevelEntry(int level, Action<LevelEntry> act)
+        {
+            return AddOperation(arch =>
+            {
+                LevelEntry entry = arch.AddFeatures.FirstOrDefault(e => e.Level == level);
+                if (entry == null)
+                {
+                    Main.Log.Error($"Could not find AddFeatures entry at level {level} in '{GetDebugName()}'");
+                    return;
+                }
+                act(entry);
+            });
+        }
+    }
+
     public sealed class BlueprintWeaponTypeConfigurator : BaseBlueprintObjectConfigurator<BlueprintWeaponType, BlueprintWeaponTypeGuid, BlueprintWeaponTypeConfigurator>
     {
         public BlueprintWeaponTypeConfigurator SetTypeName(LocalizedString typeName)

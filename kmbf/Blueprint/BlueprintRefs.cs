@@ -71,6 +71,11 @@ namespace kmbf.Blueprint
         public static readonly BlueprintCharacterClassGuid Druid = new("610d836f3a3a9ed42a4349b62f002e96");
     }
 
+    public static class ArchetypeRefs
+    {
+        public static readonly BlueprintArchetypeGuid KineticKnight = new("7d61d9b2250260a45b18c5634524a8fb");
+    }
+
     public static class CueRefs
     {
         public static readonly BlueprintCueGuid IrleneGiftCue3 = new("03807d3897f73e44b84b476ae63a62f1");
@@ -253,6 +258,7 @@ namespace kmbf.Blueprint
         // Feats
 
         // Proficiency
+        public static readonly BlueprintFeatureGuid LightArmorProficiency = new("6d3728d4e9c9898458fe5e9532951132");
         public static readonly BlueprintFeatureGuid MediumArmorProficiency = new("46f4fb320f35704488ba3d513397789d");
         public static readonly BlueprintFeatureGuid HeavyArmorProficiency = new("1b0f68188dcc435429fb87a022239681");
         public static readonly BlueprintFeatureGuid ShieldsProficiency = new("cb8686e7357a68c42bdd9d4e65334633");

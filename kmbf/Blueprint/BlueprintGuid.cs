@@ -224,6 +224,20 @@ public class BlueprintCharacterClassGuid : BlueprintObjectGuid
     public bool GetBlueprint(out BlueprintCharacterClass bp) => GetBlueprintAs(out bp);
 }
 
+public class BlueprintArchetypeGuid : BlueprintObjectGuid
+{
+    public BlueprintArchetypeGuid() { }
+    public BlueprintArchetypeGuid(string guid)
+        : base(guid)
+    {
+
+    }
+
+    public override string BlueprintTypeName => "Archetype";
+    public bool GetBlueprint(out BlueprintArchetype bp) => GetBlueprintAs(out bp);
+}
+
+
 public class BlueprintCueGuid : BlueprintObjectGuid
 {
     public BlueprintCueGuid() { }
