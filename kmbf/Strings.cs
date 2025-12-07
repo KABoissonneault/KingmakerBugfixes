@@ -7,6 +7,7 @@ using Kingmaker.EntitySystem.Persistence.JsonUtility;
 using Kingmaker.Localization;
 using Kingmaker.Localization.Shared;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace kmbf
 {
@@ -42,6 +43,8 @@ namespace kmbf
         {
             if (LocalizationManager.CurrentLocale == lastLoadedLocale)
                 return;
+
+            Main.Log.Log("Starting Localization patches");
             
             try
             {
@@ -58,13 +61,35 @@ namespace kmbf
             }
         }
 
+        static object GetSettingInstance(string settingType)
+        {
+            Type settingsType = Main.UMMSettings.GetType();
+
+            FieldInfo settingField = settingsType.GetFields().FirstOrDefault(info =>
+            {
+                Type type = info.GetUnderlyingType();
+                string name = type.Name;
+                return name.Equals(settingType);
+            });
+
+            if(settingField == null)
+            {
+                return null;
+            }
+
+            return settingField.GetValue(Main.UMMSettings);
+        }
+
         static void LoadDefaultStringOverrides()
         {
+            Main.Log.Log("Patching default game strings");
+
             var currentLocale = LocalizationManager.CurrentLocale.ToString();
             var fileName = Path.Combine($"{Main.ModEntry.Path}", "Localization", $"DefaultStrings_{currentLocale}.json");
 
             if (!File.Exists(fileName))
             {
+                Main.Log.Log($"No default string overrides founds for current locale '{currentLocale}'");
                 return;
             }
 
@@ -79,52 +104,93 @@ namespace kmbf
 
             foreach (DefaultLocalizedStringData stringData in allStrings)
             {
-                if (LocalizationManager.CurrentPack.Strings.TryGetValue(stringData.Key, out string currentValue))
+                if (!LocalizationManager.CurrentPack.Strings.TryGetValue(stringData.Key, out string currentValue))
                 {
-                    if (!string.IsNullOrEmpty(stringData.Value))
+                    Main.Log.Error($"Could not find string with key '{stringData.Key}' in LocalizationManager");
+                    continue;
+                }
+
+                // Handle the conditions
+                if(!string.IsNullOrEmpty(stringData.SettingCondition))
+                {
+                    string[] substrings = stringData.SettingCondition.Split('.');
+                    if(substrings.Length != 2)
                     {
-                        LocalizationManager.CurrentPack.Strings[stringData.Key] = stringData.Value;
+                        Main.Log.Error($"Invalid Setting Condition '{stringData.SettingCondition}' for string '{stringData.Key}': Expected <type>.<property>");
+                        continue;
                     }
-                    else if(!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Replace))
+
+                    string typeName = $"kmbf.{substrings[0]}";
+                    Type settingType = Type.GetType(typeName);
+                    if(settingType == null)
                     {
-                        LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Target, stringData.Replace);
+                        Main.Log.Error($"Invalid setting type '{typeName}' in Setting Condition for string '{stringData.Key}'");
+                        continue;
                     }
-                    else if (!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Add))
+
+                    object settingTypeInstance = GetSettingInstance(substrings[0]);
+                    if(settingTypeInstance == null)
                     {
-                        int index = currentValue.IndexOf(stringData.Target);
-                        if (index < 0)
-                        {
-                            Main.Log.Warning($"Could not find target string '{stringData.Target}' for '{stringData.Key}' in LocalizationManager");
-                        }
-                        else
-                        {
-                            LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Insert(index + stringData.Target.Length, stringData.Add);
-                        }
+                        Main.Log.Error($"Could not find setting property of type '{substrings[0]}' in Setting Condition for string '{stringData.Key}'");
+                        continue;
                     }
-                    else if (!string.IsNullOrEmpty(stringData.Remove))
+
+                    FieldInfo settingField = settingType.GetField(substrings[1]);
+                    if(settingField == null)
                     {
-                        LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Remove, "");
+                        Main.Log.Error($"Invalid setting field '{substrings[1]}' in Setting Condition of type '{typeName}' for string '{stringData.Key}'");
+                        continue;
+                    }
+
+                    if(!(bool)settingField.GetValue(settingTypeInstance))
+                    {
+                        // At this point, if the setting is disabled, ignore the change
+                        continue;
+                    }
+                }
+
+                // Handle the operations
+                if (!string.IsNullOrEmpty(stringData.Value))
+                {
+                    LocalizationManager.CurrentPack.Strings[stringData.Key] = stringData.Value;
+                }
+                else if (!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Replace))
+                {
+                    LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Target, stringData.Replace);
+                }
+                else if (!string.IsNullOrEmpty(stringData.Target) && !string.IsNullOrEmpty(stringData.Add))
+                {
+                    int index = currentValue.IndexOf(stringData.Target);
+                    if (index < 0)
+                    {
+                        Main.Log.Warning($"Could not find target string '{stringData.Target}' for '{stringData.Key}' in LocalizationManager");
                     }
                     else
                     {
-                        Main.Log.Warning($"No operations done on '{stringData.Key}' in LocalizationManager");
+                        LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Insert(index + stringData.Target.Length, stringData.Add);
                     }
+                }
+                else if (!string.IsNullOrEmpty(stringData.Remove))
+                {
+                    LocalizationManager.CurrentPack.Strings[stringData.Key] = currentValue.Replace(stringData.Remove, "");
                 }
                 else
                 {
-                    Main.Log.Error($"Could not find string with key '{stringData.Key}' in LocalizationManager");
+                    Main.Log.Warning($"No operations done on '{stringData.Key}' in LocalizationManager");
                 }
             }
         }
 
         static void LoadModStrings()
         {
+            Main.Log.Log("Patching mod strings strings");
+
             var currentLocale = LocalizationManager.CurrentLocale.ToString();
             var fileName = Path.Combine($"{Main.ModEntry.Path}", "Localization", $"Strings_{currentLocale}.json");
 
             if (!File.Exists(fileName))
             {
-                Main.Log.Warning($"Localised text for current local \"{currentLocale}\" not found, falling back on enGB.");
+                Main.Log.Warning($"Localised text for current local \"{currentLocale}\" not found, falling back to enGB.");
                 currentLocale = "enGB";
                 fileName = $"{Main.ModEntry.Path}/Localization/Strings_enGB.json";
             }

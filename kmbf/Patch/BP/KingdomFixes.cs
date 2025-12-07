@@ -61,7 +61,7 @@ namespace kmbf.Patch.BP
         // "Honor and Duty" is the Lawful Good quest from Renown Across Golarion
         // The quest starts with a Kingdom event which can be assigned a Regent or a General
         // The intention is that a Good or Neutral Regent, or a Good General, would inspire locals
-        // to join the cause, while an Evil Regen or a Neutral or Evil General would evict the crusaders from the city
+        // to join the cause, while an Evil Regent or a Neutral or Evil General would evict the crusaders from the city
         // The quest objectives are:
         //  1. Deal with the Missionaries (Support or Evict)
         //  2. Wait for news of alliance with Mendev 

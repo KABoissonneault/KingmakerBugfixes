@@ -391,7 +391,7 @@ namespace kmbf.Patch.BP
         // Change to an AddContextStatBonus for similar results
         static void FixAbilityScoreCheckBonuses()
         {
-            if (StartPatch("Strength Surge"))
+            if (StartPatch("Strength Surge Athletics Bonus"))
             {
                 BlueprintBuffConfigurator.From(BuffRefs.StrengthSurge)
                     .RemoveComponents<AbilityScoreCheckBonus>()
@@ -404,7 +404,7 @@ namespace kmbf.Patch.BP
                     .Configure();
             }
 
-            if (StartPatch("Animal Domain Perception Bonus"))
+            if (StartBalancePatch("Animal Domain Perception Bonus", nameof(BalanceSettings.FixAnimalDomainPerceptionBonus)))
             {
                 BlueprintFeatureConfigurator.From(FeatureRefs.AnimalDomainBaseFeature)
                     .RemoveComponents<AbilityScoreCheckBonus>()
@@ -414,6 +414,13 @@ namespace kmbf.Patch.BP
                         b.Descriptor = ModifierDescriptor.Racial;
                         b.Value = ContextValueFactory.Rank();
                     })
+                    .Configure();
+            }
+            else
+            {
+                // AbilityScoreCheckBonus is fixed in another patch, we need to remove the component to remove the bonus
+                BlueprintFeatureConfigurator.From(FeatureRefs.AnimalDomainBaseFeature)
+                    .RemoveComponents<AbilityScoreCheckBonus>()
                     .Configure();
             }
         }

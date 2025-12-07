@@ -1,8 +1,9 @@
 [
   {
     "Key": "6c741017-8a3c-4a0d-a4a9-c53ed618ae1c",
+    "SettingCondition": "BalanceSettings.FixAnimalDomainPerceptionBonus",
     "Target": "You can speak with and befriend animals with ease.",
-    "Replace": "You can gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1)."
+    "Replace": "You gain a racial bonus on Perception checks equal to 1/2 your cleric level (minimum +1)."
   },
   {
     "Key": "ca6d9102-d3ee-4185-9c59-9b8109dbcac4",
