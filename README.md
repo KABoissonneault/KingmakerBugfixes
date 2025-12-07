@@ -46,14 +46,19 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] Fixed Controlled Fireball not applying minimal damage to allies as intended
 - Allow Break Enchantment to remove petrification (like in Wrath)
 - Fixed cursed magic item DC for removing via Break Enchantment (25 for Cloak of Sold Souls, 33 for Gentle Persuasion, 25 for Narrow Path)
-- Fixed "AbilityScoreCheckBonus" used by Divine Power to boost Strength checks. Should now be able to leave Icy Prison easier! This also fixes Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus
-- Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus have been changed to show in the character sheet
+- Fixed Divine Power bonus to Strength checks. Should now be able to leave Icy Prison easier!
+- Fixed Strength Surge's Athletics enhancement bonus
+- [Opt-out] Fixed Animal Domain's Perception racial bonus
+- Strength Surge's Athletics enhancement bonus and Animal Domain's Perception racial bonus now show in the character sheet
 - [Opt-out] Fixed Touch of Glory giving Charisma instead of giving a bonus to Charisma checks (ie: roll d20 + charisma mod to save)
 - Moved Monk and Thrown weapons into different Fighter Weapon Groups so they can be boosted by a Weapon Training (KM has no Weapon Training for Monk and Thrown). Darts, sai, and kama are now Light Blades, javelins are Spears, nunchaku are Close, slings and slight staves are Hammers, and throwing axes are Axes
 - Fixed Law domain "Staff of Order" and Chaos domain "Chaos Blade" not doing anything
-- Fixed Cognatogen - Wisdom duration
+- [!CotW] Fixed Cognatogen - Wisdom duration
 - Fixed Inspire Greatness / Inspire Heroics not ending at combat end, like Inspire Courage does
 - Fixed Fiery Body only adding 1d6 fire damage to unarmed attacks instead of 3d6
+- Fixed Kinetic Knight not getting feats for Medium/Heavy armor and Shield proficiency, preventing getting other feats that depend on these (ex: Tower Shield proficiency)
+- Added a minimum of +0 CHA bonus to Paladin's Smite Evil
+- Fixed Cave Fangs: Stalactite sub-ability icon
 
 #### Feat & Traits
 
@@ -63,8 +68,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] Fixed Crane Wing to check for shield in offhand. Still allows 2h weapons, since KM has no 1h option
 - Fixed Foulspawn Tiefling bonus against Clerics, Paladins, and Inquisitors only working against characters that had all three classes instead of any
 - [Opt-out] Combat Expertise is now off by default. There is a hard to fix issue where Combat Expertise refreshes each time you save or load, so having it off by default makes it less detrimental to most characters
-- Fixed Undead charisma modified value (ex: buffs) not applying to Fortitude saving throws
-- [Opt-out] Fixed Undead immunities to include Paralysis and Sleep (no longer bypassed by Undead Bloodline Arcana), but also exclude Shakened, Frightened, Sickened, and Nauseated (still needs Undead Bloodline for mind-affecting effects). Undead are properly immune to some spells with a Fortitude saving throw, such as Baleful Polymorph, Flare Burst, or Ray of Sickening. Note that this is different from the other "Undead Immunities" mod
+- [!CotW] Fixed Undead charisma modified value (ex: buffs) not applying to Fortitude saving throws
+- [Opt-out, !CotW] Fixed Undead immunities to include Paralysis and Sleep (no longer bypassed by Undead Bloodline Arcana), but also exclude Shakened, Frightened, Sickened, and Nauseated (still needs Undead Bloodline for mind-affecting effects). Undead are properly immune to some spells with a Fortitude saving throw, such as Baleful Polymorph, Flare Burst, or Ray of Sickening. Note that this is different from the other "Undead Immunities" mod
 - Fixed Penetrating Strike feat, as well as the Greater version
 
 #### Item
