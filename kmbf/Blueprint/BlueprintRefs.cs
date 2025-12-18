@@ -168,6 +168,8 @@ namespace kmbf.Blueprint
         public static readonly BlueprintBuffGuid NarrowPathCurse = new("12fa3abf3176f6f409c34f5d46bf4754");
         public static readonly BlueprintBuffGuid Tormentor = new("cdfc8d816234c5a47bfa0a4377375e59");
         public static readonly BlueprintBuffGuid GameKeeperOfTheFirstWorld = new("3e106161933ea694380f560f967825dc");
+
+        public static readonly BlueprintBuffGuid SweetPancakesFavorite = new("ca0f5fdae0b09044b8344d3f5d6e8438");
     }
 
     public static class ItemWeaponRefs

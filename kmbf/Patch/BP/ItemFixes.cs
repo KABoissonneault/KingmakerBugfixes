@@ -1,4 +1,5 @@
-﻿using Kingmaker.Designers.Mechanics.Facts;
+﻿using Kingmaker.Designers.Mechanics.Buffs;
+using Kingmaker.Designers.Mechanics.Facts;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
@@ -30,6 +31,7 @@ namespace kmbf.Patch.BP
             FixCursedItemCasterLevels();
             FixBladeOfTheMerciful();
             FixGamekeeperOfTheFirstWorld();
+            FixSweetPancake();
 
             // Optional
             FixBaneOfTheLiving();
@@ -205,6 +207,21 @@ namespace kmbf.Patch.BP
                 .SetDescription(KMLocalizedStrings.GameKeeperOfTheFirstWorldDescription)
                 .RemoveFlag(BlueprintBuff.Flags.HiddenInUi)
                 .Configure();
+        }
+
+        // Linzi is supposed to get an extra 5 speed compared to base pancakes. 
+        // Since they don't stack, we need Linzi's bonus to account for a total of +10
+        static void FixSweetPancake()
+        {
+            if(StartPatch("Sweet Pancake Linzi Bonus"))
+            {
+                BlueprintBuffConfigurator.From(BuffRefs.SweetPancakesFavorite)
+                    .EditComponentWithName<BuffMovementSpeed>("$BuffMovementSpeed$8b38a434-7c13-4a17-a9e9-567c9865fb46", c =>
+                    {
+                        c.Value = 10;
+                    })
+                    .Configure();
+            }
         }
 
         // Bane of the Living / Penalty "Not Undead or Not Construct" instead of "Not Undead and Not Construct"
