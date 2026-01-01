@@ -485,8 +485,8 @@ namespace kmbf.Patch.BP
                 if (!FeatureRefs.ConstructType.GetBlueprint(out BlueprintFeature constructType)) return;
                 if (!FeatureRefs.UndeadType.GetBlueprint(out BlueprintFeature undeadType)) return;
 
-                SpellDescriptorWrapper unconditionalDescriptor = SpellDescriptor.Bleed | SpellDescriptor.Death | SpellDescriptor.Disease | SpellDescriptor.Fatigue | SpellDescriptor.Paralysis
-                            | SpellDescriptor.Poison | SpellDescriptor.Sleep | SpellDescriptor.Stun | SpellDescriptor.VilderavnBleed;
+                SpellDescriptorWrapper unconditionalDescriptor = SpellDescriptor.Bleed | SpellDescriptor.Death | SpellDescriptor.Disease | SpellDescriptor.Fatigue | SpellDescriptor.Exhausted
+                    | SpellDescriptor.Paralysis | SpellDescriptor.Poison | SpellDescriptor.Sleep | SpellDescriptor.Stun | SpellDescriptor.VilderavnBleed;
                 SpellDescriptorWrapper conditionalDescriptor = SpellDescriptor.MindAffecting;
                 BlueprintFeatureConfigurator.From(FeatureRefs.UndeadImmunities)
                     // TODO: fix saving throws for Swarm distraction before removing the Nauseated/Sickened immunity
