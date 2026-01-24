@@ -24,7 +24,7 @@ namespace kmbf.Patch.KM.Items
         [HarmonyPrepare]
         static bool Prepare(MethodBase original)
         {
-            return PatchUtility.StartPreparePatch("Polymorph and Mutagen Buff", original);
+            return PatchUtility.StartPreparePatch("Polymorph and Mutagen Buff", original, PatchUtility.ModExclusionFlags.CallOfTheWild);
         }
 
         [HarmonyPatch(typeof(UnitBody), "CurrentHandsEquipmentSet", MethodType.Getter), HarmonyPostfix]
