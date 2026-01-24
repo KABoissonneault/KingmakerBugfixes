@@ -5,6 +5,7 @@ using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.UnitLogic.Parts;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
 using kmbf.Component;
@@ -32,10 +33,11 @@ namespace kmbf.Patch.BP
             FixBladeOfTheMerciful();
             FixGamekeeperOfTheFirstWorld();
             FixSweetPancake();
-
+            
             // Optional
             FixBaneOfTheLiving();
             FixNecklaceOfDoubleCrosses();
+            FixSpinebreaker();
         }
 
         // Make Darts light weapons (like in tabletop)
@@ -245,6 +247,18 @@ namespace kmbf.Patch.BP
             BlueprintFeatureConfigurator.From(FeatureRefs.NecklaceOfDoubleCrosses)
                 .EditComponent<AdditionalSneakDamageOnHit>(c => c.m_Weapon = AdditionalSneakDamageOnHit.WeaponType.Melee)
                 .AddComponent<AooAgainstAllies>()
+                .Configure();
+        }
+
+        private static void FixSpinebreaker()
+        {
+            if (!StartBalancePatch("Spinebreaker Spell Immunity", nameof(BalanceSettings.FixSpinebreakerImmunity))) return;
+
+            BlueprintFeatureConfigurator.From(FeatureRefs.Spinebreaker)
+                .EditComponentWithName<AddSpellImmunity>("$AddSpellImmunity$aebfa4f9-16ed-4c31-9499-323f8086da16", c =>
+                {
+                    c.Type = SpellImmunityType.Specific;
+                })
                 .Configure();
         }
     }

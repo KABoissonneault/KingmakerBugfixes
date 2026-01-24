@@ -23,6 +23,7 @@ namespace kmbf
         public bool FixConstructUndeadImmunities = true;
         public bool FixAnimalDomainPerceptionBonus = true;
         public bool FixAmiriOversizedSwordPlusShield = true;
+        public bool FixSpinebreakerImmunity = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]

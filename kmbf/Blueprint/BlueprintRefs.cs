@@ -260,6 +260,7 @@ namespace kmbf.Blueprint
         public static readonly BlueprintFeatureGuid NecklaceOfDoubleCrosses = new("64d5a59feeb292e49a6c459fe37c3953");
         public static readonly BlueprintFeatureGuid RingOfRecklessCourage = new("aa9102221a042504c94f0a313c4c40a1");
         public static readonly BlueprintFeatureGuid TrailblazerHelmet = new("a32d8eb9c88e3b64ab1bbf84c41524d6");
+        public static readonly BlueprintFeatureGuid Spinebreaker = new("68de5d7ab0fdbdc4687e0ded5f5f0dce");
 
         // Feats
 
