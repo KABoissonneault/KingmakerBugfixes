@@ -20,8 +20,8 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - [Opt-out] "Area of Effect" with UnitEnter and Round events (ex: Stinking Cloud) do not double trigger on cast
 - Fixed turn-based combat sometimes making the main character lose their surprise action, and sometimes giving the party a surprise round for no reason
 - Fixed peaceful or quest-related world map encounters not being possible to trigger on upgraded regions, making some quests impossible to complete in those conditions
-- Polymorphed characters now preserve their natural weapon enchantments (ex: Magic Fang) through save and load
-- Feral Mutagen characters now preserve their natural weapon enchantments (ex: Magic Fang) through save. Unfortunately, they still lose it on load
+- [!CotW] Polymorphed characters now preserve their natural weapon enchantments (ex: Magic Fang) through save and load
+- [!CotW] Feral Mutagen characters now preserve their natural weapon enchantments (ex: Magic Fang) through save. Unfortunately, they still lose it on load
 - Fixed issue where a sneak attack damage could fail to bypass Damage Reduction when the weapon you're using should bypass it
 - [Opt-out] Fixed issue where all enchantments counted as an extra "+1" for the purpose of bypassing Damage Reduction, including traits like Composite or Thrown. Now, if a DR requires +3 to bypass, it really requires +3. Also applies to Regeneration and Incorporeal magical weapon checks
 
@@ -85,6 +85,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Explosion Ring not giving +12 damage to bomb abilities
 - Fixed Blade of the Merciful's "Mass Heal" DC to 23 instead of 0
 - Fixed sling weapon type not having a model or proper projectiles, for the one sling you can find in KM
+- [Opt-out] Fixed Spinebreaker making you immune to most spells, now only immune to Boneshaker and Boneshatter as described
 
 #### Misc
 
@@ -127,6 +128,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 - Fixed Tormentor showing "Comforter" as the debuff on targets (text change only)
 - Removed useless saving throw on Gamekeeper of the First World. Now showing debuff on affected target
 - Added support for fixing typos and text inconsistencies through the "DefaultStrings_<locale>.json" file. See DefaultStrings_enGB.json for all the changes in the English version
+- [Opt-out] Fixed Amiri being able to equip shields in her locked Oversized Bastard Sword slot
     
 ### Changes
 
