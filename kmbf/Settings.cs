@@ -22,6 +22,7 @@ namespace kmbf
         public bool FixTouchOfGlory = true;
         public bool FixConstructUndeadImmunities = true;
         public bool FixAnimalDomainPerceptionBonus = true;
+        public bool FixAmiriOversizedSwordPlusShield = true;
     }
 
     [DrawFields(DrawFieldMask.Public)]
