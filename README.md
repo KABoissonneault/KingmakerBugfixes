@@ -74,6 +74,7 @@ Many of these are buffs to the player, since they make more abilities work, but 
 
 #### Item
 
+- Fixed Black Salt's on-hit random ability damage not working, preserving its minimum ability score of 7
 - [Opt-out, !CotW] Fixed Necklace of Double Crosses to only apply to melee attacks, and implemented the "ally attack of opportunity" mechanics as described
 - [Opt-out] Fixed Living Bane (Bane of the Living, Penalty) being a bane of all creatures (properly excludes Undead and Constructs)
 - Fixed issue where Datura would wake up targets immediately after sleeping them. Added the sleep enchantment to the second head. Also increased DC to 16, as described

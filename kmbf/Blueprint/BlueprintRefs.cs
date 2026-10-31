@@ -127,6 +127,7 @@ namespace kmbf.Blueprint
         public static readonly BlueprintWeaponEnchantmentGuid Enhancement5 = new("bdba267e951851449af552aa9f9e3992");
 
         public static readonly BlueprintWeaponEnchantmentGuid Soporiferous = new("da0a0c76266c96b45aacc34dc6635b28");
+        public static readonly BlueprintWeaponEnchantmentGuid BlackSalt = new("d686790990d66394b937f0a1ad536682");
         public static readonly BlueprintWeaponEnchantmentGuid BaneLiving = new("e1d6f5e3cd3855b43a0cb42f6c747e1c");
         public static readonly BlueprintWeaponEnchantmentGuid NaturesWrath = new("afa5d47f05724ac43a4dc19e5ecbd150");
 
