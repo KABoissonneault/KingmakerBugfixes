@@ -1,10 +1,14 @@
 ﻿using Kingmaker.Designers.Mechanics.Buffs;
 using Kingmaker.Designers.Mechanics.Facts;
+using Kingmaker.Designers.EventConditionActionSystem.Actions;
 using Kingmaker.ElementsSystem;
 using Kingmaker.EntitySystem.Stats;
 using Kingmaker.UnitLogic.Buffs.Blueprints;
+using Kingmaker.UnitLogic.Buffs.Actions;
 using Kingmaker.UnitLogic.FactLogic;
 using Kingmaker.UnitLogic.Mechanics.Components;
+using Kingmaker.UnitLogic.Mechanics.Actions;
+using Kingmaker.UnitLogic.Mechanics.Conditions;
 using Kingmaker.UnitLogic.Parts;
 using kmbf.Blueprint;
 using kmbf.Blueprint.Configurator;
@@ -24,6 +28,7 @@ namespace kmbf.Patch.BP
             Item.SlingFixes.Apply();
 
             FixDatura();
+            FixBlackSalt();
             FixNaturesWrath();
             FixSummonNaturesAllyVSingle();
             FixDwarvenChampion();
@@ -68,6 +73,30 @@ namespace kmbf.Patch.BP
                         
             BlueprintItemWeaponConfigurator.From(ItemWeaponRefs.SoporiferousSecond)
                 .AddEnchantment(WeaponEnchantmentRefs.Soporiferous)
+                .Configure();
+        }
+
+        // Buff actions have no owning buff on an enchantment; some lower-bound checks also use the wrong stat.
+        static void FixBlackSalt()
+        {
+            if (!StartPatch("Black Salt")) return;
+
+            BlueprintWeaponEnchantmentConfigurator.From(WeaponEnchantmentRefs.BlackSalt)
+                .EditComponent<AddInitiatorAttackRollTrigger>(c =>
+                {
+                    foreach (var conditional in c.Action.GetGameActionsRecursive().OfType<Conditional>())
+                    {
+                        var bonus = conditional.IfTrue.Actions.OfType<BuffActionAddStatBonus>().Single();
+                        conditional.ConditionsChecker.Conditions.OfType<ContextConditionStatValue>().Single().Stat = bonus.Stat;
+
+                        var damage = CreateInstance<ContextActionDealDamage>();
+                        damage.m_Type = ContextActionDealDamage.Type.AbilityDamage;
+                        damage.AbilityType = bonus.Stat;
+                        damage.Value = ContextDiceFactory.BonusConstant(-bonus.Value.Value);
+                        damage.IgnoreCritical = true;
+                        conditional.IfTrue = ActionListFactory.Single(damage);
+                    }
+                })
                 .Configure();
         }
 
